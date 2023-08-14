@@ -31,6 +31,9 @@ const router = createRouter({
                         {
                             path: "",
                             name: "home",
+                            meta: {
+                                title: "",
+                            },
                             component: () => import("@/views/admin/home/index.vue")
                         }
                     ]
