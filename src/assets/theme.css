@@ -1,0 +1,7 @@
+body{
+    --bg: #f0eeee;
+}
+
+body[arco-theme='dark'] {
+    --bg: #373737;
+}
