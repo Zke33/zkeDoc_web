@@ -17,47 +17,73 @@ const router = createRouter({
             path: '/admin',
             name: 'admin',
             component: () => import("@/views/admin/admin.vue"),
-            children:[
+            children: [
                 {
                     path: '',
-                    name: 'home',
-                    component: () => import("@/views/admin/home/index.vue")
+                    name: 'admin_home',
+                    children: [
+                        {
+                            path: "",
+                            name: "home",
+                            component: () => import("@/views/admin/home/index.vue")
+                        }
+                    ]
                 },
                 {
                     path: 'user_center',
                     name: 'user_center',
-                    component: () => import("@/views/admin/user_center/user_info.vue")
+                    children: [
+                        {
+                            path: 'info',
+                            name: 'info',
+                            component: () => import("@/views/admin/user_center/user_info.vue")
+                        },
+                        {
+                            path: 'coll',
+                            name: 'coll',
+                            component: () => import("@/views/admin/user_center/user_coll_docs.vue")
+                        },
+                    ]
+                },
+
+                {
+                    path: 'auths',
+                    name: 'auths',
+                    children: [
+                        {
+                            path: 'users',
+                            name: 'users',
+                            component: () => import("@/views/admin/role_mgr/user_list.vue")
+                        },
+                        {
+                            path: 'roles',
+                            name: 'roles',
+                            component: () => import("@/views/admin/role_mgr/role_list.vue")
+                        },
+                    ]
                 },
                 {
-                    path: 'user_coll',
-                    name: 'user_coll',
-                    component: () => import("@/views/admin/user_center/user_coll_docs.vue")
+                    path: 'settings',
+                    name: 'settings',
+                    children: [
+                        {
+                            path: 'logs',
+                            name: 'logs',
+                            component: () => import("@/views/admin/settings_mgr/logs_list.vue")
+                        },
+                        {
+                            path: 'images',
+                            name: 'images',
+                            component: () => import("@/views/admin/settings_mgr/images_list.vue")
+                        },
+                        {
+                            path: 'sites',
+                            name: 'sites',
+                            component: () => import("@/views/admin/settings_mgr/sites.vue")
+                        }
+                    ]
                 },
-                {
-                    path: 'users',
-                    name: 'users',
-                    component: () => import("@/views/admin/role_mgr/user_list.vue")
-                },
-                {
-                    path: 'roles',
-                    name: 'roles',
-                    component: () => import("@/views/admin/role_mgr/role_list.vue")
-                },
-                {
-                    path: 'logs',
-                    name: 'logs',
-                    component: () => import("@/views/admin/settings_mgr/logs_list.vue")
-                },
-                {
-                    path: 'images',
-                    name: 'images',
-                    component: () => import("@/views/admin/settings_mgr/images_list.vue")
-                },
-                {
-                    path: 'sites',
-                    name: 'sites',
-                    component: () => import("@/views/admin/settings_mgr/sites.vue")
-                }
+
             ]
         }
     ]
