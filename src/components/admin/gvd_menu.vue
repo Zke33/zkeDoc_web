@@ -2,7 +2,10 @@
   <div class="gvd_menu">
     <a-menu @menu-item-click="clickMenu"
             :default-open-keys="defaultOpenKeys"
-            :default-selected-keys="defaultSelectedKeys">
+            :default-selected-keys="defaultSelectedKeys"
+            show-collapse-button
+            @collapse="onCollapse"
+    >
       <template v-for="item in menus" :key="item.key">
         <a-menu-item :key="item.name" v-if="item.child.length === 0">
           <template #icon>
@@ -30,6 +33,13 @@ import type {Component} from "vue";
 import router from "@/router";
 import {ref} from "vue";
 import {useRoute} from "vue-router";
+
+const emits = defineEmits(["collapse"])
+
+function onCollapse(val: boolean, type: string){
+  emits("collapse", val)
+}
+
 
 const route = useRoute()
 

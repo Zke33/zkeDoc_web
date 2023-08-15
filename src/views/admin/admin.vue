@@ -1,10 +1,10 @@
 <template>
   <div class="gvd_admin">
-    <aside>
+    <aside :class="{isCollapse: isCollapse}">
       <div class="gvd_logo">
         LOGO
       </div>
-      <Gvd_menu></Gvd_menu>
+      <Gvd_menu @collapse="onCollapse"></Gvd_menu>
     </aside>
     <div class="gvd_main">
       <header>
@@ -34,10 +34,21 @@ import Gvd_bread from "@/components/admin/gvd_bread.vue";
 import Gvd_theme from "@/components/admin/gvd_theme.vue";
 import Gvd_user_info from "@/components/admin/gvd_user_info.vue";
 import Gvd_tabs from "@/components/admin/gvd_tabs.vue";
+import {ref} from "vue";
 
 function goHome() {
   router.push({name: "index"})
 }
+
+// 是否是折叠状态
+const isCollapse = ref(false)
+
+function onCollapse(val: boolean) {
+  // true 收缩
+  // false 展开
+  isCollapse.value = val
+}
+
 
 </script>
 
@@ -49,6 +60,7 @@ function goHome() {
     background-color: var(--color-bg-1);
     width: 240px;
     border-right: 1px solid var(--bg);
+    transition: all 0.3s;
 
     .gvd_logo {
       color: rgb(var(--arcoblue-6));
@@ -62,12 +74,42 @@ function goHome() {
 
     .gvd_menu {
       width: 100%;
+
+      .arco-menu {
+        position: static;
+      }
+
+      .arco-menu-collapse-button {
+        opacity: 0;
+        transition: all 0.3s;
+        position: absolute;
+        left: 240px;
+        top: 50%;
+        transform: translate(-50%, -50%);
+      }
+
+    }
+
+    &:hover {
+      .arco-menu-collapse-button {
+        opacity: 1;
+      }
     }
   }
+
+  aside.isCollapse {
+    width: 48px;
+
+    .arco-menu-collapse-button {
+      left: 48px;
+    }
+  }
+
 
   .gvd_main {
     overflow-y: auto;
     width: calc(100vw - 240px);
+    transition: all 0.3s;
 
     > header {
       height: 60px;
@@ -121,5 +163,10 @@ function goHome() {
       padding: 20px;
     }
   }
+
+  aside.isCollapse ~ .gvd_main {
+    width: calc(100vw - 48px);
+  }
+
 }
 </style>
