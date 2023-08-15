@@ -67,7 +67,6 @@ function onCollapse(val: boolean) {
     border-right: 1px solid var(--bg);
     transition: all 0.3s;
     height: 100vh;
-    overflow-y: auto;
 
     .gvd_logo {
       color: rgb(var(--arcoblue-6));

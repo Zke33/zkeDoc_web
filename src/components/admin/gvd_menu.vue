@@ -80,7 +80,7 @@ if (1) {
   menus = [
     {key: "1", title: "首页", icon: IconHome, name: "home", child: []},
     {
-      key: "2", title: "个人中心", icon: IconUser, name: "", child: [
+      key: "2", title: "个人中心", icon: IconUser, name: "user_center", child: [
         {key: "2-1", title: "个人信息", icon: IconHome, name: "user_center", child: []},
         {key: "2-2", title: "收藏列表", icon: IconHome, name: "user_coll", child: []},
       ]
