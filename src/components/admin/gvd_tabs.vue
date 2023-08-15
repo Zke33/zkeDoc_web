@@ -39,7 +39,7 @@ function clickItem(item: tabItem) {
 }
 
 function closeItem(item: tabItem) {
-  if (item.name === "home"){
+  if (item.name === "home") {
     return
   }
   // 点击的是自己当前所在页面的话
@@ -48,9 +48,10 @@ function closeItem(item: tabItem) {
   // 先删除点击的这个tab
   let index = tabList.value.findIndex((tab) => item.name === tab.name)
   tabList.value.splice(index, 1)
+  setStoreByTabList()
 
   // 如果是点击当前所在页面
-  if (item.name === route.name as string){
+  if (item.name === route.name as string) {
     // 找到删除的那个tab的前一个
     let beforeIndex = index - 1
     let beforeItem = tabList.value[beforeIndex]
@@ -58,18 +59,41 @@ function closeItem(item: tabItem) {
   }
 }
 
-function closeAllTab(){
+function closeAllTab() {
   tabList.value = [{name: "home", title: "首页"}]
-  if (route.name !== "home"){
+  if (route.name !== "home") {
     router.push({name: "home"})
   }
+  setStoreByTabList()
 }
 
+
+function setStoreByTabList() {
+  localStorage.setItem("tabList", JSON.stringify(tabList.value))
+}
+
+function loadStoreByTabList() {
+  let val = localStorage.getItem("tabList")
+  if (val === null) {
+    return
+  }
+  let tabs = []
+  try {
+    tabs = JSON.parse(val)
+  }catch (e){
+    return;
+  }
+  tabList.value = tabs
+}
+
+loadStoreByTabList()
 
 watch(() => route.name, () => {
   // 判断是否存在
   if (!inList(route.name as string)) {
     tabList.value.push({name: route.name as string, title: route.meta.title as string})
+    // 更新到store里面去
+    setStoreByTabList()
   }
 
 }, {immediate: true})
