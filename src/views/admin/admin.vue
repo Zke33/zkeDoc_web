@@ -126,6 +126,16 @@ function onCollapse(val: boolean) {
           cursor: pointer;
           font-size: 16px;
         }
+
+        .gvd_dropdown {
+          cursor: pointer;
+          transition: all .3s;
+
+          &:hover {
+            color: rgb(var(--arcoblue-6));
+          }
+        }
+
       }
     }
 
@@ -136,6 +146,7 @@ function onCollapse(val: boolean) {
       border-top: 1px solid var(--bg);
       display: flex;
       align-items: center;
+      position: relative;
 
       .tab_item {
         color: var(--color-text-1);
@@ -150,9 +161,33 @@ function onCollapse(val: boolean) {
         margin-right: 10px;
         cursor: pointer;
 
+        svg {
+          margin-left: 5px;
+          font-size: 12px;
+          border-radius: 50%;
+        }
+
+        &:hover {
+          svg {
+            background-color: var(--bg);
+          }
+        }
+
         &.active {
           color: white;
           background-color: rgb(var(--arcoblue-6));
+
+          &:hover {
+            svg {
+              background-color: rgb(var(--arcoblue-5));
+            }
+          }
+        }
+
+        &.close_tab_item {
+          position: absolute;
+          right: 10px;
+          top: 3px;
         }
       }
     }
