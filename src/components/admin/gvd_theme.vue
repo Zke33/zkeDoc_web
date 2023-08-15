@@ -1,5 +1,3 @@
-
-
 <template>
   <icon-moon-fill v-if="theme === 'dark'"  @click="setTheme"/>
   <icon-sun-fill v-if="theme === ''" @click="setTheme"/>
@@ -23,6 +21,3 @@ function setTheme(){
   }
 }
 </script>
-<style scoped>
-
-</style>

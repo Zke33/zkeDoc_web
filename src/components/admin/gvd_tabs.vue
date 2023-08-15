@@ -38,6 +38,7 @@ function clickItem(item: tabItem) {
   router.push({name: item.name})
 }
 
+// 关闭tab
 function closeItem(item: tabItem) {
   if (item.name === "home") {
     return
@@ -59,6 +60,7 @@ function closeItem(item: tabItem) {
   }
 }
 
+// 关闭全部的tab
 function closeAllTab() {
   tabList.value = [{name: "home", title: "首页"}]
   if (route.name !== "home") {
@@ -67,11 +69,12 @@ function closeAllTab() {
   setStoreByTabList()
 }
 
-
+// 更新tabs到store
 function setStoreByTabList() {
   localStorage.setItem("tabList", JSON.stringify(tabList.value))
 }
 
+// 加载tabs
 function loadStoreByTabList() {
   let val = localStorage.getItem("tabList")
   if (val === null) {
@@ -98,6 +101,7 @@ watch(() => route.name, () => {
 
 }, {immediate: true})
 
+// 判断名称在不在列表
 function inList(name: string): boolean {
   for (const tab of tabList.value) {
     if (tab.name === name) {

@@ -103,7 +103,3 @@ watch(() => route.name, () => {
 })
 
 </script>
-
-<style scoped>
-
-</style>

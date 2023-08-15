@@ -29,9 +29,4 @@ watch(() => route.matched, (value) => {
   })
 }, {immediate: true})
 
-
 </script>
-
-<style scoped>
-
-</style>
