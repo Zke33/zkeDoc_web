@@ -1,8 +1,8 @@
 <template>
   <div class="gvd_menu">
     <a-menu @menu-item-click="clickMenu"
-            :default-open-keys="defaultOpenKeys"
-            :default-selected-keys="defaultSelectedKeys"
+            v-model:open-keys="defaultOpenKeys"
+            v-model:selected-keys="defaultSelectedKeys"
             show-collapse-button
             @collapse="onCollapse"
     >
@@ -31,12 +31,12 @@
 import {IconHome, IconSettings, IconUser} from "@arco-design/web-vue/es/icon";
 import type {Component} from "vue";
 import router from "@/router";
-import {ref} from "vue";
+import {ref, watch} from "vue";
 import {useRoute} from "vue-router";
 
 const emits = defineEmits(["collapse"])
 
-function onCollapse(val: boolean, type: string){
+function onCollapse(val: boolean, type: string) {
   emits("collapse", val)
 }
 
@@ -96,6 +96,11 @@ function clickMenu(key: string) {
 const defaultSelectedKeys = ref([route.name])
 const defaultOpenKeys = ref([route.matched[1].name])
 
+
+watch(() => route.name, () => {
+  defaultSelectedKeys.value = [route.name]
+  defaultOpenKeys.value = [route.matched[1].name]
+})
 
 </script>
 

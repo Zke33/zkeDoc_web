@@ -130,6 +130,7 @@ function onCollapse(val: boolean) {
         .gvd_dropdown {
           cursor: pointer;
           transition: all .3s;
+          color: var(--color-text-1);
 
           &:hover {
             color: rgb(var(--arcoblue-6));
