@@ -19,7 +19,11 @@
       </header>
       <Gvd_tabs></Gvd_tabs>
       <main>
-        <router-view/>
+        <router-view v-slot="{Component}">
+          <transition name="fade" mode="out-in">
+            <component :is="Component"></component>
+          </transition>
+        </router-view>
       </main>
     </div>
   </div>
@@ -55,12 +59,15 @@ function onCollapse(val: boolean) {
 <style lang="scss">
 .gvd_admin {
   display: flex;
+  height: 100vh;
 
   aside {
     background-color: var(--color-bg-1);
     width: 240px;
     border-right: 1px solid var(--bg);
     transition: all 0.3s;
+    height: 100vh;
+    overflow-y: auto;
 
     .gvd_logo {
       color: rgb(var(--arcoblue-6));
@@ -110,6 +117,7 @@ function onCollapse(val: boolean) {
     overflow-y: auto;
     width: calc(100vw - 240px);
     transition: all 0.3s;
+    overflow-x: hidden;
 
     > header {
       height: 60px;
@@ -197,6 +205,16 @@ function onCollapse(val: boolean) {
       min-height: calc(100vh - 90px);
       background-color: var(--bg);
       padding: 20px;
+
+
+      .gvd_view {
+        background-color: var(--color-bg-1);
+        padding: 20px;
+        border-radius: 5px;
+        min-height: calc(100vh - 130px);
+        color: var(--color-text-1);
+
+      }
     }
   }
 
@@ -205,4 +223,25 @@ function onCollapse(val: boolean) {
   }
 
 }
+
+.fade-leave-to {
+  opacity: 0;
+  transform: translateX(30px);
+}
+
+.fade-enter-active {
+  transform: translateX(-30px);
+  opacity: 0;
+}
+
+.fade-enter-to {
+  transform: translateX(0px);
+  opacity: 1;
+}
+
+.fade-leave-active, .fade-enter-active {
+  transition: all 0.3s ease-out;
+}
+
+
 </style>

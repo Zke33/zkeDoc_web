@@ -1,7 +1,7 @@
-
-
 <template>
-<div>用户信息</div>
+  <div class="gvd_view">
+    <div>用户信息</div>
+  </div>
 </template>
 
 <script setup lang="ts">
