@@ -1,22 +1,25 @@
 <template>
-  <icon-moon-fill v-if="theme === 'dark'"  @click="setTheme"/>
-  <icon-sun-fill v-if="theme === ''" @click="setTheme"/>
+  <div @click="setTheme">
+    <icon-moon-fill v-if="store.theme === 'dark'"/>
+    <icon-sun-fill v-if="store.theme === ''"/>
+  </div>
 </template>
 
 <script setup lang="ts">
 
 import {IconMoonFill, IconSunFill} from "@arco-design/web-vue/es/icon";
-import {ref} from "vue";
-import type {Ref} from "vue";
-const theme:Ref<""|"dark"> = ref("")
-function setTheme(){
-  if (document.body.hasAttribute('arco-theme')){
+import {useStore} from "@/stores";
+
+const store = useStore()
+
+function setTheme() {
+  if (document.body.hasAttribute('arco-theme')) {
     // 变成白天
-    theme.value = ""
+    store.setTheme("")
     document.body.removeAttribute('arco-theme')
-  }else {
+  } else {
     // 变成黑夜
-    theme.value = "dark"
+    store.setTheme("dark")
     document.body.setAttribute('arco-theme', 'dark')
   }
 }

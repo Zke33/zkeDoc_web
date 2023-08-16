@@ -127,7 +127,9 @@ function onCollapse(val: boolean) {
       padding: 0 20px;
 
       .right {
-        > svg {
+        display: flex;
+
+        svg {
           color: var(--color-text-1);
           margin-right: 10px;
           cursor: pointer;
