@@ -1,5 +1,3 @@
-
-
 <template>
   <a-modal width="600px" :visible="props.visible" :footer="false" @cancel="close" modal-class="login_modal">
     <div class="left">
@@ -8,7 +6,9 @@
     <div class="right">
       <div class="head">
         <h2>登录文档系统</h2>
-        <div class="close" @click="close"><IconClose></IconClose></div>
+        <div class="close" @click="close">
+          <IconClose></IconClose>
+        </div>
       </div>
       <div class="body">
         <a-form ref="formRef" :model="form" :label-col-props="{span: 0, offset: 0}"
@@ -39,8 +39,11 @@
 import {reactive, ref} from "vue";
 import {IconClose} from "@arco-design/web-vue/es/icon";
 import {loginApi} from "@/api/user_api";
+import type {LoginRequest} from "@/api/user_api";
+import {Message} from "@arco-design/web-vue";
 
-const form = reactive({
+
+const form: LoginRequest = reactive({
   userName: "",
   password: "",
 })
@@ -48,7 +51,7 @@ const form = reactive({
 const props = defineProps(["visible"])
 const emits = defineEmits(["update:visible"])
 
-function close(){
+function close() {
   emits("update:visible", false)
 }
 
@@ -57,13 +60,16 @@ const formRef = ref()
 async function login() {
 
   let _res = await formRef.value.validate()
-  if (_res !== undefined){
+  if (_res !== undefined) {
     return
   }
   let res = await loginApi(form)
+  if (res.code !== 0) {
+    Message.error(res.msg)
+    return
+  }
   console.log(res)
-
-
+  Message.success(res.msg)
 }
 
 

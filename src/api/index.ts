@@ -2,8 +2,31 @@ import axios from "axios";
 import {Message} from "@arco-design/web-vue";
 
 export const useAxios = axios.create({
-    baseURL: import.meta.env.VITE_SERVER_URL,
+    // baseURL: "",
 })
+
+export interface Params {
+    key?: string
+    sort?: string
+    limit?: number
+    page?: number
+}
+
+export interface Response<T>{
+    code: number
+    data: T
+    msg: string
+}
+
+export interface ListResponse<T>{
+    code: number
+    data: {
+        count: number
+        list: T[]
+    }
+    msg: string
+}
+
 
 useAxios.interceptors.request.use((config) => {
     config.headers["token"] = "1234"
