@@ -15,9 +15,14 @@
 
 import Gvd_theme from "@/components/admin/gvd_theme.vue";
 import {IconDashboard, IconSettings, IconUser, IconExport} from "@arco-design/web-vue/es/icon";
-import type {Component} from "vue";
+import type {Component, Ref} from "vue";
 import router from "@/router";
 import {logout} from "@/utils/logout";
+import {useStore} from "@/stores";
+import {ref, watch} from "vue";
+
+
+const store = useStore()
 
 interface menuType {
   title: string
@@ -25,13 +30,39 @@ interface menuType {
   name: string
 }
 
-const menuList: menuType[] = [
+
+const menuList: Ref<menuType[]> = ref([
   {title: "主题切换", icon: Gvd_theme, name: ""},
-  {title: "控制台", icon: IconDashboard, name: "home"},
-  {title: "用户列表", icon: IconUser, name: "users"},
-  {title: "系统配置", icon: IconSettings, name: "logs"},
-  {title: "注销退出", icon: IconExport, name: "logout"},
-]
+])
+
+
+function getMenuList() {
+  if (store.isLogin) {
+    if (store.isAdmin) {
+      menuList.value = [
+        {title: "主题切换", icon: Gvd_theme, name: ""},
+        {title: "控制台", icon: IconDashboard, name: "home"},
+        {title: "用户列表", icon: IconUser, name: "users"},
+        {title: "系统配置", icon: IconSettings, name: "logs"},
+        {title: "注销退出", icon: IconExport, name: "logout"},
+      ]
+      return;
+    }
+    menuList.value = [
+      {title: "主题切换", icon: Gvd_theme, name: ""},
+      {title: "控制台", icon: IconDashboard, name: "home"},
+      {title: "注销退出", icon: IconExport, name: "logout"},
+    ]
+    return;
+  }
+  menuList.value = [{title: "主题切换", icon: Gvd_theme, name: ""},]
+  return
+}
+
+watch(() => store.userInfo.roleID, () => {
+  getMenuList()
+}, {immediate: true})
+
 
 function clickMenu(item) {
   if (item.name === "") {

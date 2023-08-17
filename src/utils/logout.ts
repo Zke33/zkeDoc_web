@@ -8,5 +8,8 @@ export function logout() {
     const store = useStore()
     store.clearToken()
 
+    // 清除tabs的数据
+    localStorage.removeItem("tabList")
+
     Message.success("注销成功")
 }

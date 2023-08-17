@@ -61,6 +61,9 @@ export const useStore = defineStore('useStore', {
         // 是否登录
         isLogin(): boolean {
             return this.userInfo.userID !== 0
+        },
+        isAdmin(): boolean{
+            return this.userInfo.roleID === 1
         }
     }
 })

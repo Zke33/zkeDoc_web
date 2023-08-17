@@ -11,24 +11,40 @@
 import {IconDown} from "@arco-design/web-vue/es/icon";
 import {Message} from "@arco-design/web-vue";
 import router from "@/router";
+import {logout} from "@/utils/logout";
+import {useStore} from "@/stores";
+
+const store = useStore()
 
 interface tabItem {
   name: string
   title: string
 }
 
-const menuList: tabItem[] = [
+let menuList: tabItem[] = [
   {name: "info", title: "个人信息"},
-  {name: "users", title: "用户列表"},
-  {name: "roles", title: "角色列表"},
-  {name: "logs", title: "日志列表"},
   {name: "logout", title: "注销退出"},
 ]
+
+function getMenuList() {
+  if (store.isAdmin) {
+    menuList = [
+      {name: "info", title: "个人信息"},
+      {name: "users", title: "用户列表"},
+      {name: "roles", title: "角色列表"},
+      {name: "logs", title: "日志列表"},
+      {name: "logout", title: "注销退出"},
+    ]
+  }
+}
+
+getMenuList()
 
 function clickItem(item: tabItem) {
   if (item.name === "logout") {
     // 注销
-    Message.info("注销成功")
+    logout()
+    router.push({name: "index"})
     return
   }
   router.push({name: item.name})

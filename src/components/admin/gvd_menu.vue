@@ -33,7 +33,10 @@ import type {Component} from "vue";
 import router from "@/router";
 import {ref, watch} from "vue";
 import {useRoute} from "vue-router";
+import {get} from "axios";
+import {useStore} from "@/stores";
 
+const store = useStore()
 const emits = defineEmits(["collapse"])
 
 function onCollapse(val: boolean, type: string) {
@@ -51,42 +54,44 @@ interface MenuType {
   child: MenuType[]
 }
 
-let menus: MenuType[] = []
+let menus: MenuType[] = [
+  {key: "1", title: "首页", icon: IconHome, name: "home", child: []},
+  {
+    key: "2", title: "个人中心", icon: IconUser, name: "user_center", child: [
+      {key: "2-1", title: "个人信息", icon: IconHome, name: "info", child: []},
+      {key: "2-2", title: "收藏列表", icon: IconHome, name: "coll", child: []},
+    ]
+  },
+]
 
-if (1) {
-  menus = [
-    {key: "1", title: "首页", icon: IconHome, name: "home", child: []},
-    {
-      key: "2", title: "个人中心", icon: IconUser, name: "user_center", child: [
-        {key: "2-1", title: "个人信息", icon: IconHome, name: "info", child: []},
-        {key: "2-2", title: "收藏列表", icon: IconHome, name: "coll", child: []},
-      ]
-    },
-    {
-      key: "3", title: "权限管理", icon: IconUser, name: "auths", child: [
-        {key: "3-1", title: "用户列表", icon: IconHome, name: "users", child: []},
-        {key: "3-2", title: "角色列表", icon: IconHome, name: "roles", child: []},
-      ]
-    },
-    {
-      key: "4", title: "系统管理", icon: IconSettings, name: "settings", child: [
-        {key: "4-1", title: "日志列表", icon: IconHome, name: "logs", child: []},
-        {key: "4-2", title: "图片列表", icon: IconHome, name: "images", child: []},
-        {key: "4-3", title: "站点配置", icon: IconHome, name: "sites", child: []},
-      ]
-    },
-  ]
-} else {
-  menus = [
-    {key: "1", title: "首页", icon: IconHome, name: "home", child: []},
-    {
-      key: "2", title: "个人中心", icon: IconUser, name: "user_center", child: [
-        {key: "2-1", title: "个人信息", icon: IconHome, name: "user_center", child: []},
-        {key: "2-2", title: "收藏列表", icon: IconHome, name: "user_coll", child: []},
-      ]
-    },
-  ]
+function getMenuList() {
+  if (store.isAdmin) {
+    menus = [
+      {key: "1", title: "首页", icon: IconHome, name: "home", child: []},
+      {
+        key: "2", title: "个人中心", icon: IconUser, name: "user_center", child: [
+          {key: "2-1", title: "个人信息", icon: IconHome, name: "info", child: []},
+          {key: "2-2", title: "收藏列表", icon: IconHome, name: "coll", child: []},
+        ]
+      },
+      {
+        key: "3", title: "权限管理", icon: IconUser, name: "auths", child: [
+          {key: "3-1", title: "用户列表", icon: IconHome, name: "users", child: []},
+          {key: "3-2", title: "角色列表", icon: IconHome, name: "roles", child: []},
+        ]
+      },
+      {
+        key: "4", title: "系统管理", icon: IconSettings, name: "settings", child: [
+          {key: "4-1", title: "日志列表", icon: IconHome, name: "logs", child: []},
+          {key: "4-2", title: "图片列表", icon: IconHome, name: "images", child: []},
+          {key: "4-3", title: "站点配置", icon: IconHome, name: "sites", child: []},
+        ]
+      },
+    ]
+  }
 }
+
+getMenuList()
 
 function clickMenu(key: string) {
   router.push({name: key})
