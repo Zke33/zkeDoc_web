@@ -38,6 +38,7 @@
 <script setup lang="ts">
 import {reactive, ref} from "vue";
 import {IconClose} from "@arco-design/web-vue/es/icon";
+import {loginApi} from "@/api/user_api";
 
 const form = reactive({
   userName: "",
@@ -48,7 +49,6 @@ const props = defineProps(["visible"])
 const emits = defineEmits(["update:visible"])
 
 function close(){
-  console.log(1)
   emits("update:visible", false)
 }
 
@@ -56,11 +56,14 @@ const formRef = ref()
 
 async function login() {
 
-  let res = await formRef.value.validate()
-  if (res !== undefined){
+  let _res = await formRef.value.validate()
+  if (_res !== undefined){
     return
   }
-  console.log(form)
+  let res = await loginApi(form)
+  console.log(res)
+
+
 }
 
 
