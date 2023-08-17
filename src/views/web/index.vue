@@ -52,7 +52,8 @@ const store = useStore()
 
 const visible = ref(false)
 
-
+console.log(import.meta.env)
+console.log(import.meta.env.VITE_SERVER_URL)
 interface BannerColorType {
   dark: string[]
   "": string[]
