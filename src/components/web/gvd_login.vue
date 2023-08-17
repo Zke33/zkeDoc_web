@@ -41,8 +41,11 @@ import {IconClose} from "@arco-design/web-vue/es/icon";
 import {loginApi} from "@/api/user_api";
 import type {LoginRequest} from "@/api/user_api";
 import {Message} from "@arco-design/web-vue";
+import {parseToken} from "@/utils/jwt";
+import {useStore} from "@/stores";
 
 
+const store = useStore()
 const form: LoginRequest = reactive({
   userName: "",
   password: "",
@@ -53,12 +56,15 @@ const emits = defineEmits(["update:visible"])
 
 function close() {
   emits("update:visible", false)
+
+  formRef.value.resetFields(["userName", "password"])
+  formRef.value.clearValidate(["userName", "password"])
+
 }
 
 const formRef = ref()
 
 async function login() {
-
   let _res = await formRef.value.validate()
   if (_res !== undefined) {
     return
@@ -68,8 +74,9 @@ async function login() {
     Message.error(res.msg)
     return
   }
-  console.log(res)
-  Message.success(res.msg)
+  store.setToken(res.data)
+  Message.success("登录成功")
+  close()
 }
 
 
