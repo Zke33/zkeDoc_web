@@ -14,9 +14,10 @@
 <script setup lang="ts">
 
 import Gvd_theme from "@/components/admin/gvd_theme.vue";
-import {IconDashboard, IconSettings, IconUser} from "@arco-design/web-vue/es/icon";
+import {IconDashboard, IconSettings, IconUser, IconExport} from "@arco-design/web-vue/es/icon";
 import type {Component} from "vue";
 import router from "@/router";
+import {logout} from "@/utils/logout";
 
 interface menuType {
   title: string
@@ -29,6 +30,7 @@ const menuList: menuType[] = [
   {title: "控制台", icon: IconDashboard, name: "home"},
   {title: "用户列表", icon: IconUser, name: "users"},
   {title: "系统配置", icon: IconSettings, name: "logs"},
+  {title: "注销退出", icon: IconExport, name: "logout"},
 ]
 
 function clickMenu(item) {
@@ -36,6 +38,7 @@ function clickMenu(item) {
     return
   }
   if (item.name === "logout") {
+    logout()
     return;
   }
   router.push({

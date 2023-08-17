@@ -25,9 +25,12 @@
           <img src="https://img.shields.io/badge/golang-1.19-orange">
         </div>
         <gvd_login v-model:visible="visible"></gvd_login>
-        <div class="banner_btns">
+        <div class="banner_btns" v-if="!store.isLogin">
           <a href="javascript:void (0)" class="banner_go_btn">Go</a>
           <a href="javascript:void (0)" class="banner_login_btn" @click="visible=true">登录</a>
+        </div>
+        <div class="banner_btn_login" v-else>
+          <icon-double-down/>
         </div>
       </div>
     </div>
@@ -47,6 +50,7 @@ import {reactive, ref, watch} from "vue";
 import {Random} from "mockjs";
 import Gvd_fixed_menu from "@/components/web/gvd_fixed_menu.vue";
 import Gvd_login from "@/components/web/gvd_login.vue";
+import {IconDoubleDown} from "@arco-design/web-vue/es/icon";
 
 const store = useStore()
 
@@ -153,6 +157,17 @@ watch(() => store.theme, () => {
         .banner_login_btn {
           background-color: var(--index_color);
           color: var(--bg);
+        }
+      }
+
+      .banner_btn_login {
+        text-align: center;
+        margin-top: 20px;
+
+        svg {
+          font-size: 25px;
+          color: var(--index_color);
+          cursor: pointer;
         }
       }
     }

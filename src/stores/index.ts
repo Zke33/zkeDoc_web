@@ -32,24 +32,35 @@ export const useStore = defineStore('useStore', {
             this.theme = val
         },
 
-        setToken(token: string){
+        setToken(token: string) {
             this.userInfo = parseToken(token)
             // 持久化
             localStorage.setItem("userInfo", JSON.stringify(this.userInfo))
         },
-        loadToken(){
-            const  val:string|null = localStorage.getItem("userInfo")
-            if (val === null){
+        loadToken() {
+            const val: string | null = localStorage.getItem("userInfo")
+            if (val === null) {
                 return
             }
             let payload = userInfo
             try {
                 payload = JSON.parse(val)
-            }catch (e) {
+            } catch (e) {
                 console.log(e)
                 return;
             }
             this.userInfo = payload
+            console.log(this.userInfo)
+        },
+        clearToken(){
+            localStorage.removeItem("userInfo")
+            this.userInfo = userInfo
+        }
+    },
+    getters: {
+        // 是否登录
+        isLogin(): boolean {
+            return this.userInfo.userID !== 0
         }
     }
 })
