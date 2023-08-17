@@ -19,7 +19,7 @@ import type {Component, Ref} from "vue";
 import router from "@/router";
 import {logout} from "@/utils/logout";
 import {useStore} from "@/stores";
-import {ref, watch} from "vue";
+import {ref, watch, shallowRef} from "vue";
 
 
 const store = useStore()
@@ -40,22 +40,22 @@ function getMenuList() {
   if (store.isLogin) {
     if (store.isAdmin) {
       menuList.value = [
-        {title: "主题切换", icon: Gvd_theme, name: ""},
-        {title: "控制台", icon: IconDashboard, name: "home"},
-        {title: "用户列表", icon: IconUser, name: "users"},
-        {title: "系统配置", icon: IconSettings, name: "logs"},
-        {title: "注销退出", icon: IconExport, name: "logout"},
+        {title: "主题切换", icon: shallowRef(Gvd_theme), name: ""},
+        {title: "控制台", icon: shallowRef(IconDashboard), name: "home"},
+        {title: "用户列表", icon: shallowRef(IconUser), name: "users"},
+        {title: "系统配置", icon: shallowRef(IconSettings), name: "logs"},
+        {title: "注销退出", icon: shallowRef(IconExport), name: "logout"},
       ]
       return;
     }
     menuList.value = [
-      {title: "主题切换", icon: Gvd_theme, name: ""},
-      {title: "控制台", icon: IconDashboard, name: "home"},
-      {title: "注销退出", icon: IconExport, name: "logout"},
+      {title: "主题切换", icon: shallowRef(Gvd_theme), name: ""},
+      {title: "控制台", icon: shallowRef(IconDashboard), name: "home"},
+      {title: "注销退出", icon: shallowRef(IconExport), name: "logout"},
     ]
     return;
   }
-  menuList.value = [{title: "主题切换", icon: Gvd_theme, name: ""},]
+  menuList.value = [{title: "主题切换", icon: shallowRef(Gvd_theme), name: ""},]
   return
 }
 
