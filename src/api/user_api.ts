@@ -34,5 +34,5 @@ export interface userItem {
 }
 
 export function userListApi(params: Params):Promise<ListResponse<userItem>> {
-    return useAxios.get("/api/users")
+    return useAxios.get("/api/users", {params})
 }

@@ -32,7 +32,7 @@ mock("/api/users", {
     "code": 0,
     "data": {
         "count": 10,
-        "list|2-10": [
+        "list|8-20": [
             {
                 "addr": "@city(true)",
                 "avatar": Random.image("100X100", "Adobe", "fff", "png", "Avatar"),
