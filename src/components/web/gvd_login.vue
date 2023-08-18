@@ -41,7 +41,6 @@ import {IconClose} from "@arco-design/web-vue/es/icon";
 import {loginApi} from "@/api/user_api";
 import type {LoginRequest} from "@/api/user_api";
 import {Message} from "@arco-design/web-vue";
-import {parseToken} from "@/utils/jwt";
 import {useStore} from "@/stores";
 
 

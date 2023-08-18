@@ -1,4 +1,6 @@
 import {createRouter, createWebHistory} from 'vue-router'
+import {useStore} from "@/stores";
+import {Message} from "@arco-design/web-vue";
 
 const router = createRouter({
     history: createWebHistory(import.meta.env.BASE_URL),
@@ -19,6 +21,7 @@ const router = createRouter({
             component: () => import("@/views/admin/admin.vue"),
             meta: {
                 title: "首页",
+                is_login: true,
             },
             children: [
                 {
@@ -68,6 +71,7 @@ const router = createRouter({
                     name: 'auths',
                     meta: {
                         title: "权限管理",
+                        is_admin: true,
                     },
                     children: [
                         {
@@ -93,6 +97,7 @@ const router = createRouter({
                     name: 'settings',
                     meta: {
                         title: "系统管理",
+                        is_admin: true,
                     },
                     children: [
                         {
@@ -127,3 +132,19 @@ const router = createRouter({
 })
 
 export default router
+
+
+router.beforeEach((to, from, next) => {
+    const store = useStore()
+    if (to.meta.is_login && !store.isLogin) {
+        Message.warning("需要登录")
+        router.push({name: from.name})
+        return
+    }
+    if (to.meta.is_admin && !store.isAdmin){
+        Message.warning("权限不足")
+        router.push({name: from.name})
+        return
+    }
+    next()
+})
