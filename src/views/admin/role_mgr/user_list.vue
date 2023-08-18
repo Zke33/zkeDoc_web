@@ -7,7 +7,13 @@
 </template>
 
 <script setup lang="ts">
+import {userListApi} from "@/api/user_api";
 
+async function getList(){
+  let res = await userListApi()
+  console.log(res)
+}
+getList()
 </script>
 
 <style scoped>

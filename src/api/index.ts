@@ -1,5 +1,6 @@
 import axios from "axios";
 import {Message} from "@arco-design/web-vue";
+import {useStore} from "@/stores";
 
 export const useAxios = axios.create({
     // baseURL: "",
@@ -29,7 +30,8 @@ export interface ListResponse<T>{
 
 
 useAxios.interceptors.request.use((config) => {
-    config.headers["token"] = "1234"
+    const store = useStore()
+    config.headers["token"] = store.userInfo.token
     return config
 })
 

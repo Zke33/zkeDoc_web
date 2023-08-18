@@ -9,6 +9,7 @@ export interface userInfoType {
     roleID: number// 角色id
     userID: number // 用户id
     userName: string // 用户名
+    token: string
 }
 
 const userInfo: userInfoType = {
@@ -18,6 +19,7 @@ const userInfo: userInfoType = {
     roleID: 2,
     userID: 0,
     userName: "",
+    token: ""
 }
 
 export const useStore = defineStore('useStore', {
@@ -34,6 +36,7 @@ export const useStore = defineStore('useStore', {
 
         setToken(token: string) {
             this.userInfo = parseToken(token)
+            this.userInfo.token = token
             // 持久化
             localStorage.setItem("userInfo", JSON.stringify(this.userInfo))
         },
@@ -50,7 +53,6 @@ export const useStore = defineStore('useStore', {
                 return;
             }
             this.userInfo = payload
-            console.log(this.userInfo)
         },
         clearToken(){
             localStorage.removeItem("userInfo")
