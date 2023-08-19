@@ -4,8 +4,10 @@
       <div class="action_create" v-if="props.isAdd">
         <a-button type="primary">添加</a-button>
       </div>
-      <div class="action_group">
-        <a-select :options="actionOptions" placeholder="操作"></a-select>
+      <div class="action_group" v-if="props.isActionGroup">
+        <a-select :options="actionOptions" placeholder="操作" allow-clear v-model="actionValue"
+                  style="width: 120px"></a-select>
+        <a-button type="primary" status="danger" v-if="actionValue" @click="actionClick">执行</a-button>
       </div>
       <div class="action_search">
         <a-input-search placeholder="搜索" v-model="params.key" @change="search" search-button/>
@@ -41,7 +43,8 @@
                 <slot name="action" :record="record">
                   <div class="gvd_cell_actions">
                     <a-button type="primary" v-if="props.isEdit" @click="clickEdit(record)">编辑</a-button>
-                    <a-button v-if="props.isDelete" type="primary" status="danger" @click="clickDelete(record)">删除</a-button>
+                    <a-button v-if="props.isDelete" type="primary" status="danger" @click="clickDelete(record)">删除
+                    </a-button>
                   </div>
                 </slot>
 
@@ -55,7 +58,8 @@
       </a-table>
     </div>
     <div class="gvd_table_page" v-if="data.count !== 0">
-      <a-pagination :total="data.count" v-model:current="params.page" @change="pageChange" :page-size="params.limit" show-total show-jumper/>
+      <a-pagination :total="data.count" v-model:current="params.page" @change="pageChange" :page-size="params.limit"
+                    show-total show-jumper/>
     </div>
   </div>
 </template>
@@ -92,6 +96,10 @@ const props = defineProps({
     type: Boolean,
     default: true,
   },
+  isActionGroup: {
+    type: Boolean,
+    default: true,
+  },
   actionGroups: {
     type: Array,
   },
@@ -99,7 +107,7 @@ const props = defineProps({
     type: Boolean,
     default: true,
   },
-  isDefaultDelete:{
+  isDefaultDelete: {
     type: Boolean,
     default: false
   }
@@ -117,7 +125,7 @@ const emits = defineEmits(["edit", "delete", "batchDelete"])
 function search() {
   // 搜索，那个page默认是1
   params.page = 1
- getList()
+  getList()
 }
 
 function clickEdit(record) {
@@ -125,10 +133,10 @@ function clickEdit(record) {
 }
 
 async function clickDelete(record: RecordType) {
-  if (props.isDefaultDelete){
+  if (props.isDefaultDelete) {
     // 走默认删除接口
     let res = await deleteApi(props.url, [record.id])
-    if (res.code){
+    if (res.code) {
       Message.error(res.msg)
       return
     }
@@ -143,6 +151,28 @@ async function clickDelete(record: RecordType) {
 const actionOptions = ref([
   {label: "批量删除", value: 1}
 ])
+
+const actionValue = ref(null)
+
+async function actionClick() {
+  if (actionValue.value === 1) {
+    // 调用自己的批量删除接口
+    if (selectedKeys.value.length > 0) {
+      let res = await deleteApi(props.url, selectedKeys.value)
+      if (res.code) {
+        Message.error(res.msg)
+        return
+      }
+      Message.success(res.msg)
+      getList()
+
+      actionValue.value = null
+
+      return;
+    }
+    Message.warning("请选择数据")
+  }
+}
 
 const filterOptions = ref([
   {label: "管理员", value: 1}
@@ -160,14 +190,13 @@ function pageChange() {
 }
 
 
-
 const data = reactive<{ list: userItem[], count: number }>({
   list: [],
   count: 0,
 })
 
 
-const selectedKeys = ref([1]);
+const selectedKeys = ref([]);
 
 const rowSelection = reactive({
   type: 'checkbox',
