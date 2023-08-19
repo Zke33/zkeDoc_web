@@ -24,6 +24,16 @@
         </a-form-item>
       </a-form>
     </a-modal>
+    <a-modal title="更新用户信息" v-model:visible="editVisible"  @cancel="editCancel" :on-before-ok="updateUser">
+      <a-form ref="editFormRef" :model="editForm">
+        <a-form-item label="昵称" field="nickName">
+          <a-input v-model="editForm.nickName" placeholder="昵称"/>
+        </a-form-item>
+        <a-form-item label="角色" field="roleID" :rules="[{required:true,message:'请选择角色'}]" :validate-trigger="['blur']">
+          <a-select v-model="editForm.roleID" placeholder="选择角色" :options="roleIDList" allow-clear></a-select>
+        </a-form-item>
+      </a-form>
+    </a-modal>
     <Gvd_table
         url="/api/users"
         :columns="columns"
@@ -31,6 +41,7 @@
         :filter-groups="filters"
         @filters="filterChange"
         @create="visible=true"
+        @edit="showEdit"
         ref="gvdTable"
     >
       <template #avatar="{ record }">
@@ -45,12 +56,12 @@
 import Gvd_table from "@/components/admin/gvd_table.vue";
 import {h, reactive, ref} from "vue";
 import {roleIDListApi} from "@/api/role_api";
-import type {userCreateRequest} from "@/api/user_api";
+import type {userCreateRequest, userItem, userUpdateRequest} from "@/api/user_api";
 import {Message} from "@arco-design/web-vue";
 import {userCreateApi} from "@/api/user_api";
 import {mock} from "mockjs";
 import {dateTimeFormat} from "@/utils/datetime";
-
+import {userUpdateApi} from "@/api/user_api";
 
 const columns = [
   {title: 'id', dataIndex: 'id'},
@@ -145,5 +156,41 @@ function cancel() {
   formRef.value.clearValidate(Object.keys(form))
 }
 
+const editVisible = ref(false)
+const editFormRef = ref()
+const editForm = reactive<userUpdateRequest>({
+  id: 0,
+  nickName: "",
+  password: "",
+  roleID: null,
+})
+
+function showEdit(record: userItem) {
+  editForm.id = record.id
+  editForm.roleID = record.roleID
+  editForm.nickName = record.nickName
+  editVisible.value = true
+}
+
+
+async function updateUser() {
+  let _res = await editFormRef.value.validate()
+  if (_res) {
+    return false
+  }
+  let res = await userUpdateApi(editForm)
+  if (res.code) {
+    Message.error(res.msg)
+    return false
+  }
+  editCancel()
+  Message.success(res.msg)
+  await gvdTable.value.getList({})
+}
+
+function editCancel() {
+  editFormRef.value.resetFields(Object.keys(editForm))
+  editFormRef.value.clearValidate(Object.keys(editForm))
+}
 
 </script>
