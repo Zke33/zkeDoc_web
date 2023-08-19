@@ -15,8 +15,8 @@
       <div class="action_search">
         <a-input-search placeholder="搜索" v-model="params.key" @change="search" search-button/>
       </div>
-      <div class="action_filters" v-if="props.filterGroups?.length">
-        <a-select v-for="item in props.filterGroups" @change="filterChange(item, $event)" :options="item.value"
+      <div class="action_filters" v-if="filterGroups?.length">
+        <a-select allow-clear v-for="item in filterGroups" @change="filterChange(item, $event)" :options="item.values"
                   :placeholder="item.title"></a-select>
       </div>
       <div class="action_flush">
@@ -183,7 +183,7 @@ const actionOptions = ref([
 ])
 
 function getActionOptions() {
-  if (!props.actionGroups){
+  if (!props.actionGroups) {
     return
   }
   for (const item of props.actionGroups) {
@@ -193,6 +193,7 @@ function getActionOptions() {
     })
   }
 }
+
 getActionOptions()
 
 const actionValue = ref(null)
@@ -220,6 +221,35 @@ async function actionClick() {
   emits("actionGroup", actionValue.value, selectedKeys.value)
 
 }
+
+const filterGroups = ref([])
+
+async function getFilterOptions() {
+  if (!props.filterGroups) {
+    return
+  }
+  for (const item of props.filterGroups) {
+
+    // 如果urls有东西，那就自己去请求
+    const filterItem = {
+      title: item.title,
+      column: item.column,
+      values: item.values,
+    }
+    if (item.urls){
+      let res = await item.urls()
+      if (res.code){
+        Message.error(res.msg)
+        continue
+      }
+      filterItem.values = res.data
+    }
+    filterGroups.value.push(filterItem)
+  }
+}
+
+getFilterOptions()
+
 
 function filterChange(item: filterItem, val: number) {
   emits("filters", item.column, val)

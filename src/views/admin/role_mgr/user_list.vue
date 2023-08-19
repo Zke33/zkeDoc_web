@@ -15,8 +15,8 @@
 
 <script setup lang="ts">
 import Gvd_table from "@/components/admin/gvd_table.vue";
-import type {Ref} from "vue";
 import {ref} from "vue";
+import {roleIDListApi} from "@/api/role_api";
 
 const columns = [
   {title: 'id', dataIndex: 'id'},
@@ -36,10 +36,7 @@ const filters = [
   {
     title: "角色过滤",
     column: "roleID",
-    value: [
-      {label: "超级管理员", value: 1},
-      {label: "测试", value: 5},
-    ]
+    urls: roleIDListApi,
   },
 ]
 

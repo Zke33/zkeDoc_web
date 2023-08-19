@@ -28,6 +28,11 @@ export interface ListResponse<T>{
     msg: string
 }
 
+export interface OptionsResponse {
+    label: string
+    value: number
+}
+
 
 useAxios.interceptors.request.use((config) => {
     const store = useStore()
