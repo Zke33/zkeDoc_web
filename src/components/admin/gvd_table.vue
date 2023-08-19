@@ -2,7 +2,7 @@
   <div class="gvd_table">
     <div class="gvd_table_head">
       <div class="action_create" v-if="props.isAdd">
-        <a-button type="primary" @click="emits('create')">添加</a-button>
+        <a-button type="primary" @click="emits('create')">{{ props.addButtonLabel }}</a-button>
       </div>
       <div class="action_group" v-if="props.isActionGroup">
         <a-select :options="actionOptions" placeholder="操作" allow-clear v-model="actionValue"
@@ -13,10 +13,10 @@
         <a-button v-else type="primary" status="danger" v-if="actionValue" @click="actionClick">执行</a-button>
       </div>
       <div class="action_search">
-        <a-input-search placeholder="搜索" v-model="params.key" @change="search" search-button/>
+        <a-input-search :placeholder="props.searchPlaceholder" v-model="params.key" @change="search" search-button/>
       </div>
       <div class="action_filters" v-if="filterGroups?.length">
-        <a-select allow-clear v-for="item in filterGroups" @change="filterChange(item, $event)" :options="item.values"
+        <a-select  allow-clear v-for="item in filterGroups" @change="filterChange(item, $event)" :options="item.values"
                   :placeholder="item.title"></a-select>
       </div>
       <div class="action_flush">
@@ -48,10 +48,13 @@
               <template v-else-if="item.slotName === 'action'" #cell="{ record }">
                 <slot name="action" :record="record">
                   <div class="gvd_cell_actions">
+                    <slot name="action_1" :record="record"></slot>
                     <a-button type="primary" v-if="props.isEdit" @click="clickEdit(record)">编辑</a-button>
+                    <slot name="action_2" :record="record"></slot>
                     <a-popconfirm content="是否确认执行此操作?" @ok="clickDelete(record)">
                       <a-button v-if="props.isDelete" type="primary" status="danger">删除</a-button>
                     </a-popconfirm>
+                    <slot name="action_3" :record="record"></slot>
                   </div>
                 </slot>
 
@@ -134,19 +137,26 @@ const props = defineProps({
   isDefaultDelete: {
     type: Boolean,
     default: false
+  },
+  searchPlaceholder: {
+    type: String,
+    default: "搜索",
+  },
+  addButtonLabel: {
+    type: String,
+    default: "添加"
   }
 })
 
 
-
 // 子组件给通知父组件
 const emits = defineEmits<{
-  (e: "edit", record: RecordType):void
-  (e: "delete", record: RecordType):void
-  (e: "batchDelete"):void
-  (e: "actionGroup", value: number, keys: number[]):void
-  (e: "filters", column: string, value: number):void
-  (e: "create"):void
+  (e: "edit", record: RecordType): void
+  (e: "delete", record: RecordType): void
+  (e: "batchDelete"): void
+  (e: "actionGroup", value: number, keys: number[]): void
+  (e: "filters", column: string, value: number): void
+  (e: "create"): void
 }>()
 
 
@@ -370,6 +380,8 @@ defineExpose({
     display: flex;
     border-bottom: 1px solid var(--bg);
     position: relative;
+    flex-wrap: wrap;
+
 
     > div {
       margin-right: 10px;

@@ -24,13 +24,20 @@
         </a-form-item>
       </a-form>
     </a-modal>
-    <a-modal title="更新用户信息" v-model:visible="editVisible"  @cancel="editCancel" :on-before-ok="updateUser">
+    <a-modal title="更新用户信息" v-model:visible="editVisible" @cancel="editCancel" :on-before-ok="updateUser">
       <a-form ref="editFormRef" :model="editForm">
         <a-form-item label="昵称" field="nickName">
           <a-input v-model="editForm.nickName" placeholder="昵称"/>
         </a-form-item>
-        <a-form-item label="角色" field="roleID" :rules="[{required:true,message:'请选择角色'}]" :validate-trigger="['blur']">
+        <a-form-item label="角色" field="roleID">
           <a-select v-model="editForm.roleID" placeholder="选择角色" :options="roleIDList" allow-clear></a-select>
+        </a-form-item>
+      </a-form>
+    </a-modal>
+    <a-modal title="重置密码" v-model:visible="resetPasswordVisible" :on-before-ok="updateUser">
+      <a-form :model="editForm">
+        <a-form-item label="新密码" field="password">
+          <a-input v-model="editForm.password" placeholder="新密码"/>
         </a-form-item>
       </a-form>
     </a-modal>
@@ -42,10 +49,15 @@
         @filters="filterChange"
         @create="visible=true"
         @edit="showEdit"
+        search-placeholder="搜索用户名、昵称"
+        add-button-label="创建用户"
         ref="gvdTable"
     >
       <template #avatar="{ record }">
         <a-image :src="record.avatar" width="40" height="40" style="border-radius: 50%"></a-image>
+      </template>
+      <template #action_1>
+        <a-button @click="resetPasswordVisible = true">重置密码</a-button>
       </template>
     </Gvd_table>
   </div>
@@ -85,7 +97,7 @@ const filters = [
   {
     title: "角色过滤",
     column: "roleID",
-  },
+  }
 ]
 
 const roleIDList = ref([])
@@ -174,10 +186,7 @@ function showEdit(record: userItem) {
 
 
 async function updateUser() {
-  let _res = await editFormRef.value.validate()
-  if (_res) {
-    return false
-  }
+  editForm.roleID = editForm.roleID === "" ? null : editForm.roleID
   let res = await userUpdateApi(editForm)
   if (res.code) {
     Message.error(res.msg)
@@ -190,7 +199,10 @@ async function updateUser() {
 
 function editCancel() {
   editFormRef.value.resetFields(Object.keys(editForm))
-  editFormRef.value.clearValidate(Object.keys(editForm))
 }
+
+
+const resetPasswordVisible = ref(false)
+
 
 </script>
