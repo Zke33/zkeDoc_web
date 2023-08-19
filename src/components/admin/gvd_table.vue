@@ -7,7 +7,10 @@
       <div class="action_group" v-if="props.isActionGroup">
         <a-select :options="actionOptions" placeholder="操作" allow-clear v-model="actionValue"
                   style="width: 120px"></a-select>
-        <a-button type="primary" status="danger" v-if="actionValue" @click="actionClick">执行</a-button>
+        <a-popconfirm content="是否确认执行此操作?" v-if="!noConfirm" @ok="actionClick">
+        <a-button type="primary" status="danger" v-if="actionValue">执行</a-button>
+        </a-popconfirm>
+        <a-button v-else type="primary" status="danger" v-if="actionValue" @click="actionClick">执行</a-button>
       </div>
       <div class="action_search">
         <a-input-search placeholder="搜索" v-model="params.key" @change="search" search-button/>
@@ -43,8 +46,9 @@
                 <slot name="action" :record="record">
                   <div class="gvd_cell_actions">
                     <a-button type="primary" v-if="props.isEdit" @click="clickEdit(record)">编辑</a-button>
-                    <a-button v-if="props.isDelete" type="primary" status="danger" @click="clickDelete(record)">删除
-                    </a-button>
+                    <a-popconfirm content="是否确认执行此操作?" @ok="clickDelete(record)">
+                    <a-button v-if="props.isDelete" type="primary" status="danger">删除</a-button>
+                    </a-popconfirm>
                   </div>
                 </slot>
 
@@ -67,11 +71,12 @@
 <script setup lang="ts">
 import {IconRefresh} from "@arco-design/web-vue/es/icon";
 import {listApi, deleteApi} from "@/api/base_api";
-import {reactive, ref, watch} from "vue";
+import {reactive, ref, watch, computed} from "vue";
 import type {userItem} from "@/api/user_api";
 import type {Params} from "@/api";
 import {Message} from "@arco-design/web-vue";
 import * as dayjs from 'dayjs'
+
 
 const props = defineProps({
   url: {
@@ -120,6 +125,17 @@ interface RecordType {
 
 const emits = defineEmits(["edit", "delete", "batchDelete", "actionGroup"])
 
+
+const noConfirm = computed(()=>{
+  const item = props.actionGroups.find((item)=>item.value===actionValue.value)
+  if (item === undefined){
+    return false
+  }
+  if (!item.noConfirm){
+    return false
+  }
+  return true
+})
 
 // 模糊搜索
 function search() {

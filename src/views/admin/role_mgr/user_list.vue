@@ -26,6 +26,7 @@ const actionGroups = [
   {
     label: "同步数据",
     value: 2,
+    noConfirm: true,
   }
 ]
 
