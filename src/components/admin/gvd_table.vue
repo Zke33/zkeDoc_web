@@ -26,14 +26,31 @@
           :data="data.list"
           :row-selection="props.isCheck ? rowSelection : null"
           v-model:selectedKeys="selectedKeys" :pagination="false">
-        <template #action="{ record }">
-          <a-button type="primary">更新</a-button>
-        </template>
-        <template #avatar="{ record }">
-          <a-image :src="record.avatar" width="40" height="40" style="border-radius: 50%"></a-image>
-        </template>
-        <template #createdAt="{ record }">
-          <span>{{ dateTimeFormat(record.createdAt) }}</span>
+        <template #columns>
+          <template v-for="item in props.columns">
+            <a-table-column
+                :title="item.title"
+                :data-index="item.dataIndex"
+                v-if="item.slotName === undefined || item.slotName === ''"
+            ></a-table-column>
+            <a-table-column :data-index="item.dataIndex" :title="item.title" v-else>
+              <template v-if="item.slotName === 'createdAt'" #cell="{ record }">
+                <span>{{ dateTimeFormat(record.createdAt) }}</span>
+              </template>
+              <template v-else-if="item.slotName === 'action'" #cell="{ record }">
+                <slot name="action" :record="record">
+                  <div class="gvd_cell_actions">
+                    <a-button type="primary" v-if="props.isEdit">编辑</a-button>
+                    <a-button v-if="props.isDelete" type="primary" status="danger">删除</a-button>
+                  </div>
+                </slot>
+
+              </template>
+              <template v-else #cell="{ record }">
+                <slot :name="item.slotName" :record="record"></slot>
+              </template>
+            </a-table-column>
+          </template>
         </template>
       </a-table>
     </div>
@@ -173,6 +190,16 @@ getList()
   .gvd_table_source {
     min-height: 100px;
     padding: 10px 20px 20px 20px;
+
+    .gvd_cell_actions {
+      button {
+        margin-right: 10px;
+
+        &:last-child {
+          margin-right: 0;
+        }
+      }
+    }
   }
 
   .gvd_table_page {

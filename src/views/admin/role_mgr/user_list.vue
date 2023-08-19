@@ -1,5 +1,9 @@
 <template>
-  <Gvd_table url="/api/users" :columns="columns" :is-check="false"></Gvd_table>
+  <Gvd_table url="/api/users" :is-edit="false" :is-delete="false" :columns="columns" :is-check="false">
+    <template #avatar="{ record }">
+      <a-image :src="record.avatar" width="40" height="40" style="border-radius: 50%"></a-image>
+    </template>
+  </Gvd_table>
 </template>
 
 <script setup lang="ts">
