@@ -11,9 +11,10 @@
         </a-form-item>
         <a-form-item label="密码" field="password" :rules="[{required:true,message:'请输入密码'}]"
                      :validate-trigger="['blur']">
-          <a-input v-model="form.password" type="password" placeholder="密码"/>
+          <a-input v-model="form.password" type="password" placeholder="密码" @dblclick="genPassword"/>
         </a-form-item>
-        <a-form-item label="确认密码" field="rePassword" :rules="[{required:true,message:'请输入确认密码'}, {validator: rePasswordValidate}]"
+        <a-form-item label="确认密码" field="rePassword"
+                     :rules="[{required:true,message:'请输入确认密码'}, {validator: rePasswordValidate}]"
                      :validate-trigger="['blur']">
           <a-input v-model="form.rePassword" type="password" placeholder="请输入确认密码"/>
         </a-form-item>
@@ -42,11 +43,14 @@
 
 <script setup lang="ts">
 import Gvd_table from "@/components/admin/gvd_table.vue";
-import {reactive, ref} from "vue";
+import {h, reactive, ref} from "vue";
 import {roleIDListApi} from "@/api/role_api";
 import type {userCreateRequest} from "@/api/user_api";
 import {Message} from "@arco-design/web-vue";
 import {userCreateApi} from "@/api/user_api";
+import {mock} from "mockjs";
+import {dateTimeFormat} from "@/utils/datetime";
+
 
 const columns = [
   {title: 'id', dataIndex: 'id'},
@@ -58,7 +62,11 @@ const columns = [
   {title: 'ip', dataIndex: 'ip'},
   {title: '地址', dataIndex: 'addr'},
   {title: '注册时间', dataIndex: 'createdAt', slotName: "createdAt"},
-  {title: '上次登录时间', dataIndex: 'lastLogin'},
+  {
+    title: '上次登录时间', dataIndex: 'lastLogin', render({record}) {
+      return h("span", null, {default: () => dateTimeFormat(record.lastLogin)})
+    }
+  },
   {title: '操作', slotName: 'action'},
 ]
 
@@ -102,8 +110,14 @@ const form = reactive<userCreateRequest>({
   rePassword: ""
 })
 
+function genPassword() {
+  form.password = mock(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@!%*?&])[A-Za-z\d@!%*?&]{8,16}$/)
+  form.rePassword = form.password
+}
+
+
 function rePasswordValidate(value: string, callback: (error?: string) => void) {
-  if (form.password !== value){
+  if (form.password !== value) {
     callback("两次密码不一致")
   }
 }

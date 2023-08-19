@@ -20,7 +20,9 @@
                   :placeholder="item.title"></a-select>
       </div>
       <div class="action_flush">
-        <a-button @click="flush"><icon-refresh/></a-button>
+        <a-button @click="flush">
+          <icon-refresh/>
+        </a-button>
       </div>
     </div>
     <div class="gvd_table_source">
@@ -32,11 +34,13 @@
           v-model:selectedKeys="selectedKeys" :pagination="false">
         <template #columns>
           <template v-for="item in props.columns">
-            <a-table-column
-                :title="item.title"
-                :data-index="item.dataIndex"
-                v-if="item.slotName === undefined || item.slotName === ''"
-            ></a-table-column>
+            <a-table-column :title="item.title" v-if="item.render">
+              <template #cell="data">
+                <component :is="item.render(data)"></component>
+              </template>
+            </a-table-column>
+            <a-table-column :title="item.title" :data-index="item.dataIndex"
+                            v-else-if="!item.slotName"></a-table-column>
             <a-table-column :data-index="item.dataIndex" :title="item.title" v-else>
               <template v-if="item.slotName === 'createdAt'" #cell="{ record }">
                 <span>{{ dateTimeFormat(record.createdAt) }}</span>
@@ -74,7 +78,7 @@ import {reactive, ref, watch, computed} from "vue";
 import type {userItem} from "@/api/user_api";
 import type {Params} from "@/api";
 import {Message} from "@arco-design/web-vue";
-import * as dayjs from 'dayjs'
+import {dateTimeFormat} from "@/utils/datetime";
 
 interface filterItem {
   title: string
@@ -83,6 +87,10 @@ interface filterItem {
     label: string
     value: number
   }[]
+}
+
+interface RecordType {
+  readonly id: number
 }
 
 
@@ -129,37 +137,30 @@ const props = defineProps({
   }
 })
 
-interface RecordType {
-  readonly id: number
-}
 
 
-const emits = defineEmits(["edit", "delete", "batchDelete", "actionGroup", "filters", "create"])
+// 子组件给通知父组件
+const emits = defineEmits<{
+  (e: "edit", record: RecordType):void
+  (e: "delete", record: RecordType):void
+  (e: "batchDelete"):void
+  (e: "actionGroup", value: number, keys: number[]):void
+  (e: "filters", column: string, value: number):void
+  (e: "create"):void
+}>()
 
 
-const noConfirm = computed(() => {
+/*
+点击编辑或删除按钮
+ */
 
-  const item = props.actionGroups?.find((item) => item.value === actionValue.value)
-  if (item === undefined) {
-    return false
-  }
-  if (!item.noConfirm) {
-    return false
-  }
-  return true
-})
-
-// 模糊搜索
-function search() {
-  // 搜索，那个page默认是1
-  params.page = 1
-  getList()
-}
-
+// 点击编辑
 function clickEdit(record: RecordType) {
   emits("edit", record)
 }
 
+
+// 点击删除
 async function clickDelete(record: RecordType) {
   if (props.isDefaultDelete) {
     // 走默认删除接口
@@ -176,9 +177,15 @@ async function clickDelete(record: RecordType) {
 }
 
 
+/*
+动作相关操作
+ */
+
+
 const actionOptions = ref([
   {label: "批量删除", value: 1}
 ])
+const actionValue = ref(null)
 
 function getActionOptions() {
   if (!props.actionGroups) {
@@ -192,10 +199,10 @@ function getActionOptions() {
   }
 }
 
+// 获取事件点击
 getActionOptions()
 
-const actionValue = ref(null)
-
+// 动作的点击
 async function actionClick() {
   if (actionValue.value as number === 1) {
     // 调用自己的批量删除接口
@@ -220,6 +227,22 @@ async function actionClick() {
 
 }
 
+// 点击动作，是否需要二次确认
+const noConfirm = computed(() => {
+  const item = props.actionGroups?.find((item) => item.value === actionValue.value)
+  if (item === undefined) {
+    return false
+  }
+  if (!item.noConfirm) {
+    return false
+  }
+  return true
+})
+
+/*
+过滤查询相关操作
+ */
+
 const filterGroups = ref([])
 
 async function getFilterOptions() {
@@ -234,9 +257,9 @@ async function getFilterOptions() {
       column: item.column,
       values: item.values,
     }
-    if (item.urls){
+    if (item.urls) {
       let res = await item.urls()
-      if (res.code){
+      if (res.code) {
         Message.error(res.msg)
         continue
       }
@@ -246,38 +269,50 @@ async function getFilterOptions() {
   }
 }
 
+// 获取过滤的列表数据
 getFilterOptions()
 
-
+// 过滤变化的事件
 function filterChange(item: filterItem, val: number) {
   emits("filters", item.column, val)
 }
 
+
+// 往filter里面的values加数据
+function getAddFilterOptions(index: number, values: any[]) {
+  filterGroups.value[index].values = values
+}
+
+
+/*
+分页查询相关操作
+ */
+// 数据列表，总数
+const data = reactive<{ list: userItem[], count: number }>({
+  list: [],
+  count: 0,
+})
+
+// 分页查询参数
 const params = reactive<Params>({
   key: "",
   limit: 5,
   page: 1,
 })
 
+// 分页
 function pageChange() {
   getList()
 }
 
+// 模糊搜索
+function search() {
+  // 搜索，那个page默认是1
+  params.page = 1
+  getList()
+}
 
-const data = reactive<{ list: userItem[], count: number }>({
-  list: [],
-  count: 0,
-})
-
-
-const selectedKeys = ref([]);
-
-const rowSelection = reactive({
-  type: 'checkbox',
-  showCheckedAll: true,
-  onlyCurrent: false,
-});
-
+// 获取列表数据
 async function getList(param: object) {
 
   Object.assign(params, param)
@@ -291,10 +326,7 @@ async function getList(param: object) {
   data.count = res.data.count
 }
 
-function dateTimeFormat(date: string): string {
-  return dayjs(date).format('YYYY-MM-DD HH:mm:ss')
-}
-
+getList()
 
 // 刷新
 function flush() {
@@ -303,19 +335,28 @@ function flush() {
 }
 
 
-// 往filter里面的values加数据
-function getAddFilterOptions(index: number, values: any[]) {
-  filterGroups.value[index].values = values
-}
+/*
+行选择相关
+ */
 
 
+// 选中的行id列表
+const selectedKeys = ref([]);
 
+// 多选行的一些配置
+const rowSelection = reactive({
+  type: 'checkbox',
+  showCheckedAll: true,
+  onlyCurrent: false,
+});
+
+// 抛出子组件方法
 defineExpose({
   getList,
   getAddFilterOptions
 })
 
-getList()
+
 </script>
 
 
