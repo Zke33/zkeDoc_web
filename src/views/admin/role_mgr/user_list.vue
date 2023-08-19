@@ -32,9 +32,12 @@
         <template #avatar="{ record }">
           <a-image :src="record.avatar" width="40" height="40" style="border-radius: 50%"></a-image>
         </template>
+        <template #createdAt="{ record }">
+          <span>{{ dateTimeFormat(record.createdAt) }}</span>
+        </template>
       </a-table>
     </div>
-    <div class="gvd_table_page">
+    <div class="gvd_table_page" v-if="data.count !== 0">
       <a-pagination :total="data.count" v-model:current="params.page" :page-size="params.limit" show-total show-jumper />
     </div>
   </div>
@@ -46,6 +49,9 @@ import {reactive, ref, watch} from "vue";
 import {IconRefresh} from "@arco-design/web-vue/es/icon";
 import type {userItem} from "@/api/user_api";
 import type {Params} from "@/api";
+import {Message} from "@arco-design/web-vue";
+import * as dayjs from 'dayjs'
+
 
 const actionOptions = ref([
   {label: "批量删除", value: 1}
@@ -90,16 +96,26 @@ const columns = [
   {title: '邮箱', dataIndex: 'email'},
   {title: 'ip', dataIndex: 'ip'},
   {title: '地址', dataIndex: 'addr'},
-  {title: '注册时间', dataIndex: 'createdAt'},
+  {title: '注册时间', dataIndex: 'createdAt', slotName: "createdAt"},
   {title: '上次登录时间', dataIndex: 'lastLogin'},
   {title: '操作', slotName: 'action'},
 ]
 
 async function getList() {
   let res = await userListApi(params)
+  if (res.code !== 0){
+    // 失败的
+    Message.error(res.msg)
+    return
+  }
   data.list = res.data.list
   data.count = res.data.count
 }
+
+function dateTimeFormat(date: string) :string {
+  return dayjs(date).format('YYYY-MM-DD HH:mm:ss')
+}
+
 
 getList()
 </script>
