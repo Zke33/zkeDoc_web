@@ -1,6 +1,7 @@
 import {mock, Random} from "mockjs";
 import type {MockjsRequestOptions} from "mockjs";
 import type {LoginRequest} from "@/api/user_api";
+import {raf} from "@arco-design/web-vue/es/_utils/raf";
 
 mock(/api\/login/, function (options: MockjsRequestOptions) {
     const body: LoginRequest = JSON.parse(options.body)
@@ -28,7 +29,7 @@ mock("/api/logout", {
 )
 
 
-mock("/api/users", {
+mock(/api\/users/, {
     "code": 0,
     "data": {
         "count": 10,
@@ -37,13 +38,16 @@ mock("/api/users", {
                 "addr": "@city(true)",
                 "avatar": Random.image("100X100", "Adobe", "fff", "png", "Avatar"),
                 "createdAt": "@dateTime",
-                "email": "@email",
+                "email": "@email(qq.com)",
                 "id|+1": 1,
                 "ip": "@ip",
-                "lastLogin": "@date",
+                "lastLogin": "@dateTime",
                 "nickName": "@cname",
+                "userName": "@name",
                 "roleID": 1,
-                "updatedAt": "@date"
+                roleModel: {
+                    title: Random.pick(["超级管理员", "管理员", "测试", "运维", "开发"])
+                }
             }
         ]
     },
