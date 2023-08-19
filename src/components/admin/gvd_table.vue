@@ -8,7 +8,7 @@
         <a-select :options="actionOptions" placeholder="操作"></a-select>
       </div>
       <div class="action_search">
-        <a-input placeholder="搜索"></a-input>
+        <a-input-search placeholder="搜索" v-model="params.key" @change="search" search-button/>
       </div>
       <div class="action_filters">
         <a-select :options="filterOptions" placeholder="角色过滤"></a-select>
@@ -40,8 +40,8 @@
               <template v-else-if="item.slotName === 'action'" #cell="{ record }">
                 <slot name="action" :record="record">
                   <div class="gvd_cell_actions">
-                    <a-button type="primary" v-if="props.isEdit">编辑</a-button>
-                    <a-button v-if="props.isDelete" type="primary" status="danger">删除</a-button>
+                    <a-button type="primary" v-if="props.isEdit" @click="clickEdit(record)">编辑</a-button>
+                    <a-button v-if="props.isDelete" type="primary" status="danger" @click="clickDelete(record)">删除</a-button>
                   </div>
                 </slot>
 
@@ -55,16 +55,14 @@
       </a-table>
     </div>
     <div class="gvd_table_page" v-if="data.count !== 0">
-      <a-pagination :total="data.count" v-model:current="params.page" :page-size="params.limit" show-total show-jumper/>
+      <a-pagination :total="data.count" v-model:current="params.page" @change="pageChange" :page-size="params.limit" show-total show-jumper/>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
 import {IconRefresh} from "@arco-design/web-vue/es/icon";
-
-import {userListApi} from "@/api/user_api";
-import {listApi} from "@/api/base_api";
+import {listApi, deleteApi} from "@/api/base_api";
 import {reactive, ref, watch} from "vue";
 import type {userItem} from "@/api/user_api";
 import type {Params} from "@/api";
@@ -100,8 +98,47 @@ const props = defineProps({
   isCheck: {
     type: Boolean,
     default: true,
+  },
+  isDefaultDelete:{
+    type: Boolean,
+    default: false
   }
 })
+
+interface RecordType {
+  readonly id: number
+}
+
+
+const emits = defineEmits(["edit", "delete", "batchDelete"])
+
+
+// 模糊搜索
+function search() {
+  // 搜索，那个page默认是1
+  params.page = 1
+ getList()
+}
+
+function clickEdit(record) {
+  emits("edit", record)
+}
+
+async function clickDelete(record: RecordType) {
+  if (props.isDefaultDelete){
+    // 走默认删除接口
+    let res = await deleteApi(props.url, [record.id])
+    if (res.code){
+      Message.error(res.msg)
+      return
+    }
+    Message.success("删除成功")
+    getList()
+    return
+  }
+  emits("delete", record)
+}
+
 
 const actionOptions = ref([
   {label: "批量删除", value: 1}
@@ -114,14 +151,14 @@ const filterOptions = ref([
 
 const params = reactive<Params>({
   key: "",
-  limit: 1,
+  limit: 5,
   page: 1,
 })
 
-
-watch(() => params.page, () => {
+function pageChange() {
   getList()
-})
+}
+
 
 
 const data = reactive<{ list: userItem[], count: number }>({

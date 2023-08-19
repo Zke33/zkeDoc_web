@@ -22,6 +22,7 @@ export function logoutApi(): Promise<Response<string>> {
 
 export interface userItem {
     readonly id: number
+    readonly userName: string
     createdAt: string
     updatedAt: string
     avatar: string
