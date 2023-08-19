@@ -20,9 +20,7 @@
                   :placeholder="item.title"></a-select>
       </div>
       <div class="action_flush">
-        <a-button>
-          <icon-refresh/>
-        </a-button>
+        <a-button @click="flush"><icon-refresh/></a-button>
       </div>
     </div>
     <div class="gvd_table_source">
@@ -295,6 +293,13 @@ async function getList(param: object) {
 
 function dateTimeFormat(date: string): string {
   return dayjs(date).format('YYYY-MM-DD HH:mm:ss')
+}
+
+
+// 刷新
+function flush() {
+  getList()
+  Message.success("刷新成功")
 }
 
 
