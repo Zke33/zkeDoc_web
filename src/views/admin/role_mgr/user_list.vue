@@ -1,5 +1,12 @@
 <template>
-  <Gvd_table url="/api/users" :columns="columns" is-default-delete :action-groups="actionGroups" @actionGroup="actionGroupFun">
+  <Gvd_table
+      url="/api/users"
+      :columns="columns"
+      is-default-delete
+      :filter-groups="filters"
+      @filters="filterChange"
+      ref="gvdTable"
+  >
     <template #avatar="{ record }">
       <a-image :src="record.avatar" width="40" height="40" style="border-radius: 50%"></a-image>
     </template>
@@ -8,11 +15,14 @@
 
 <script setup lang="ts">
 import Gvd_table from "@/components/admin/gvd_table.vue";
+import type {Ref} from "vue";
+import {ref} from "vue";
 
 const columns = [
   {title: 'id', dataIndex: 'id'},
   {title: '昵称', dataIndex: 'nickName'},
   {title: '用户名', dataIndex: 'userName'},
+  {title: '角色', dataIndex: 'roleModel.title'},
   {title: '头像', dataIndex: 'avatar', slotName: "avatar"},
   {title: '邮箱', dataIndex: 'email'},
   {title: 'ip', dataIndex: 'ip'},
@@ -22,17 +32,23 @@ const columns = [
   {title: '操作', slotName: 'action'},
 ]
 
-const actionGroups = [
+const filters = [
   {
-    label: "同步数据",
-    value: 2,
-    noConfirm: true,
-  }
+    title: "角色过滤",
+    column: "roleID",
+    value: [
+      {label: "超级管理员", value: 1},
+      {label: "测试", value: 5},
+    ]
+  },
 ]
 
+const gvdTable = ref();
 
-function actionGroupFun(actionType: number, keys: number[]){
-  console.log(actionType, keys)
+function filterChange(column, val) {
+  let obj = {}
+  obj[column] = val
+  gvdTable.value.getList(obj)
 }
 
 

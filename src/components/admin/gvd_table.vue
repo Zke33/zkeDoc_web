@@ -8,15 +8,16 @@
         <a-select :options="actionOptions" placeholder="操作" allow-clear v-model="actionValue"
                   style="width: 120px"></a-select>
         <a-popconfirm content="是否确认执行此操作?" v-if="!noConfirm" @ok="actionClick">
-        <a-button type="primary" status="danger" v-if="actionValue">执行</a-button>
+          <a-button type="primary" status="danger" v-if="actionValue">执行</a-button>
         </a-popconfirm>
         <a-button v-else type="primary" status="danger" v-if="actionValue" @click="actionClick">执行</a-button>
       </div>
       <div class="action_search">
         <a-input-search placeholder="搜索" v-model="params.key" @change="search" search-button/>
       </div>
-      <div class="action_filters">
-        <a-select :options="filterOptions" placeholder="角色过滤"></a-select>
+      <div class="action_filters" v-if="props.filterGroups?.length">
+        <a-select v-for="item in props.filterGroups" @change="filterChange(item, $event)" :options="item.value"
+                  :placeholder="item.title"></a-select>
       </div>
       <div class="action_flush">
         <a-button>
@@ -47,7 +48,7 @@
                   <div class="gvd_cell_actions">
                     <a-button type="primary" v-if="props.isEdit" @click="clickEdit(record)">编辑</a-button>
                     <a-popconfirm content="是否确认执行此操作?" @ok="clickDelete(record)">
-                    <a-button v-if="props.isDelete" type="primary" status="danger">删除</a-button>
+                      <a-button v-if="props.isDelete" type="primary" status="danger">删除</a-button>
                     </a-popconfirm>
                   </div>
                 </slot>
@@ -76,6 +77,15 @@ import type {userItem} from "@/api/user_api";
 import type {Params} from "@/api";
 import {Message} from "@arco-design/web-vue";
 import * as dayjs from 'dayjs'
+
+interface filterItem {
+  title: string
+  column: string
+  value: {
+    label: string
+    value: number
+  }[]
+}
 
 
 const props = defineProps({
@@ -108,6 +118,9 @@ const props = defineProps({
   actionGroups: {
     type: Array,
   },
+  filterGroups: {
+    type: Array,
+  },
   isCheck: {
     type: Boolean,
     default: true,
@@ -123,15 +136,16 @@ interface RecordType {
 }
 
 
-const emits = defineEmits(["edit", "delete", "batchDelete", "actionGroup"])
+const emits = defineEmits(["edit", "delete", "batchDelete", "actionGroup", "filters"])
 
 
-const noConfirm = computed(()=>{
-  const item = props.actionGroups.find((item)=>item.value===actionValue.value)
-  if (item === undefined){
+const noConfirm = computed(() => {
+
+  const item = props.actionGroups?.find((item) => item.value === actionValue.value)
+  if (item === undefined) {
     return false
   }
-  if (!item.noConfirm){
+  if (!item.noConfirm) {
     return false
   }
   return true
@@ -144,7 +158,7 @@ function search() {
   getList()
 }
 
-function clickEdit(record) {
+function clickEdit(record: RecordType) {
   emits("edit", record)
 }
 
@@ -169,6 +183,9 @@ const actionOptions = ref([
 ])
 
 function getActionOptions() {
+  if (!props.actionGroups){
+    return
+  }
   for (const item of props.actionGroups) {
     actionOptions.value.push({
       label: item.label,
@@ -181,7 +198,7 @@ getActionOptions()
 const actionValue = ref(null)
 
 async function actionClick() {
-  if (actionValue.value === 1) {
+  if (actionValue.value as number === 1) {
     // 调用自己的批量删除接口
     if (selectedKeys.value.length > 0) {
       let res = await deleteApi(props.url, selectedKeys.value)
@@ -204,10 +221,9 @@ async function actionClick() {
 
 }
 
-const filterOptions = ref([
-  {label: "管理员", value: 1}
-])
-
+function filterChange(item: filterItem, val: number) {
+  emits("filters", item.column, val)
+}
 
 const params = reactive<Params>({
   key: "",
@@ -234,7 +250,9 @@ const rowSelection = reactive({
   onlyCurrent: false,
 });
 
-async function getList() {
+async function getList(param: object) {
+
+  Object.assign(params, param)
   let res = await listApi(props.url, params)
   if (res.code !== 0) {
     // 失败的
@@ -249,6 +267,10 @@ function dateTimeFormat(date: string): string {
   return dayjs(date).format('YYYY-MM-DD HH:mm:ss')
 }
 
+
+defineExpose({
+  getList
+})
 
 getList()
 </script>
@@ -269,6 +291,17 @@ getList()
       margin-right: 10px;
     }
 
+    .action_filters {
+      display: flex;
+
+      > * {
+        margin-left: 10px;
+
+        &:first-child {
+          margin-left: 0;
+        }
+      }
+    }
 
     .action_flush {
       cursor: pointer;
