@@ -2,7 +2,7 @@
   <div class="gvd_table">
     <div class="gvd_table_head">
       <div class="action_create" v-if="props.isAdd">
-        <a-button type="primary">添加</a-button>
+        <a-button type="primary" @click="emits('create')">添加</a-button>
       </div>
       <div class="action_group" v-if="props.isActionGroup">
         <a-select :options="actionOptions" placeholder="操作" allow-clear v-model="actionValue"
@@ -134,7 +134,7 @@ interface RecordType {
 }
 
 
-const emits = defineEmits(["edit", "delete", "batchDelete", "actionGroup", "filters"])
+const emits = defineEmits(["edit", "delete", "batchDelete", "actionGroup", "filters", "create"])
 
 
 const noConfirm = computed(() => {
@@ -303,8 +303,16 @@ function flush() {
 }
 
 
+// 往filter里面的values加数据
+function getAddFilterOptions(index: number, values: any[]) {
+  filterGroups.value[index].values = values
+}
+
+
+
 defineExpose({
-  getList
+  getList,
+  getAddFilterOptions
 })
 
 getList()

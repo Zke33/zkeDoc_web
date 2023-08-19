@@ -37,3 +37,16 @@ export interface userItem {
 export function userListApi(params: Params):Promise<ListResponse<userItem>> {
     return useAxios.get("/api/users", {params})
 }
+
+
+export interface  userCreateRequest {
+    nickName?: string
+    password: string
+    roleID: number
+    userName: string
+    rePassword: string
+}
+
+export function userCreateApi(data: userCreateRequest):Promise<Response<string>>{
+    return  useAxios.post("/api/users", data)
+}

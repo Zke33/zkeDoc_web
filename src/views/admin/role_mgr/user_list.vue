@@ -1,22 +1,52 @@
 <template>
-  <Gvd_table
-      url="/api/users"
-      :columns="columns"
-      is-default-delete
-      :filter-groups="filters"
-      @filters="filterChange"
-      ref="gvdTable"
-  >
-    <template #avatar="{ record }">
-      <a-image :src="record.avatar" width="40" height="40" style="border-radius: 50%"></a-image>
-    </template>
-  </Gvd_table>
+  <div>
+    <a-modal v-model:visible="visible" title="创建用户" @cancel="cancel" :on-before-ok="createUser">
+      <a-form ref="formRef" :model="form">
+        <a-form-item label="用户名" field="userName" :rules="[{required:true,message:'请输入用户名'}]"
+                     :validate-trigger="['blur']">
+          <a-input v-model="form.userName" placeholder="用户名"/>
+        </a-form-item>
+        <a-form-item label="昵称" field="nickName">
+          <a-input v-model="form.nickName" placeholder="昵称"/>
+        </a-form-item>
+        <a-form-item label="密码" field="password" :rules="[{required:true,message:'请输入密码'}]"
+                     :validate-trigger="['blur']">
+          <a-input v-model="form.password" type="password" placeholder="密码"/>
+        </a-form-item>
+        <a-form-item label="确认密码" field="rePassword" :rules="[{required:true,message:'请输入确认密码'}, {validator: rePasswordValidate}]"
+                     :validate-trigger="['blur']">
+          <a-input v-model="form.rePassword" type="password" placeholder="请输入确认密码"/>
+        </a-form-item>
+        <a-form-item label="角色" field="roleID" :rules="[{required:true,message:'请选择角色'}]"
+                     :validate-trigger="['blur']">
+          <a-select v-model="form.roleID" placeholder="选择角色" :options="roleIDList" allow-clear></a-select>
+        </a-form-item>
+      </a-form>
+    </a-modal>
+    <Gvd_table
+        url="/api/users"
+        :columns="columns"
+        is-default-delete
+        :filter-groups="filters"
+        @filters="filterChange"
+        @create="visible=true"
+        ref="gvdTable"
+    >
+      <template #avatar="{ record }">
+        <a-image :src="record.avatar" width="40" height="40" style="border-radius: 50%"></a-image>
+      </template>
+    </Gvd_table>
+  </div>
+
 </template>
 
 <script setup lang="ts">
 import Gvd_table from "@/components/admin/gvd_table.vue";
-import {ref} from "vue";
+import {reactive, ref} from "vue";
 import {roleIDListApi} from "@/api/role_api";
+import type {userCreateRequest} from "@/api/user_api";
+import {Message} from "@arco-design/web-vue";
+import {userCreateApi} from "@/api/user_api";
 
 const columns = [
   {title: 'id', dataIndex: 'id'},
@@ -36,9 +66,22 @@ const filters = [
   {
     title: "角色过滤",
     column: "roleID",
-    urls: roleIDListApi,
   },
 ]
+
+const roleIDList = ref([])
+
+async function getRoleList() {
+  let res = await roleIDListApi()
+  if (res.code) {
+    Message.error(res.msg)
+    return
+  }
+  roleIDList.value = res.data
+  gvdTable.value.getAddFilterOptions(0, roleIDList.value)
+}
+
+getRoleList()
 
 const gvdTable = ref();
 
@@ -46,6 +89,46 @@ function filterChange(column, val) {
   let obj = {}
   obj[column] = val
   gvdTable.value.getList(obj)
+}
+
+
+const visible = ref(false)
+
+const form = reactive<userCreateRequest>({
+  nickName: "",
+  password: "",
+  roleID: null,
+  userName: "",
+  rePassword: ""
+})
+
+function rePasswordValidate(value: string, callback: (error?: string) => void) {
+  if (form.password !== value){
+    callback("两次密码不一致")
+  }
+}
+
+
+const formRef = ref()
+
+async function createUser() {
+  let _res = await formRef.value.validate()
+  if (_res) {
+    return false
+  }
+  let res = await userCreateApi(form)
+  if (res.code) {
+    Message.error(res.msg)
+    return false
+  }
+  cancel()
+  Message.success(res.msg)
+  await gvdTable.value.getList({})
+}
+
+function cancel() {
+  formRef.value.resetFields(Object.keys(form))
+  formRef.value.clearValidate(Object.keys(form))
 }
 
 
