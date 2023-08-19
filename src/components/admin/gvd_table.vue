@@ -118,7 +118,7 @@ interface RecordType {
 }
 
 
-const emits = defineEmits(["edit", "delete", "batchDelete"])
+const emits = defineEmits(["edit", "delete", "batchDelete", "actionGroup"])
 
 
 // 模糊搜索
@@ -152,6 +152,16 @@ const actionOptions = ref([
   {label: "批量删除", value: 1}
 ])
 
+function getActionOptions() {
+  for (const item of props.actionGroups) {
+    actionOptions.value.push({
+      label: item.label,
+      value: item.value,
+    })
+  }
+}
+getActionOptions()
+
 const actionValue = ref(null)
 
 async function actionClick() {
@@ -171,7 +181,11 @@ async function actionClick() {
       return;
     }
     Message.warning("请选择数据")
+    return
   }
+  // 操作类型， 选择的元素id
+  emits("actionGroup", actionValue.value, selectedKeys.value)
+
 }
 
 const filterOptions = ref([

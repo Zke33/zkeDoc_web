@@ -1,5 +1,5 @@
 <template>
-  <Gvd_table url="/api/users" :columns="columns" is-default-delete>
+  <Gvd_table url="/api/users" :columns="columns" is-default-delete :action-groups="actionGroups" @actionGroup="actionGroupFun">
     <template #avatar="{ record }">
       <a-image :src="record.avatar" width="40" height="40" style="border-radius: 50%"></a-image>
     </template>
@@ -8,7 +8,6 @@
 
 <script setup lang="ts">
 import Gvd_table from "@/components/admin/gvd_table.vue";
-import type {userItem} from "@/api/user_api";
 
 const columns = [
   {title: 'id', dataIndex: 'id'},
@@ -23,8 +22,17 @@ const columns = [
   {title: '操作', slotName: 'action'},
 ]
 
-function deleteFun(record: userItem){
-  console.log("删除", record)
+const actionGroups = [
+  {
+    label: "同步数据",
+    value: 2,
+  }
+]
+
+
+function actionGroupFun(actionType: number, keys: number[]){
+  console.log(actionType, keys)
 }
+
 
 </script>
