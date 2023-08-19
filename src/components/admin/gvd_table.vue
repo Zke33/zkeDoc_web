@@ -19,6 +19,9 @@
         <a-select allow-clear v-for="item in filterGroups" @change="filterChange(item, $event)" :options="item.values"
                   :placeholder="item.title"></a-select>
       </div>
+      <div class="action_slot">
+        <slot name="action_head"></slot>
+      </div>
       <div class="action_flush">
         <a-button @click="flush">
           <icon-refresh/>
@@ -28,12 +31,11 @@
     <div class="gvd_table_source">
       <a-table
           row-key="id"
-          :columns="props.columns"
           :data="data.list"
           :row-selection="props.isCheck ? rowSelection : null"
           v-model:selectedKeys="selectedKeys" :pagination="false">
         <template #columns>
-          <template v-for="item in props.columns">
+          <template v-for="item in columns">
             <a-table-column :title="item.title" v-if="item.render">
               <template #cell="data">
                 <component :is="item.render(data)"></component>
@@ -365,10 +367,22 @@ const rowSelection = reactive({
   onlyCurrent: false,
 });
 
+
+const columns = ref([])
+
+// column数据切换
+function getColumnList(columnList: any[]) {
+  columns.value = columnList
+}
+
+getColumnList(props.columns)
+
+
 // 抛出子组件方法
 defineExpose({
   getList,
-  getAddFilterOptions
+  getAddFilterOptions,
+  getColumnList
 })
 
 
@@ -390,6 +404,8 @@ defineExpose({
 
     > div {
       margin-right: 10px;
+      display: flex;
+      align-items: center;
     }
 
     .action_filters {
