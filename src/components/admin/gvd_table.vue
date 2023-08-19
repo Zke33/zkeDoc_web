@@ -16,7 +16,7 @@
         <a-input-search :placeholder="props.searchPlaceholder" v-model="params.key" @change="search" search-button/>
       </div>
       <div class="action_filters" v-if="filterGroups?.length">
-        <a-select  allow-clear v-for="item in filterGroups" @change="filterChange(item, $event)" :options="item.values"
+        <a-select allow-clear v-for="item in filterGroups" @change="filterChange(item, $event)" :options="item.values"
                   :placeholder="item.title"></a-select>
       </div>
       <div class="action_flush">
@@ -82,6 +82,7 @@ import type {userItem} from "@/api/user_api";
 import type {Params} from "@/api";
 import {Message} from "@arco-design/web-vue";
 import {dateTimeFormat} from "@/utils/datetime";
+import {NULL} from "sass";
 
 interface filterItem {
   title: string
@@ -145,6 +146,10 @@ const props = defineProps({
   addButtonLabel: {
     type: String,
     default: "添加"
+  },
+  limit: {
+    type: Number,
+    default: 10,
   }
 })
 
@@ -306,7 +311,7 @@ const data = reactive<{ list: userItem[], count: number }>({
 // 分页查询参数
 const params = reactive<Params>({
   key: "",
-  limit: 5,
+  limit: props.limit,
   page: 1,
 })
 

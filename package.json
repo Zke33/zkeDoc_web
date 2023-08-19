@@ -10,7 +10,9 @@
     "type-check": "vue-tsc --noEmit -p tsconfig.app.json --composite false"
   },
   "dependencies": {
+    "@types/bytes": "^3.1.1",
     "axios": "^1.4.0",
+    "bytes": "^3.1.2",
     "dayjs": "^1.11.9",
     "font-awesome": "^4.7.0",
     "mockjs": "^1.1.0",
