@@ -333,6 +333,10 @@ function imagePreview() {
       }
     }
   }
+
+  .vjs-value-string {
+    white-space: break-spaces;
+  }
 }
 
 .logs_view {
