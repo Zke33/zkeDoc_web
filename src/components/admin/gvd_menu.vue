@@ -33,7 +33,6 @@ import type {Component} from "vue";
 import router from "@/router";
 import {ref, watch} from "vue";
 import {useRoute} from "vue-router";
-import {get} from "axios";
 import {useStore} from "@/stores";
 
 const store = useStore()

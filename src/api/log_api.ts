@@ -3,6 +3,11 @@ export enum logLevel {
     warning = 2,
     error = 3,
 }
+export enum logStringLevel {
+    info = "info",
+    warning = "warning",
+    error = "error",
+}
 
 export enum logTypeEnum{
     loginType=1,
@@ -16,7 +21,7 @@ export interface logType {
     createdAt: string
     readonly id: number
     ip: string
-    level: logLevel  // 映射   1 info  2 warning  3  error
+    level: logStringLevel  // 映射   1 info  2 warning  3  error
     readStatus: boolean
     serviceName: string
     status: boolean  // 登录的状态
@@ -26,5 +31,3 @@ export interface logType {
     userID: number
     userName: string
 }
-
-const l:logType = {}
