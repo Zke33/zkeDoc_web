@@ -34,6 +34,7 @@
     </div>
     <div class="gvd_table_source">
       <a-table
+          v-if="isShow"
           row-key="id"
           :data="data.list"
           :row-selection="props.isCheck as boolean ? rowSelection : undefined"
@@ -355,6 +356,7 @@ async function getList(param?: object) {
     Message.error(res.msg)
     return
   }
+  isShow.value = true
   data.list = res.data.list
   data.count = res.data.count
 }
@@ -385,10 +387,12 @@ const rowSelection: TableRowSelection = reactive({
 });
 
 
+const isShow = ref(true)
 const columns: Ref<any[]> = ref([])
 
 // column数据切换
 function getColumnList(columnList: any[]) {
+  isShow.value = false
   columns.value = columnList
 }
 

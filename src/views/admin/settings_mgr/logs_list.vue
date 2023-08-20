@@ -162,10 +162,7 @@ const gvdTable = ref();
 
 function logTypeChange(val: string | number | boolean, ev: Event): any {
   gvdTable.value.getList({type: val})
-  setTimeout(() => {
-    gvdTable.value.getColumnList(columnsDict[val as logTypeEnum])
-  }, 10)
-
+  gvdTable.value.getColumnList(columnsDict[val as logTypeEnum])
 }
 
 const visible = ref(false)
