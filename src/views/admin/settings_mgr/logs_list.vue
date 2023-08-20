@@ -11,7 +11,7 @@
         :is-edit="false"
         :is-add="false"
         :limit="15"
-        :params="params"
+        :params="{type: logTypeEnum.actionType}"
         ref="gvdTable"
     >
       <template #action_head>
@@ -125,7 +125,6 @@ const columnsDict = {
 }
 
 interface logParams {
-  // type: logTypeEnum
   userName: string
   addr: string
   ip: string
@@ -133,7 +132,6 @@ interface logParams {
 }
 
 const params: logParams = reactive({
-  type: logTypeEnum.actionType,
   userName: "",
   addr: "",
   ip: "",
