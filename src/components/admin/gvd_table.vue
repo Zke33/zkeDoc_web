@@ -160,6 +160,10 @@ const props = defineProps({
   limit: {
     type: Number,
     default: 10,
+  },
+  params:{
+    type: Object,
+    default: {}
   }
 })
 
@@ -352,7 +356,7 @@ async function getList(param?: object) {
   data.count = res.data.count
 }
 
-getList()
+getList(props.params)
 
 // 刷新
 function flush() {
@@ -368,11 +372,6 @@ function flush() {
 
 // 选中的行id列表
 const selectedKeys: Ref<number[]> = ref([]);
-
-
-interface rowSelectionType {
-
-}
 
 
 // 多选行的一些配置

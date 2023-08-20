@@ -1,5 +1,8 @@
 <template>
-  <div>
+  <div class="logs_view">
+    <a-modal title="日志详情" v-model:visible="visible" body-class="logs_body" width="50%" :footer="false">
+      <div class="logs_html" v-html="logContent"></div>
+    </a-modal>
     <Gvd_table
         url="/api/logs"
         :columns="columnsDict[logTypeEnum.actionType]"
@@ -8,6 +11,7 @@
         :is-edit="false"
         :is-add="false"
         :limit="15"
+        :params="params"
         ref="gvdTable"
     >
       <template #action_head>
@@ -24,6 +28,15 @@
       <template #level="{record}:{record:logType}">
         <a-tag :color="logLevelDict[record.level]">{{ record.level }}</a-tag>
       </template>
+      <template #title="{record}:{record:logType}">
+        <div class="log_column_title" @click="logReadMethod(record)">
+             <span v-if="record.readStatus">
+          {{ record.title }}
+        </span>
+          <a href="javascript:void (0)" v-else>{{ record.title }}</a>
+        </div>
+
+      </template>
     </Gvd_table>
   </div>
 
@@ -35,6 +48,7 @@ import {h, reactive, ref} from "vue";
 import {useStore} from "@/stores";
 import {logStringLevel, logTypeEnum} from "@/api/log_api";
 import type {logType} from "@/api/log_api";
+import {logReadApi} from "@/api/log_api";
 
 const store = useStore()
 
@@ -62,7 +76,7 @@ const columnsDict = {
     {title: '地址', dataIndex: 'addr'},
     {title: '用户名', dataIndex: 'userName'},
     {title: '等级', dataIndex: 'level', slotName: "level"},
-    {title: '标题', dataIndex: 'title'},
+    {title: '标题', dataIndex: 'title', slotName: "title"},
     {title: '日志时间', dataIndex: 'createdAt', slotName: "createdAt"},
     {title: '操作', slotName: 'action'},
   ],
@@ -76,6 +90,9 @@ const columnsDict = {
   ]
 }
 
+const params = {
+  type: logTypeEnum.actionType,
+}
 
 const logTypeValue = ref(logTypeEnum.actionType)
 const gvdTable = ref();
@@ -88,5 +105,206 @@ function logTypeChange(val: string | number | boolean, ev: Event): any {
 
 }
 
+const visible = ref(false)
+const logContent = ref("")
+
+async function logReadMethod(record: logType) {
+  if (!record.readStatus) {
+    await logReadApi(record.id)
+    record.readStatus = true
+  }
+
+  visible.value = true
+  logContent.value = record.content
+}
+
 
 </script>
+
+
+<style lang="scss">
+
+.logs_body {
+  padding: 20px;
+  max-height: 60vh;
+  overflow-y: auto;
+  overflow-x: hidden;
+
+  .logs_html > * {
+    margin-bottom: 10px;
+  }
+
+  .log_request_header {
+    padding: 20px;
+    border-radius: 5px;
+    background-color: rgb(var(--green-2));
+    color: rgb(var(--green-6));
+    position: relative;
+
+    &::before {
+      display: block;
+      content: "请求头";
+      right: 5px;
+      top: 5px;
+      position: absolute;
+    }
+  }
+
+  .log_request {
+    padding: 20px;
+    border-radius: 5px;
+    background-color: rgb(var(--arcoblue-2));
+    color: rgb(var(--arcoblue-6));
+    position: relative;
+
+    .log_request_head {
+      .log_request_method {
+        font-weight: 600;
+      }
+
+      .log_request_path {
+        margin-left: 10px;
+      }
+    }
+
+    &::before {
+      display: block;
+      content: "请求";
+      right: 5px;
+      top: 5px;
+      position: absolute;
+    }
+  }
+
+  .log_response {
+    padding: 20px;
+    border-radius: 5px;
+    background-color: rgb(var(--orange-2));
+    color: rgb(var(--orange-6));
+    position: relative;
+
+    &::before {
+      display: block;
+      content: "响应";
+      right: 5px;
+      top: 5px;
+      position: absolute;
+    }
+  }
+
+  .log_item {
+    display: flex;
+    padding: 20px;
+    border-radius: 5px;
+    background-color: var(--color-fill-2);
+    color: var(--color-text-2);
+    position: relative;
+
+    .log_item_label {
+      font-weight: 600;
+
+      &:after {
+        content: ":";
+        display: inline-block;
+      }
+    }
+
+    .log_item_content {
+      margin-left: 5px;
+    }
+
+
+    &.info {
+      background-color: rgb(var(--arcoblue-1));
+      color: rgb(var(--arcoblue-5));
+
+      &::after {
+        display: block;
+        content: "info";
+        right: 5px;
+        top: 5px;
+        position: absolute;
+      }
+    }
+
+    &.warning {
+      background-color: rgb(var(--orange-1));
+      color: rgb(var(--orange-5));
+
+      &::after {
+        display: block;
+        content: "warning";
+        right: 5px;
+        top: 5px;
+        position: absolute;
+      }
+    }
+
+    &.error {
+      background-color: rgb(var(--red-1));
+      color: rgb(var(--red-5));
+
+      &::after {
+        display: block;
+        content: "error";
+        right: 5px;
+        top: 5px;
+        position: absolute;
+      }
+    }
+  }
+
+  .log_image {
+    img {
+      width: 100%;
+    }
+  }
+
+  .log_upload {
+    padding: 20px;
+    border-radius: 5px;
+    background-color: rgb(var(--red-2));
+    color: rgb(var(--red-6));
+    position: relative;
+
+    &::before {
+      display: block;
+      content: "文件上传";
+      right: 5px;
+      top: 5px;
+      position: absolute;
+    }
+
+    .log_upload_head {
+      .log_upload_file_key {
+        &:after {
+          content: ":";
+          display: inline-block;
+        }
+      }
+
+      .log_upload_file_name {
+
+      }
+
+      .log_upload__file_size {
+        margin-left: 10px;
+        color: var(--color-text-2);
+      }
+    }
+  }
+}
+
+.logs_view {
+
+  .log_column_title {
+    span {
+      cursor: pointer;
+    }
+
+    a {
+      color: rgb(var(--arcoblue-6));
+    }
+  }
+}
+</style>

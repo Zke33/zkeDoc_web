@@ -77,7 +77,6 @@ import {userCreateApi} from "@/api/user_api";
 import {mock} from "mockjs";
 import {dateTimeFormat} from "@/utils/datetime";
 import {userUpdateApi} from "@/api/user_api";
-import type {TableData} from "@arco-design/web-vue";
 import type {OptionsResponse} from "@/api";
 
 const columns = [

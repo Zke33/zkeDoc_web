@@ -1,16 +1,19 @@
+import {useAxios} from "@/api/index";
+
 export enum logLevel {
     info = 1,
     warning = 2,
     error = 3,
 }
+
 export enum logStringLevel {
     info = "info",
     warning = "warning",
     error = "error",
 }
 
-export enum logTypeEnum{
-    loginType=1,
+export enum logTypeEnum {
+    loginType = 1,
     actionType,
     runningType
 }
@@ -30,4 +33,9 @@ export interface logType {
     updatedAt: string
     userID: number
     userName: string
+}
+
+
+export function logReadApi(id: number) {
+    return useAxios.get("/api/logs/read", {params: {id}})
 }
