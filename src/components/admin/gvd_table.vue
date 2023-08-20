@@ -399,7 +399,8 @@ getColumnList(props.columns as any[])
 defineExpose({
   getList,
   getAddFilterOptions,
-  getColumnList
+  getColumnList,
+  params,
 })
 
 

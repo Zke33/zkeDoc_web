@@ -23,9 +23,13 @@
       </template>
       <template #other_search>
         <a-input placeholder="搜索用户" allow-clear v-model="params.userName" @change="searchChange"></a-input>
-        <a-input placeholder="搜索地址" allow-clear style="margin-left: 10px" v-model="params.addr"
+        <a-input placeholder="搜索地址" allow-clear v-model="params.addr"
                  @change="searchChange"></a-input>
-        <a-date-picker style="width: 360px; margin-left: 10px" v-model="params.date" @change="searchChange"/>
+        <a-select placeholder="等级过滤" allow-clear v-model="params.level" @change="searchChange"
+                  :options="levelOptions" v-if="gvdTable?.params.type === logTypeEnum.actionType"></a-select>
+        <a-select placeholder="状态过滤" allow-clear v-model="params.status" @change="searchChange"
+                  :options="statusOptions" v-if="gvdTable?.params.type === logTypeEnum.loginType"></a-select>
+        <a-date-picker style="width: 500px;" v-model="params.date" @change="searchChange"/>
       </template>
       <template #status="{record}">
         <a-tag v-if="record.status" color="blue">成功</a-tag>
@@ -76,7 +80,7 @@
 import Gvd_table from "@/components/admin/gvd_table.vue";
 import {h, reactive, ref, createApp} from "vue";
 import {useStore} from "@/stores";
-import {logStringLevel, logTypeEnum} from "@/api/log_api";
+import {logLevel, logStringLevel, logTypeEnum} from "@/api/log_api";
 import type {logType} from "@/api/log_api";
 import {logReadApi} from "@/api/log_api";
 import VueJsonPretty from 'vue-json-pretty';
@@ -91,6 +95,17 @@ const logLevelDict = {
   [logStringLevel.warning]: "orange",
   [logStringLevel.error]: "red",
 }
+
+
+const levelOptions = [
+  {label: logStringLevel.info, value: logLevel.info},
+  {label: logStringLevel.warning, value: logLevel.warning},
+  {label: logStringLevel.error, value: logLevel.error},
+]
+const statusOptions = [
+  {label: "成功", value: 1},
+  {label: "失败", value: 2},
+]
 
 const columnsDict = {
   [logTypeEnum.loginType]: [
@@ -125,10 +140,12 @@ const columnsDict = {
 }
 
 interface logParams {
-  userName: string
-  addr: string
-  ip: string
-  date: string,
+  userName?: string
+  addr?: string
+  ip?: string
+  date?: string,
+  level?: logLevel,
+  status?: number, // 0  1 成功  2 失败
 }
 
 const params: logParams = reactive({
@@ -136,6 +153,8 @@ const params: logParams = reactive({
   addr: "",
   ip: "",
   date: "",
+  level: undefined,
+  status: undefined
 })
 
 const logTypeValue = ref(logTypeEnum.actionType)
@@ -200,7 +219,7 @@ function imagePreview() {
   })
 }
 
-function searchKeyByLogs(record: logType, key: keyof logParams) {
+function searchKeyByLogs(record: logType, key: "userName" | "addr" | "ip" | "date") {
   if (key === "date") {
     params[key] = dateFormat(record.createdAt)
   } else {
@@ -407,7 +426,11 @@ function searchChange() {
   }
 
   .ation_other_search {
-    width: 500px;
+    width: 700px;
+
+    > * {
+      margin-right: 10px;
+    }
   }
 }
 
