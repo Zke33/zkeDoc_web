@@ -21,6 +21,11 @@
           <a-radio :value="logTypeEnum.runningType">运行日志</a-radio>
         </a-radio-group>
       </template>
+      <template #other_search>
+        <a-input placeholder="搜索用户" allow-clear v-model="params.userName" @change="searchChange"></a-input>
+        <a-input placeholder="搜索地址" allow-clear style="margin-left: 10px" v-model="params.addr"
+                 @change="searchChange"></a-input>
+      </template>
       <template #status="{record}">
         <a-tag v-if="record.status" color="blue">成功</a-tag>
         <a-tag v-else color="red">失败</a-tag>
@@ -41,7 +46,15 @@
         <a-dropdown trigger="contextMenu" alignPoint :style="{display:'block'}">
           <div style="cursor: pointer">{{ record.userName }}</div>
           <template #content>
-            <a-doption @click="searchUser(record)">只看该用户的</a-doption>
+            <a-doption @click="searchKeyByLogs(record, 'userName')">只看该用户的</a-doption>
+          </template>
+        </a-dropdown>
+      </template>
+      <template #addr="{record}:{record:logType}">
+        <a-dropdown trigger="contextMenu" alignPoint :style="{display:'block'}">
+          <div style="cursor: pointer">{{ record.addr }}</div>
+          <template #content>
+            <a-doption @click="searchKeyByLogs(record, 'addr')">只看该地址的</a-doption>
           </template>
         </a-dropdown>
       </template>
@@ -84,8 +97,8 @@ const columnsDict = {
   [logTypeEnum.actionType]: [
     {title: 'id', dataIndex: 'id'},
     {title: 'ip', dataIndex: 'ip'},
-    {title: '地址', dataIndex: 'addr'},
-    {title: '用户名', dataIndex: 'userName', slotName:"userName"},
+    {title: '地址', dataIndex: 'addr', slotName: "addr"},
+    {title: '用户名', dataIndex: 'userName', slotName: "userName"},
     {title: '等级', dataIndex: 'level', slotName: "level"},
     {title: '标题', dataIndex: 'title', slotName: "title"},
     {title: '日志时间', dataIndex: 'createdAt', slotName: "createdAt"},
@@ -101,9 +114,19 @@ const columnsDict = {
   ]
 }
 
-const params = {
-  type: logTypeEnum.actionType,
+interface logParams {
+  // type: logTypeEnum
+  userName: string
+  addr: string
+  ip: string
 }
+
+const params: logParams = reactive({
+  type: logTypeEnum.actionType,
+  userName: "",
+  addr: "",
+  ip: "",
+})
 
 const logTypeValue = ref(logTypeEnum.actionType)
 const gvdTable = ref();
@@ -167,10 +190,15 @@ function imagePreview() {
   })
 }
 
-
-function searchUser(record: logType){
-  gvdTable.value.getList({userName: record.userName})
+function searchKeyByLogs(record: logType, key: keyof logParams) {
+  params[key] = record[key]
+  gvdTable.value.getList(params)
 }
+
+function searchChange() {
+  gvdTable.value.getList(params)
+}
+
 
 </script>
 

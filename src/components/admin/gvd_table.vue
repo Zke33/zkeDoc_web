@@ -15,6 +15,9 @@
       <div class="action_search">
         <a-input-search :placeholder="props.searchPlaceholder" v-model="params.key" @change="search" search-button/>
       </div>
+      <div class="ation_other_search">
+        <slot name="other_search"></slot>
+      </div>
       <div class="action_filters" v-if="filterGroups?.length">
         <a-select allow-clear v-for="item in filterGroups" @change="filterChange(item, $event as number)"
                   :options="item.values"
