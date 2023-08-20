@@ -127,6 +127,11 @@ const router = createRouter({
                     ]
                 },
             ]
+        },
+        {
+            path: '/test_json',
+            name: 'test_json',
+            component: () => import("@/test/json-pretty.vue"),
         }
     ]
 })
@@ -141,7 +146,7 @@ router.beforeEach((to, from, next) => {
         router.push({name: from.name as string})
         return
     }
-    if (to.meta.is_admin && !store.isAdmin){
+    if (to.meta.is_admin && !store.isAdmin) {
         Message.warning("权限不足")
         router.push({name: from.name as string})
         return

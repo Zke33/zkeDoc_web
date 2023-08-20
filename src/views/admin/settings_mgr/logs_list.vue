@@ -44,11 +44,14 @@
 
 <script setup lang="ts">
 import Gvd_table from "@/components/admin/gvd_table.vue";
-import {h, reactive, ref} from "vue";
+import {h, reactive, ref, createApp} from "vue";
 import {useStore} from "@/stores";
 import {logStringLevel, logTypeEnum} from "@/api/log_api";
 import type {logType} from "@/api/log_api";
 import {logReadApi} from "@/api/log_api";
+import VueJsonPretty from 'vue-json-pretty';
+import 'vue-json-pretty/lib/styles.css';
+import {Image} from "@arco-design/web-vue";
 
 const store = useStore()
 
@@ -116,8 +119,45 @@ async function logReadMethod(record: logType) {
 
   visible.value = true
   logContent.value = record.content
+  setTimeout(() => {
+    jsonPreview()
+    imagePreview()
+  }, 100)
 }
 
+function jsonPreview() {
+  let jsonList = document.querySelectorAll(".log_json_body")
+  jsonList.forEach((value: Element) => {
+    const jsonString = (value as HTMLPreElement).innerText
+    if (jsonString === "") {
+      return
+    }
+    let jsonData = JSON.parse(jsonString)
+    // 生成虚拟dom
+    const vNode = h(VueJsonPretty, {data: jsonData})
+    // 创建虚拟节点
+    let app = createApp({render: () => vNode})
+    app.mount(value)
+  })
+}
+
+
+function imagePreview() {
+  let imageList = document.querySelectorAll(".log_image img")
+  imageList.forEach((value: Element) => {
+    const src = (value as HTMLImageElement).src
+    // 生成虚拟dom
+    const vNode = h(Image, {src: src})
+    // 创建虚拟节点
+    let app = createApp({render: () => vNode})
+    let div = document.createElement("div")
+    app.mount(div)
+    // 把之前的img替换为 新加的这个div
+    if (value.parentNode) {
+      value.parentNode.replaceChild(div, value)
+    }
+  })
+}
 
 </script>
 
