@@ -37,6 +37,14 @@
         </div>
 
       </template>
+      <template #userName="{record}:{record:logType}">
+        <a-dropdown trigger="contextMenu" alignPoint :style="{display:'block'}">
+          <div style="cursor: pointer">{{ record.userName }}</div>
+          <template #content>
+            <a-doption @click="searchUser(record)">只看该用户的</a-doption>
+          </template>
+        </a-dropdown>
+      </template>
     </Gvd_table>
   </div>
 
@@ -77,7 +85,7 @@ const columnsDict = {
     {title: 'id', dataIndex: 'id'},
     {title: 'ip', dataIndex: 'ip'},
     {title: '地址', dataIndex: 'addr'},
-    {title: '用户名', dataIndex: 'userName'},
+    {title: '用户名', dataIndex: 'userName', slotName:"userName"},
     {title: '等级', dataIndex: 'level', slotName: "level"},
     {title: '标题', dataIndex: 'title', slotName: "title"},
     {title: '日志时间', dataIndex: 'createdAt', slotName: "createdAt"},
@@ -157,6 +165,11 @@ function imagePreview() {
       value.parentNode.replaceChild(div, value)
     }
   })
+}
+
+
+function searchUser(record: logType){
+  gvdTable.value.getList({userName: record.userName})
 }
 
 </script>
