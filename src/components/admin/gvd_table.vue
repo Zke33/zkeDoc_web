@@ -16,7 +16,8 @@
         <a-input-search :placeholder="props.searchPlaceholder" v-model="params.key" @change="search" search-button/>
       </div>
       <div class="action_filters" v-if="filterGroups?.length">
-        <a-select allow-clear v-for="item in filterGroups" @change="filterChange(item, $event)" :options="item.values"
+        <a-select allow-clear v-for="item in filterGroups" @change="filterChange(item, $event as number)"
+                  :options="item.values"
                   :placeholder="item.title"></a-select>
       </div>
       <div class="action_slot">
@@ -32,7 +33,7 @@
       <a-table
           row-key="id"
           :data="data.list"
-          :row-selection="props.isCheck ? rowSelection : null"
+          :row-selection="props.isCheck as boolean ? rowSelection : undefined"
           v-model:selectedKeys="selectedKeys" :pagination="false">
         <template #columns>
           <template v-for="item in columns">
@@ -81,18 +82,24 @@ import {IconRefresh} from "@arco-design/web-vue/es/icon";
 import {listApi, deleteApi} from "@/api/base_api";
 import {reactive, ref, watch, computed} from "vue";
 import type {userItem} from "@/api/user_api";
-import type {Params} from "@/api";
+import type {OptionsResponse, Params} from "@/api";
 import {Message} from "@arco-design/web-vue";
 import {dateTimeFormat} from "@/utils/datetime";
-import {NULL} from "sass";
+import type {Response} from "@/api";
+import type {Ref} from "vue";
+import type {TableRowSelection} from "@arco-design/web-vue";
 
 interface filterItem {
+  urls?: () => Promise<Response<OptionsResponse[]>>
   title: string
   column: string
-  value: {
-    label: string
-    value: number
-  }[]
+  values: OptionsResponse[]
+}
+
+interface actionItem {
+  label: string
+  value: number
+  noConfirm?: boolean
 }
 
 interface RecordType {
@@ -181,7 +188,7 @@ function clickEdit(record: RecordType) {
 async function clickDelete(record: RecordType) {
   if (props.isDefaultDelete) {
     // 走默认删除接口
-    let res = await deleteApi(props.url, [record.id])
+    let res = await deleteApi(props.url as string, [record.id])
     if (res.code) {
       Message.error(res.msg)
       return
@@ -199,16 +206,16 @@ async function clickDelete(record: RecordType) {
  */
 
 
-const actionOptions = ref([
+const actionOptions: Ref<actionItem[]> = ref([
   {label: "批量删除", value: 1}
 ])
-const actionValue = ref(null)
+const actionValue: Ref<number | undefined> = ref(undefined)
 
 function getActionOptions() {
   if (!props.actionGroups) {
     return
   }
-  for (const item of props.actionGroups) {
+  for (const item of props.actionGroups as actionItem[]) {
     actionOptions.value.push({
       label: item.label,
       value: item.value,
@@ -224,7 +231,7 @@ async function actionClick() {
   if (actionValue.value as number === 1) {
     // 调用自己的批量删除接口
     if (selectedKeys.value.length > 0) {
-      let res = await deleteApi(props.url, selectedKeys.value)
+      let res = await deleteApi(props.url as string, selectedKeys.value)
       if (res.code) {
         Message.error(res.msg)
         return
@@ -232,7 +239,7 @@ async function actionClick() {
       Message.success(res.msg)
       getList()
 
-      actionValue.value = null
+      actionValue.value = undefined
 
       return;
     }
@@ -240,13 +247,13 @@ async function actionClick() {
     return
   }
   // 操作类型， 选择的元素id
-  emits("actionGroup", actionValue.value, selectedKeys.value)
+  emits("actionGroup", actionValue.value as number, selectedKeys.value)
 
 }
 
 // 点击动作，是否需要二次确认
 const noConfirm = computed(() => {
-  const item = props.actionGroups?.find((item) => item.value === actionValue.value)
+  const item = (props.actionGroups as actionItem[])?.find((item: actionItem) => item.value === actionValue.value)
   if (item === undefined) {
     return false
   }
@@ -260,16 +267,16 @@ const noConfirm = computed(() => {
 过滤查询相关操作
  */
 
-const filterGroups = ref([])
+const filterGroups: Ref<filterItem[]> = ref([])
 
 async function getFilterOptions() {
   if (!props.filterGroups) {
     return
   }
-  for (const item of props.filterGroups) {
+  for (const item of props.filterGroups as filterItem[]) {
 
     // 如果urls有东西，那就自己去请求
-    const filterItem = {
+    const filterItem: filterItem = {
       title: item.title,
       column: item.column,
       values: item.values,
@@ -330,10 +337,10 @@ function search() {
 }
 
 // 获取列表数据
-async function getList(param: object) {
+async function getList(param?: object) {
 
   Object.assign(params, param)
-  let res = await listApi(props.url, params)
+  let res = await listApi(props.url as string, params)
   if (res.code !== 0) {
     // 失败的
     Message.error(res.msg)
@@ -358,24 +365,30 @@ function flush() {
 
 
 // 选中的行id列表
-const selectedKeys = ref([]);
+const selectedKeys: Ref<number[]> = ref([]);
+
+
+interface rowSelectionType {
+
+}
+
 
 // 多选行的一些配置
-const rowSelection = reactive({
+const rowSelection: TableRowSelection = reactive({
   type: 'checkbox',
   showCheckedAll: true,
   onlyCurrent: false,
 });
 
 
-const columns = ref([])
+const columns: Ref<any[]> = ref([])
 
 // column数据切换
 function getColumnList(columnList: any[]) {
   columns.value = columnList
 }
 
-getColumnList(props.columns)
+getColumnList(props.columns as any[])
 
 
 // 抛出子组件方法

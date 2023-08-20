@@ -80,10 +80,10 @@ const columnsDict = {
 const logTypeValue = ref(logTypeEnum.actionType)
 const gvdTable = ref();
 
-function logTypeChange(val: logTypeEnum) {
+function logTypeChange(val: string | number | boolean, ev: Event): any {
   gvdTable.value.getList({type: val})
   setTimeout(() => {
-    gvdTable.value.getColumnList(columnsDict[val])
+    gvdTable.value.getColumnList(columnsDict[val as logTypeEnum])
   }, 10)
 
 }
