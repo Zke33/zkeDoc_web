@@ -88,6 +88,7 @@ import {dateTimeFormat} from "@/utils/datetime";
 import type {Response} from "@/api";
 import type {Ref} from "vue";
 import type {TableRowSelection} from "@arco-design/web-vue";
+import type {TableData} from "@arco-design/web-vue";
 
 interface filterItem {
   urls?: () => Promise<Response<OptionsResponse[]>>
@@ -100,10 +101,6 @@ interface actionItem {
   label: string
   value: number
   noConfirm?: boolean
-}
-
-interface RecordType {
-  readonly id: number
 }
 
 
@@ -165,8 +162,8 @@ const props = defineProps({
 
 // 子组件给通知父组件
 const emits = defineEmits<{
-  (e: "edit", record: RecordType): void
-  (e: "delete", record: RecordType): void
+  (e: "edit", record: TableData): void
+  (e: "delete", record: TableData): void
   (e: "batchDelete"): void
   (e: "actionGroup", value: number, keys: number[]): void
   (e: "filters", column: string, value: number): void
@@ -179,13 +176,14 @@ const emits = defineEmits<{
  */
 
 // 点击编辑
-function clickEdit(record: RecordType) {
+function clickEdit(record: TableData) {
+  record.props = record
   emits("edit", record)
 }
 
 
 // 点击删除
-async function clickDelete(record: RecordType) {
+async function clickDelete(record: TableData) {
   if (props.isDefaultDelete) {
     // 走默认删除接口
     let res = await deleteApi(props.url as string, [record.id])

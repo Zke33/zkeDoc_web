@@ -3,7 +3,6 @@ import type {ListResponse} from "@/api/index";
 import type {Params} from "@/api/index";
 import type {Response} from "@/api/index";
 
-
 export interface LoginRequest {
     userName: string
     password: string
@@ -42,7 +41,7 @@ export function userListApi(params: Params): Promise<ListResponse<userItem>> {
 export interface userCreateRequest {
     nickName?: string
     password: string
-    roleID: number
+    roleID?: number
     userName: string
     rePassword: string
 }

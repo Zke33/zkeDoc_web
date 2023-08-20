@@ -67,6 +67,7 @@
 <script setup lang="ts">
 import Gvd_table from "@/components/admin/gvd_table.vue";
 import {h, reactive, ref} from "vue";
+import type {Ref} from "vue";
 import {roleIDListApi} from "@/api/role_api";
 import type {userCreateRequest, userItem, userUpdateRequest} from "@/api/user_api";
 import {Message} from "@arco-design/web-vue";
@@ -74,6 +75,8 @@ import {userCreateApi} from "@/api/user_api";
 import {mock} from "mockjs";
 import {dateTimeFormat} from "@/utils/datetime";
 import {userUpdateApi} from "@/api/user_api";
+import type {TableData} from "@arco-design/web-vue";
+import type {OptionsResponse} from "@/api";
 
 const columns = [
   {title: 'id', dataIndex: 'id'},
@@ -86,7 +89,7 @@ const columns = [
   {title: '地址', dataIndex: 'addr'},
   {title: '注册时间', dataIndex: 'createdAt', slotName: "createdAt"},
   {
-    title: '上次登录时间', dataIndex: 'lastLogin', render({record}) {
+    title: '上次登录时间', dataIndex: 'lastLogin', render({record}: { record: userItem }) {
       return h("span", null, {default: () => dateTimeFormat(record.lastLogin)})
     }
   },
@@ -100,7 +103,7 @@ const filters = [
   }
 ]
 
-const roleIDList = ref([])
+const roleIDList: Ref<OptionsResponse[]> = ref([])
 
 async function getRoleList() {
   let res = await roleIDListApi()
@@ -116,8 +119,8 @@ getRoleList()
 
 const gvdTable = ref();
 
-function filterChange(column, val) {
-  let obj = {}
+function filterChange(column: string, val: number) {
+  let obj: any = {}
   obj[column] = val
   gvdTable.value.getList(obj)
 }
@@ -128,7 +131,7 @@ const visible = ref(false)
 const form = reactive<userCreateRequest>({
   nickName: "",
   password: "",
-  roleID: null,
+  roleID: undefined,
   userName: "",
   rePassword: ""
 })
@@ -174,10 +177,10 @@ const editForm = reactive<userUpdateRequest>({
   id: 0,
   nickName: "",
   password: "",
-  roleID: null,
+  roleID: undefined,
 })
 
-function showEdit(record: userItem) {
+function showEdit(record: TableData): any {
   editForm.id = record.id
   editForm.roleID = record.roleID
   editForm.nickName = record.nickName
@@ -186,7 +189,7 @@ function showEdit(record: userItem) {
 
 
 async function updateUser() {
-  editForm.roleID = editForm.roleID === "" ? null : editForm.roleID
+  editForm.roleID = !editForm.roleID ? undefined : editForm.roleID
   let res = await userUpdateApi(editForm)
   if (res.code) {
     Message.error(res.msg)

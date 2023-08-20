@@ -64,7 +64,7 @@ watch(() => store.userInfo.roleID, () => {
 }, {immediate: true})
 
 
-function clickMenu(item) {
+function clickMenu(item: menuType) {
   if (item.name === "") {
     return
   }

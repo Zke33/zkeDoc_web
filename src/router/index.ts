@@ -138,12 +138,12 @@ router.beforeEach((to, from, next) => {
     const store = useStore()
     if (to.meta.is_login && !store.isLogin) {
         Message.warning("需要登录")
-        router.push({name: from.name})
+        router.push({name: from.name as string})
         return
     }
     if (to.meta.is_admin && !store.isAdmin){
         Message.warning("权限不足")
-        router.push({name: from.name})
+        router.push({name: from.name as string})
         return
     }
     next()

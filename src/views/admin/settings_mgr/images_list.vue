@@ -45,9 +45,11 @@ import Gvd_table from "@/components/admin/gvd_table.vue";
 import {h, ref} from "vue";
 import bytes from "bytes";
 import {useStore} from "@/stores";
-import {Response} from "@/api";
+import type {Response} from "@/api";
 import {Message} from "@arco-design/web-vue";
 import {IconDownload} from "@arco-design/web-vue/es/icon";
+import type {imageType} from "@/api/image_api";
+import type {FileItem} from "@arco-design/web-vue";
 
 const store = useStore()
 const columns = [
@@ -56,7 +58,7 @@ const columns = [
   {title: '预览', dataIndex: 'webPath', slotName: "webPath"},
   {title: '文件路径', dataIndex: 'path'},
   {
-    title: '文件大小', dataIndex: 'size', render({record}) {
+    title: '文件大小', dataIndex: 'size', render({record}:{record: imageType}) {
       return h("span", {}, {default: () => bytes(record.size)})
     }
   },
@@ -70,7 +72,7 @@ const visible = ref(false)
 
 const fileList = ref([])
 
-function imageUploadSuccess(fileItem) {
+function imageUploadSuccess(fileItem: FileItem) {
   const response = fileItem.response as Response<string>
   if (response.code){
     Message.error(response.msg)
