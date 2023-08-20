@@ -32,52 +32,58 @@
         </a-button>
       </div>
     </div>
-    <div class="gvd_table_source">
-      <a-table
-          v-if="isShow"
-          row-key="id"
-          :data="data.list"
-          :row-selection="props.isCheck as boolean ? rowSelection : undefined"
-          v-model:selectedKeys="selectedKeys" :pagination="false">
-        <template #columns>
-          <template v-for="item in columns">
-            <a-table-column :title="item.title" v-if="item.render">
-              <template #cell="data">
-                <component :is="item.render(data)"></component>
-              </template>
-            </a-table-column>
-            <a-table-column :title="item.title" :data-index="item.dataIndex"
-                            v-else-if="!item.slotName"></a-table-column>
-            <a-table-column :data-index="item.dataIndex" :title="item.title" v-else>
-              <template v-if="item.slotName === 'createdAt'" #cell="{ record }">
-                <span>{{ dateTimeFormat(record.createdAt) }}</span>
-              </template>
-              <template v-else-if="item.slotName === 'action'" #cell="{ record }">
-                <slot name="action" :record="record">
-                  <div class="gvd_cell_actions">
-                    <slot name="action_1" :record="record"></slot>
-                    <a-button type="primary" v-if="props.isEdit" @click="clickEdit(record)">编辑</a-button>
-                    <slot name="action_2" :record="record"></slot>
-                    <a-popconfirm content="是否确认执行此操作?" @ok="clickDelete(record)">
-                      <a-button v-if="props.isDelete" type="primary" status="danger">删除</a-button>
-                    </a-popconfirm>
-                    <slot name="action_3" :record="record"></slot>
-                  </div>
-                </slot>
+    <a-spin style="width: 100%;" :loading="!isShow" tip="加载中">
+      <template v-if="isShow">
+        <div class="gvd_table_source">
+          <a-table
+              row-key="id"
+              :data="data.list"
+              :row-selection="props.isCheck as boolean ? rowSelection : undefined"
+              v-model:selectedKeys="selectedKeys" :pagination="false">
+            <template #columns>
+              <template v-for="item in columns">
+                <a-table-column :title="item.title" v-if="item.render">
+                  <template #cell="data">
+                    <component :is="item.render(data)"></component>
+                  </template>
+                </a-table-column>
+                <a-table-column :title="item.title" :data-index="item.dataIndex"
+                                v-else-if="!item.slotName"></a-table-column>
+                <a-table-column :data-index="item.dataIndex" :title="item.title" v-else>
+                  <template v-if="item.slotName === 'createdAt'" #cell="{ record }">
+                    <span>{{ dateTimeFormat(record.createdAt) }}</span>
+                  </template>
+                  <template v-else-if="item.slotName === 'action'" #cell="{ record }">
+                    <slot name="action" :record="record">
+                      <div class="gvd_cell_actions">
+                        <slot name="action_1" :record="record"></slot>
+                        <a-button type="primary" v-if="props.isEdit" @click="clickEdit(record)">编辑</a-button>
+                        <slot name="action_2" :record="record"></slot>
+                        <a-popconfirm content="是否确认执行此操作?" @ok="clickDelete(record)">
+                          <a-button v-if="props.isDelete" type="primary" status="danger">删除</a-button>
+                        </a-popconfirm>
+                        <slot name="action_3" :record="record"></slot>
+                      </div>
+                    </slot>
 
+                  </template>
+                  <template v-else #cell="{ record }">
+                    <slot :name="item.slotName" :record="record"></slot>
+                  </template>
+                </a-table-column>
               </template>
-              <template v-else #cell="{ record }">
-                <slot :name="item.slotName" :record="record"></slot>
-              </template>
-            </a-table-column>
-          </template>
-        </template>
-      </a-table>
-    </div>
-    <div class="gvd_table_page" v-if="data.count !== 0">
-      <a-pagination :total="data.count" v-model:current="params.page" @change="pageChange" :page-size="params.limit"
-                    show-total show-jumper/>
-    </div>
+            </template>
+          </a-table>
+        </div>
+        <div class="gvd_table_page" v-if="data.count !== 0">
+          <a-pagination :total="data.count" v-model:current="params.page" @change="pageChange" :page-size="params.limit"
+                        show-total show-jumper/>
+        </div>
+      </template>
+      <div class="gvd_spin">
+
+      </div>
+    </a-spin>
   </div>
 </template>
 
@@ -165,7 +171,7 @@ const props = defineProps({
     type: Number,
     default: 10,
   },
-  params:{
+  params: {
     type: Object,
     default: {}
   }
@@ -345,18 +351,20 @@ function search() {
   params.page = 1
   getList()
 }
+const isShow = ref(true)
 
 // 获取列表数据
 async function getList(param?: object) {
-
+  isShow.value = false
   Object.assign(params, param)
   let res = await listApi(props.url as string, params)
+  isShow.value = true
   if (res.code !== 0) {
     // 失败的
     Message.error(res.msg)
     return
   }
-  isShow.value = true
+
   data.list = res.data.list
   data.count = res.data.count
 }
@@ -387,7 +395,7 @@ const rowSelection: TableRowSelection = reactive({
 });
 
 
-const isShow = ref(true)
+
 const columns: Ref<any[]> = ref([])
 
 // column数据切换
@@ -474,6 +482,11 @@ defineExpose({
     display: flex;
     justify-content: center;
     padding-bottom: 20px;
+  }
+
+  .gvd_spin {
+    width: 100%;
+    min-height: 400px;
   }
 }
 </style>
