@@ -66,6 +66,8 @@
 
 <script setup lang="ts">
 import Gvd_table from "@/components/admin/gvd_table.vue";
+import type {RecordType} from "@/components/admin/gvd_table.vue";
+import type {filterItem, actionItem} from "@/components/admin/gvd_table.vue";
 import {h, reactive, ref} from "vue";
 import type {Ref} from "vue";
 import {roleIDListApi} from "@/api/role_api";
@@ -96,12 +98,13 @@ const columns = [
   {title: '操作', slotName: 'action'},
 ]
 
-const filters = [
+const filters: filterItem[] = [
   {
     title: "角色过滤",
     column: "roleID",
   }
 ]
+const gvdTable = ref();
 
 const roleIDList: Ref<OptionsResponse[]> = ref([])
 
@@ -117,7 +120,7 @@ async function getRoleList() {
 
 getRoleList()
 
-const gvdTable = ref();
+
 
 function filterChange(column: string, val: number) {
   let obj: any = {}
@@ -180,7 +183,7 @@ const editForm = reactive<userUpdateRequest>({
   roleID: undefined,
 })
 
-function showEdit(record: TableData): any {
+function showEdit(record: RecordType<userItem>): any {
   editForm.id = record.id
   editForm.roleID = record.roleID
   editForm.nickName = record.nickName

@@ -80,7 +80,7 @@
 <script setup lang="ts">
 import {IconRefresh} from "@arco-design/web-vue/es/icon";
 import {listApi, deleteApi} from "@/api/base_api";
-import {reactive, ref, watch, computed} from "vue";
+import {reactive, ref, computed} from "vue";
 import type {userItem} from "@/api/user_api";
 import type {OptionsResponse, Params} from "@/api";
 import {Message} from "@arco-design/web-vue";
@@ -88,21 +88,25 @@ import {dateTimeFormat} from "@/utils/datetime";
 import type {Response} from "@/api";
 import type {Ref} from "vue";
 import type {TableRowSelection} from "@arco-design/web-vue";
-import type {TableData} from "@arco-design/web-vue";
 
-interface filterItem {
+
+export interface filterItem {
   urls?: () => Promise<Response<OptionsResponse[]>>
   title: string
   column: string
-  values: OptionsResponse[]
+  values?: OptionsResponse[]
 }
 
-interface actionItem {
+export interface actionItem {
   label: string
   value: number
   noConfirm?: boolean
 }
 
+
+export type RecordType<T> = T & {
+  readonly id: number
+}
 
 const props = defineProps({
   url: {
@@ -162,8 +166,8 @@ const props = defineProps({
 
 // 子组件给通知父组件
 const emits = defineEmits<{
-  (e: "edit", record: TableData): void
-  (e: "delete", record: TableData): void
+  (e: "edit", record: RecordType<any>): void
+  (e: "delete", record: RecordType<any>): void
   (e: "batchDelete"): void
   (e: "actionGroup", value: number, keys: number[]): void
   (e: "filters", column: string, value: number): void
@@ -176,14 +180,14 @@ const emits = defineEmits<{
  */
 
 // 点击编辑
-function clickEdit(record: TableData) {
+function clickEdit(record: RecordType<any>) {
   record.props = record
   emits("edit", record)
 }
 
 
 // 点击删除
-async function clickDelete(record: TableData) {
+async function clickDelete(record: RecordType<any>) {
   if (props.isDefaultDelete) {
     // 走默认删除接口
     let res = await deleteApi(props.url as string, [record.id])
