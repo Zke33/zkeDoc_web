@@ -80,7 +80,7 @@
                         show-total show-jumper/>
         </div>
       </template>
-      <div class="gvd_spin">
+      <div v-else class="gvd_spin">
 
       </div>
     </a-spin>
