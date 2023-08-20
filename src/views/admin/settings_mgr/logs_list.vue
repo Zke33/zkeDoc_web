@@ -25,6 +25,7 @@
         <a-input placeholder="搜索用户" allow-clear v-model="params.userName" @change="searchChange"></a-input>
         <a-input placeholder="搜索地址" allow-clear style="margin-left: 10px" v-model="params.addr"
                  @change="searchChange"></a-input>
+        <a-date-picker style="width: 360px; margin-left: 10px" v-model="params.date" @change="searchChange"/>
       </template>
       <template #status="{record}">
         <a-tag v-if="record.status" color="blue">成功</a-tag>
@@ -58,6 +59,14 @@
           </template>
         </a-dropdown>
       </template>
+      <template #logDate="{record}:{record:logType}">
+        <a-dropdown trigger="contextMenu" alignPoint :style="{display:'block'}">
+          <div style="cursor: pointer">{{ dateTimeFormat(record.createdAt) }}</div>
+          <template #content>
+            <a-doption @click="searchKeyByLogs(record, 'date')">只看当天的</a-doption>
+          </template>
+        </a-dropdown>
+      </template>
     </Gvd_table>
   </div>
 
@@ -73,6 +82,7 @@ import {logReadApi} from "@/api/log_api";
 import VueJsonPretty from 'vue-json-pretty';
 import 'vue-json-pretty/lib/styles.css';
 import {Image} from "@arco-design/web-vue";
+import {dateTimeFormat, dateFormat} from "@/utils/datetime";
 
 const store = useStore()
 
@@ -86,12 +96,12 @@ const columnsDict = {
   [logTypeEnum.loginType]: [
     {title: 'id', dataIndex: 'id'},
     {title: 'ip', dataIndex: 'ip'},
-    {title: '地址', dataIndex: 'addr'},
+    {title: '地址', dataIndex: 'addr', slotName: "addr"},
     {title: '标题', dataIndex: 'title'},
     {title: '状态', dataIndex: 'status', slotName: "status"},
-    {title: '用户名', dataIndex: 'userName'},
+    {title: '用户名', dataIndex: 'userName', slotName: "userName"},
     {title: '密码', dataIndex: 'content'},
-    {title: '日志时间', dataIndex: 'createdAt', slotName: "createdAt"},
+    {title: '日志时间', dataIndex: 'logDate', slotName: "logDate"},
     {title: '操作', slotName: 'action'},
   ],
   [logTypeEnum.actionType]: [
@@ -101,7 +111,7 @@ const columnsDict = {
     {title: '用户名', dataIndex: 'userName', slotName: "userName"},
     {title: '等级', dataIndex: 'level', slotName: "level"},
     {title: '标题', dataIndex: 'title', slotName: "title"},
-    {title: '日志时间', dataIndex: 'createdAt', slotName: "createdAt"},
+    {title: '日志时间', dataIndex: 'logDate', slotName: "logDate"},
     {title: '操作', slotName: 'action'},
   ],
   [logTypeEnum.runningType]: [
@@ -109,7 +119,7 @@ const columnsDict = {
     {title: '标题', dataIndex: 'title'},
     {title: '服务', dataIndex: 'serviceName'},
     {title: '等级', dataIndex: 'level'},
-    {title: '日志时间', dataIndex: 'createdAt', slotName: "createdAt"},
+    {title: '日志时间', dataIndex: 'logDate', slotName: "logDate"},
     {title: '操作', slotName: 'action'},
   ]
 }
@@ -119,6 +129,7 @@ interface logParams {
   userName: string
   addr: string
   ip: string
+  date: string,
 }
 
 const params: logParams = reactive({
@@ -126,6 +137,7 @@ const params: logParams = reactive({
   userName: "",
   addr: "",
   ip: "",
+  date: "",
 })
 
 const logTypeValue = ref(logTypeEnum.actionType)
@@ -191,7 +203,11 @@ function imagePreview() {
 }
 
 function searchKeyByLogs(record: logType, key: keyof logParams) {
-  params[key] = record[key]
+  if (key === "date") {
+    params[key] = dateFormat(record.createdAt)
+  } else {
+    params[key] = record[key]
+  }
   gvdTable.value.getList(params)
 }
 
@@ -391,5 +407,11 @@ function searchChange() {
       color: rgb(var(--arcoblue-6));
     }
   }
+
+  .ation_other_search {
+    width: 500px;
+  }
 }
+
+
 </style>
