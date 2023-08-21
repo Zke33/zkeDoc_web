@@ -18,3 +18,9 @@ mock(/api\/images/, {
         ]
     }
 })
+
+mock(/api\/image/, {
+    "code": 0,
+    "data": "https://docs.fengfengzhidao.com/static/avatar/zzf-1.png",
+    "msg": "上传成功",
+})
