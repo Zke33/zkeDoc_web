@@ -1,6 +1,8 @@
 import {defineStore} from 'pinia'
 import type {themeType} from "@/type/type";
 import {parseToken} from "@/utils/jwt";
+import type {siteType} from "@/api/site_api";
+import {siteApi} from "@/api/site_api";
 
 export interface userInfoType {
     exp: number // 过期时间
@@ -22,11 +24,20 @@ const userInfo: userInfoType = {
     token: ""
 }
 
+const site: siteType = {
+    abstract: "",
+    content: "",
+    icon: "",
+    iconHref: "",
+    title: "",
+}
+
 export const useStore = defineStore('useStore', {
     state() {
         return {
             theme: "", // 主题
             userInfo: userInfo,
+            site: site,
         }
     },
     actions: {
@@ -57,6 +68,10 @@ export const useStore = defineStore('useStore', {
         clearToken(){
             localStorage.removeItem("userInfo")
             this.userInfo = userInfo
+        },
+        async getSiteData(){
+            let res = await siteApi()
+            Object.assign(this.site, res.data)
         }
     },
     getters: {
