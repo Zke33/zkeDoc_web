@@ -7,18 +7,7 @@
           <a-input v-model="form.title" placeholder="站点名称"/>
         </a-form-item>
         <a-form-item label="站点图标" field="icon">
-          <div class="site_icon">
-            <a-upload
-                class="site_icon_upload"
-                action="/api/image"
-                name="image"
-                :headers="{token: store.userInfo.token}"
-                @success="imageUploadSuccess"
-            ></a-upload>
-            <a-image :src="form.icon" height="100px"></a-image>
-
-            <a-input v-model="form.icon" placeholder="站点图标"/>
-          </div>
+          <Gvd_upload_image v-model="form.icon"></Gvd_upload_image>
         </a-form-item>
         <a-form-item label="网站简介" field="abstract" :rules="[{required:true,message:'请输入网站简介'}]"
                      :validate-trigger="['blur']">
@@ -29,7 +18,6 @@
             <div class="icon_href_preview" v-html="form.iconHref"></div>
             <a-textarea v-model="form.iconHref" :auto-size="{minRows: 5}" placeholder="图片链接"/>
           </div>
-
         </a-form-item>
         <a-form-item>
           <a-button type="primary" @click="updateSite">更新</a-button>
@@ -43,15 +31,14 @@
 </template>
 
 <script setup lang="ts">
+import Gvd_upload_image from "@/components/admin/gvd_upload_image.vue";
 import {reactive, ref} from "vue";
 import type {siteType} from "@/api/site_api";
 import {useStore} from "@/stores";
-import type {FileItem} from "@arco-design/web-vue";
-import {Response} from "@/api";
 import {Message} from "@arco-design/web-vue";
 import Gvd_md from "@/components/admin/gvd_md.vue";
 import {siteApi, siteUpdateApi} from "@/api/site_api";
-
+import {onMounted} from "vue";
 
 const store = useStore()
 
@@ -64,15 +51,7 @@ const form = reactive<siteType>({
   title: "",
 })
 
-function imageUploadSuccess(fileItem: FileItem) {
-  const response = fileItem.response as Response<string>
-  if (response.code) {
-    Message.error(response.msg)
-    return
-  }
-  Message.success(response.msg)
-  form.icon = response.data
-}
+
 
 const isShow = ref(false)
 
@@ -83,6 +62,7 @@ async function getList() {
 }
 
 getList()
+
 const formRef = ref()
 
 async function updateSite() {
@@ -107,29 +87,6 @@ async function updateSite() {
 
   .left {
     width: 35%;
-
-    .site_icon {
-      width: 100%;
-      position: relative;
-
-      .site_icon_upload {
-        left: 0;
-        top: 0;
-        z-index: 1;
-        opacity: 0;
-        position: absolute;
-
-        button {
-          height: 100px;
-          width: 100px;
-        }
-
-      }
-
-      > span {
-        margin-top: 10px;
-      }
-    }
 
     .site_iconHref {
       width: 100%;

@@ -13,10 +13,31 @@ export interface userCollItem {
 
 
 // 收藏文档或者取消收藏
-export function userCollApi(docID: number): Promise<Response<string>>{
+export function userCollApi(docID: number): Promise<Response<string>> {
     return useAxios.post("/api/user_center/user_coll", {id: docID})
 }
+
 // 用户收藏的文档列表
-export function userCollListApi(params: Params):Promise<ListResponse<userCollItem>>{
-    return  useAxios.get("/api/user_center/user_coll", {params})
+export function userCollListApi(params: Params): Promise<ListResponse<userCollItem>> {
+    return useAxios.get("/api/user_center/user_coll", {params})
+}
+
+
+export interface userInfoItem {
+    id: number
+    createdAt: string
+    updatedAt: string
+    avatar: string
+    nickName: string
+    email: string
+    ip: string
+    addr: string
+    roleID: number // 角色id
+    lastLogin: string // 上次登录时间
+    userName: string // 用户名
+    role: string // 角色的名称
+}
+
+export function getUserInfoApi():Promise<Response<userInfoItem>>{
+    return useAxios.get("/api/users_info")
 }
