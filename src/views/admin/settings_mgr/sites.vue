@@ -38,7 +38,6 @@ import {useStore} from "@/stores";
 import {Message} from "@arco-design/web-vue";
 import Gvd_md from "@/components/admin/gvd_md.vue";
 import {siteApi, siteUpdateApi} from "@/api/site_api";
-import {onMounted} from "vue";
 
 const store = useStore()
 

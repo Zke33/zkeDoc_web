@@ -16,7 +16,7 @@
     </div>
 
 
-    <a-input v-model="text" placeholder="站点图标"/>
+    <a-input v-model="text" placeholder="站点图标" @change="change"/>
   </div>
 </template>
 
@@ -45,7 +45,7 @@ const props = defineProps({
 })
 
 const text = ref("")
-const emits = defineEmits(["update:modelValue"])
+const emits = defineEmits(["update:modelValue", "change"])
 
 watch(() => props.modelValue, () => {
   text.value = props.modelValue
@@ -65,8 +65,12 @@ function imageUploadSuccess(fileItem: FileItem) {
   }
   Message.success(response.msg)
   text.value = response.data
+  emits("change", text.value)
 }
 
+function change() {
+  emits("change", text.value)
+}
 
 </script>
 <style lang="scss">

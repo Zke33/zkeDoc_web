@@ -38,6 +38,15 @@ export interface userInfoItem {
     role: string // 角色的名称
 }
 
-export function getUserInfoApi():Promise<Response<userInfoItem>>{
+export function getUserInfoApi(): Promise<Response<userInfoItem>> {
     return useAxios.get("/api/users_info")
+}
+
+export interface updateUserInfoRequest {
+    avatar?: string
+    nickName?: string
+}
+
+export function updateUserInfoApi(data: updateUserInfoRequest): Promise<Response<string>> {
+    return useAxios.put("/api/users_info", data)
 }
