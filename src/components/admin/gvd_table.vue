@@ -36,7 +36,7 @@
       <template v-if="isShow">
         <div class="gvd_table_source">
           <a-table
-              row-key="id"
+              :row-key="props.rowKey"
               :data="data.list"
               :row-selection="props.isCheck as boolean ? rowSelection : undefined"
               v-model:selectedKeys="selectedKeys" :pagination="false">
@@ -60,7 +60,7 @@
                         <a-button type="primary" v-if="props.isEdit" @click="clickEdit(record)">编辑</a-button>
                         <slot name="action_2" :record="record"></slot>
                         <a-popconfirm content="是否确认执行此操作?" @ok="clickDelete(record)">
-                          <a-button v-if="props.isDelete" type="primary" status="danger">删除</a-button>
+                          <a-button v-if="props.isDelete" type="primary" status="danger">{{  props.removeLabel }}</a-button>
                         </a-popconfirm>
                         <slot name="action_3" :record="record"></slot>
                       </div>
@@ -174,6 +174,18 @@ const props = defineProps({
   params: {
     type: Object,
     default: {}
+  },
+  rowKey: {
+    type: String,
+    default: "id"
+  },
+  removeLabel: { // 删除按钮上的默认文字
+    type: String,
+    default: "删除"
+  },
+  removeBatchLabel: {
+    type: String,
+    default: "批量删除"
   }
 })
 
@@ -182,7 +194,7 @@ const props = defineProps({
 const emits = defineEmits<{
   (e: "edit", record: RecordType<any>): void
   (e: "delete", record: RecordType<any>): void
-  (e: "batchDelete"): void
+  (e: "batchDelete", keys: number[]): void
   (e: "actionGroup", value: number, keys: number[]): void
   (e: "filters", column: string, value: number): void
   (e: "create"): void
@@ -223,7 +235,7 @@ async function clickDelete(record: RecordType<any>) {
 
 
 const actionOptions: Ref<actionItem[]> = ref([
-  {label: "批量删除", value: 1}
+  {label: props.removeBatchLabel, value: 1}
 ])
 const actionValue: Ref<number | undefined> = ref(undefined)
 
@@ -247,6 +259,10 @@ async function actionClick() {
   if (actionValue.value as number === 1) {
     // 调用自己的批量删除接口
     if (selectedKeys.value.length > 0) {
+      if (!props.isDefaultDelete) {
+        emits("batchDelete", selectedKeys.value)
+        return
+      }
       let res = await deleteApi(props.url as string, selectedKeys.value)
       if (res.code) {
         Message.error(res.msg)
@@ -351,6 +367,7 @@ function search() {
   params.page = 1
   getList()
 }
+
 const isShow = ref(true)
 
 // 获取列表数据
@@ -393,7 +410,6 @@ const rowSelection: TableRowSelection = reactive({
   showCheckedAll: true,
   onlyCurrent: false,
 });
-
 
 
 const columns: Ref<any[]> = ref([])
