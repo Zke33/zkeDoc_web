@@ -129,9 +129,25 @@ const router = createRouter({
             ]
         },
         {
-            path: '/test_json',
-            name: 'test_json',
-            component: () => import("@/test/json-pretty.vue"),
+            path: '/test',
+            name: 'test',
+            children: [
+                {
+                    path: 'json',
+                    name: 'json',
+                    component: () => import("@/test/json-pretty.vue"),
+                },
+                {
+                    path: 'md',
+                    name: 'md',
+                    component: () => import("@/test/test_md.vue"),
+                },
+                {
+                    path: 'gvd_md',
+                    name: 'gvd_md',
+                    component: () => import("@/test/test_gvd_md.vue"),
+                }
+            ],
         }
     ]
 })

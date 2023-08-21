@@ -1,0 +1,58 @@
+<template>
+  <div>
+    <MdEditor v-model="text" :theme="store.theme" :on-upload-img="onUploadImg"/>
+  </div>
+
+</template>
+<script setup lang="ts">
+import {ref, watch} from 'vue';
+import {MdEditor} from 'md-editor-v3';
+import 'md-editor-v3/lib/style.css';
+import {uploadImageApi} from "@/api/image_api";
+import {useStore} from "@/stores";
+
+const store = useStore()
+const props = defineProps({
+  modelValue: {
+    type: String
+  }
+})
+const text = ref("")
+const emits = defineEmits(["update:modelValue"])
+
+function initValue() {
+  text.value = props.modelValue
+}
+
+initValue()
+
+
+async function onUploadImg(files: Array<File>, callback: (urls: Array<string>) => void): void {
+  let resList: Response<string>[] = []
+
+  try {
+    resList = await Promise.all(files.map(file => uploadImageApi(file)))
+  } catch (e) {
+    // Message.error(e.message)
+
+    return
+  }
+
+  const urlList: string[] = []
+  resList.forEach(res => {
+    if (res.code) {
+      Message.error(res.msg)
+      return
+    }
+    urlList.push(res.data)
+  })
+
+  callback(urlList)
+}
+
+
+watch(text, ()=>{
+  emits("update:modelValue", text.value)
+})
+
+</script>

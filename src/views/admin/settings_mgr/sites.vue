@@ -32,36 +32,36 @@
 
         </a-form-item>
         <a-form-item>
-          <a-button type="primary">更新</a-button>
+          <a-button type="primary" @click="updateSite">更新</a-button>
         </a-form-item>
       </a-form>
     </div>
     <div class="right">
-
+      <Gvd_md v-if="isShow" v-model="form.content"></Gvd_md>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import {reactive} from "vue";
+import {reactive, ref} from "vue";
 import type {siteType} from "@/api/site_api";
 import {useStore} from "@/stores";
 import type {FileItem} from "@arco-design/web-vue";
 import {Response} from "@/api";
 import {Message} from "@arco-design/web-vue";
+import Gvd_md from "@/components/admin/gvd_md.vue";
+import {siteApi, siteUpdateApi} from "@/api/site_api";
+
 
 const store = useStore()
 
 
 const form = reactive<siteType>({
-  abstract: "枫枫知道官方文档，致力于帮助更多的人学好知识\n" +
-      "哔哩哔哩视频总播放量突破10w\n" +
-      "文档浏览量突破3w\n" +
-      "越来越多的人，开始了解枫枫知道",
+  abstract: "",
   content: "",
-  icon: "https://docs.fengfengzhidao.com/static/avatar/zzf-1.png",
-  iconHref: "<img src=\"https://img.shields.io/badge/fengfengdoc-2.0.1-red\"><img src=\"https://img.shields.io/badge/%E6%9E%AB%E6%9E%AB%E7%9F%A5%E9%81%93-6.0.2-brightgreen\"><img src=\"https://img.shields.io/badge/python-3.8.6-yellowgreen\"><img src=\"https://img.shields.io/badge/golang-1.19-orange\">",
-  title: "fengfeng docs",
+  icon: "",
+  iconHref: "",
+  title: "",
 })
 
 function imageUploadSuccess(fileItem: FileItem) {
@@ -72,7 +72,30 @@ function imageUploadSuccess(fileItem: FileItem) {
   }
   Message.success(response.msg)
   form.icon = response.data
+}
 
+const isShow = ref(false)
+
+async function getList() {
+  let res = await siteApi()
+  Object.assign(form, res.data)
+  isShow.value = true
+}
+
+getList()
+const formRef = ref()
+
+async function updateSite() {
+  let _res = await formRef.value.validate()
+  if (_res) {
+    return false
+  }
+  let res = await siteUpdateApi(form)
+  if (res.code) {
+    Message.error(res.msg)
+    return
+  }
+  Message.success(res.msg)
 }
 
 </script>
@@ -118,6 +141,15 @@ function imageUploadSuccess(fileItem: FileItem) {
           margin-right: 5px;
         }
       }
+    }
+  }
+
+  .right {
+    width: 65%;
+    margin-left: 20px;
+
+    .md-editor {
+      height: calc(100vh - 170px);
     }
   }
 }
