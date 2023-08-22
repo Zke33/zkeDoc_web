@@ -160,6 +160,34 @@ function allIn(val: boolean) {
           }
         }
       }
+
+      .arco-tree-node {
+
+      }
+
+      .arco-tree-node-selected {
+        background-color: rgb(var(--arcoblue-5));
+
+        .arco-tree-node-title {
+          color: white;
+
+          &:hover {
+            background-color: inherit;
+          }
+        }
+
+        .arco-icon-hover {
+          color: white;
+
+          &:hover::before {
+            background-color: inherit;
+          }
+        }
+
+        .tree_extra{
+          color: white;
+        }
+      }
     }
   }
 }
