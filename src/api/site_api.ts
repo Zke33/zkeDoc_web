@@ -12,10 +12,12 @@ export interface siteType {
 }
 
 
+// 获取站点信息
 export function siteApi(): Promise<Response<siteType>> {
     return useAxios.get("/api/site")
 }
 
+// 更新站点信息
 export function siteUpdateApi(data: siteType): Promise<Response<string>> {
     return useAxios.put("/api/site", data)
 }

@@ -50,3 +50,12 @@ export interface updateUserInfoRequest {
 export function updateUserInfoApi(data: updateUserInfoRequest): Promise<Response<string>> {
     return useAxios.put("/api/users_info", data)
 }
+
+export interface updateUserPasswordRequest {
+    oldPwd: string
+    password: string
+}
+
+export function updateUserPasswordApi(data: updateUserPasswordRequest): Promise<Response<string>> {
+    return useAxios.put("/api/users_password", data)
+}

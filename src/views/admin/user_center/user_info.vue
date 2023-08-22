@@ -1,6 +1,7 @@
 <template>
   <div class="gvd_view user_info_view">
     <div class="head">个人信息</div>
+    <Gvd_update_password v-model:visible="visible"></Gvd_update_password>
     <div class="body">
       <a-form ref="formRef" :model="{}" :label-col-props="{span: 2}" :wrapper-col-props="{span:5}">
         <a-form-item label="头像">
@@ -17,7 +18,7 @@
           ({{ relativeToCurrentTime(data.lastLogin) }})
         </a-form-item>
         <a-form-item label="修改密码">
-          <a-button type="primary">修改密码</a-button>
+          <a-button type="primary" @click="visible=true">修改密码</a-button>
         </a-form-item>
       </a-form>
     </div>
@@ -25,11 +26,12 @@
 </template>
 
 <script setup lang="ts">
+import Gvd_update_password from "@/components/admin/gvd_update_password.vue";
 import Gvd_upload_image from "@/components/admin/gvd_upload_image.vue";
 import {getUserInfoApi} from "@/api/user_center_api";
 import type {updateUserInfoRequest} from "@/api/user_center_api";
 import type {userInfoItem} from "@/api/user_center_api";
-import {reactive} from "vue";
+import {reactive, ref} from "vue";
 import {dateTimeFormat, relativeToCurrentTime} from "@/utils/datetime";
 import {updateUserInfoApi} from "@/api/user_center_api";
 import {Message} from "@arco-design/web-vue";
@@ -55,6 +57,7 @@ async function getData() {
 }
 
 getData()
+const visible = ref(false)
 
 async function saveUserInfo(key: keyof updateUserInfoRequest, value: string) {
   // 调用change的时候，和实际双向数据绑定的时候，会有一个时间差

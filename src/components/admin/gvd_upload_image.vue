@@ -12,10 +12,7 @@
       <div class="no_image" v-else>
         <icon-file-image/>
       </div>
-
     </div>
-
-
     <a-input v-model="text" placeholder="站点图标" @change="change"/>
   </div>
 </template>
