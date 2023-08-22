@@ -53,6 +53,7 @@ const data = reactive<userInfoItem>({
 
 async function getData() {
   let res = await getUserInfoApi()
+  console.log(res)
   Object.assign(data, res.data)
 }
 
