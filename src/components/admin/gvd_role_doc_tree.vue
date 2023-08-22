@@ -9,12 +9,20 @@
       </div>
     </div>
     <div class="body">
-      <a-tree
-          blockNode
-          :checkable="true"
-          v-model:checked-keys="checkedKeys"
-          :data="list"
-      />
+      <div class="actions">
+        <span><a-checkbox v-model="checkStrictly">父子关联</a-checkbox></span>
+        <span><a-checkbox @change="allIn">全选</a-checkbox></span>
+      </div>
+      <div class="tree">
+        <a-tree
+            blockNode
+            :check-strictly="!checkStrictly"
+            :checkable="true"
+            v-model:checked-keys="checkedKeys"
+            :data="list"
+        />
+      </div>
+
     </div>
   </div>
 </template>
@@ -35,6 +43,8 @@ const props = defineProps({
 
 const checkedKeys: Ref<number[]> = ref([]);
 const list: Ref<roleDocItem[]> = ref([])
+
+const checkStrictly = ref(true)
 
 async function getList() {
   let res = await roleDocTreeApi(props.roleId)
@@ -57,7 +67,7 @@ async function updateRoleDocTree() {
     })
   }
   let res = await roleDocTreeUpdateApi(props.roleId, docList)
-  if (res.code){
+  if (res.code) {
     Message.error(res.msg)
     return
   }
@@ -66,4 +76,42 @@ async function updateRoleDocTree() {
 }
 
 
+function allIn(val: boolean) {
+  if (val) {
+    // 全选
+    return
+  }
+  // 非全选
+  checkedKeys.value = []
+}
+
 </script>
+
+
+<style lang="scss">
+.gvd_role_doc_tree {
+  border-right: 1px solid var(--bg);
+  height: calc(100vh - 48px);
+
+  .head {
+    height: 40px;
+    border-bottom: 1px solid var(--bg);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 20px;
+  }
+
+  .body {
+    padding: 10px 20px;
+
+    .actions {
+      background-color: var(--color-fill-2);
+      padding: 10px 0;
+    }
+    .tree{
+      margin-top: 10px;
+    }
+  }
+}
+</style>

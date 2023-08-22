@@ -39,21 +39,6 @@ function drawerCache() {
 
 .gvd_role_doc_tree {
   width: 30%;
-  border-right: 1px solid var(--bg);
-  height: calc(100vh - 48px);
-
-  .head {
-    height: 40px;
-    border-bottom: 1px solid var(--bg);
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 0 20px;
-  }
-
-  .body {
-    padding-top: 10px;
-  }
 }
 
 .gvd_doc_config {
