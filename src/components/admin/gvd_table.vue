@@ -59,9 +59,11 @@
                         <slot name="action_1" :record="record"></slot>
                         <a-button type="primary" v-if="props.isEdit" @click="clickEdit(record)">编辑</a-button>
                         <slot name="action_2" :record="record"></slot>
-                        <a-popconfirm content="是否确认执行此操作?" @ok="clickDelete(record)">
-                          <a-button v-if="props.isDelete" type="primary" status="danger">{{  props.removeLabel }}</a-button>
-                        </a-popconfirm>
+                        <slot name="remove" :record="record">
+                          <a-popconfirm content="是否确认执行此操作?" @ok="clickDelete(record)">
+                            <a-button v-if="props.isDelete" type="primary" status="danger">{{  props.removeLabel }}</a-button>
+                          </a-popconfirm>
+                        </slot>
                         <slot name="action_3" :record="record"></slot>
                       </div>
                     </slot>
