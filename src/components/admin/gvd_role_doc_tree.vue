@@ -43,8 +43,33 @@ const props = defineProps({
 
 const checkedKeys: Ref<number[]> = ref([]);
 const list: Ref<roleDocItem[]> = ref([])
-
+const docIDAllList: Ref<number[]> = ref([])
 const checkStrictly = ref(true)
+
+
+// 把接收的列表当做参数传递进来
+function getDocIDAllList1(docList: roleDocItem[], docIDList: number[]) {
+  for (const docItem of docList) {
+    docIDList.push(docItem.key)
+    if (docItem.children.length > 0) {
+      getDocIDAllList(docItem.children)
+    }
+  }
+}
+
+
+// 把接收的列表，当做返回值返回
+function getDocIDAllList(docList: roleDocItem[]): number[] {
+  let docIDList: number[] = []
+  for (const docItem of docList) {
+    docIDList.push(docItem.key)
+    if (docItem.children.length > 0) {
+      docIDList = docIDList.concat(getDocIDAllList(docItem.children))
+    }
+  }
+  return docIDList
+}
+
 
 async function getList() {
   let res = await roleDocTreeApi(props.roleId)
@@ -54,6 +79,7 @@ async function getList() {
   }
   list.value = res.data.list
   checkedKeys.value = res.data.docIDList
+  docIDAllList.value = getDocIDAllList(list.value)
 }
 
 getList()
@@ -79,6 +105,7 @@ async function updateRoleDocTree() {
 function allIn(val: boolean) {
   if (val) {
     // 全选
+    checkedKeys.value = docIDAllList.value
     return
   }
   // 非全选
@@ -109,7 +136,8 @@ function allIn(val: boolean) {
       background-color: var(--color-fill-2);
       padding: 10px 0;
     }
-    .tree{
+
+    .tree {
       margin-top: 10px;
     }
   }
