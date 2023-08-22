@@ -12,7 +12,7 @@
         </a-form-item>
       </a-form>
     </a-modal>
-    <Gvd_role_config v-if="drawer.visible" v-model:visible="drawer.visible" :title="drawer.title" :role-id="drawer.roleID"></Gvd_role_config>
+    <Gvd_role_config v-model:visible="drawer.visible" :title="drawer.title" :role-id="drawer.roleID"></Gvd_role_config>
 
     <Gvd_table
         url="/api/roles"
