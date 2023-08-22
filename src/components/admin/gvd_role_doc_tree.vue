@@ -20,7 +20,15 @@
             :checkable="true"
             v-model:checked-keys="checkedKeys"
             :data="list"
-        />
+        >
+          <template #extra="nodeData:roleDocItem">
+            <span class="tree_extra">
+                  <icon-lock v-if="nodeData.isPwd"></icon-lock>
+                   <icon-eye v-if="nodeData.isSee"></icon-eye>
+            </span>
+
+          </template>
+        </a-tree>
       </div>
 
     </div>
@@ -34,6 +42,7 @@ import type {roleDocItem} from "@/api/role_doc_api";
 import {Message} from "@arco-design/web-vue";
 import {roleDocTreeUpdateApi} from "@/api/role_doc_api";
 import type {roleDocUpdateItem} from "@/api/role_doc_api";
+import {IconLock, IconEye} from "@arco-design/web-vue/es/icon";
 
 const props = defineProps({
   roleId: {
@@ -139,6 +148,18 @@ function allIn(val: boolean) {
 
     .tree {
       margin-top: 10px;
+
+      .tree_extra {
+        display: flex;
+
+        svg {
+          margin-right: 5px;
+
+          &:last-child {
+            margin-right: 0;
+          }
+        }
+      }
     }
   }
 }
