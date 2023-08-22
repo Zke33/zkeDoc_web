@@ -146,6 +146,11 @@ const router = createRouter({
                     path: 'gvd_md',
                     name: 'gvd_md',
                     component: () => import("@/test/test_gvd_md.vue"),
+                },
+                {
+                    path: 'tree',
+                    name: 'tree',
+                    component: () => import("@/test/test_tree.vue"),
                 }
             ],
         }
