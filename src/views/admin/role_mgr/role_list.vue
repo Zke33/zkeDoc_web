@@ -25,12 +25,18 @@
         <a-tag v-if="record.isSystem" color="red">系统角色</a-tag>
         <a-tag v-else color="blue">自定义角色</a-tag>
       </template>
-      <template #pwd="{record}:{record:roleItem}">
-        <span v-if="record.pwd !== ''">******</span>
+      <template #pwd="{record}:{record:roleItemAddPwdShow}">
+        <span v-if="record.pwd !== ''">
+          {{ record.isShow ? record.pwd : "******" }}
+          <a href="javascript:void (0)"
+             style="color: rgb(var(--arcoblue-5));
+             font-size: 12px"
+             @mousedown="record.isShow=true"
+             @mouseup="record.isShow=false">显示</a></span>
         <span v-else>-</span>
       </template>
       <template #remove="{record}:{record:roleItem}">
-        <a-popconfirm  content="是否确认执行此操作?" @ok="removeRole(record)">
+        <a-popconfirm content="是否确认执行此操作?" @ok="removeRole(record)">
           <a-button v-if="!record.isSystem" type="primary" status="danger">删除</a-button>
         </a-popconfirm>
       </template>
@@ -55,6 +61,11 @@ const columns = [
   {title: '创建时间', slotName: 'createdAt'},
   {title: '操作', slotName: 'action'},
 ]
+
+interface roleItemAddPwdShow extends roleItem {
+  isShow: boolean // 是否显示密码
+}
+
 const visible = ref(false)
 const form = reactive<roleRequest>({
   id: undefined,
