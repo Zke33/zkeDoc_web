@@ -12,6 +12,8 @@
         </a-form-item>
       </a-form>
     </a-modal>
+    <Gvd_role_config v-if="drawer.visible" v-model:visible="drawer.visible" :title="drawer.title" :role-id="drawer.roleID"></Gvd_role_config>
+
     <Gvd_table
         url="/api/roles"
         :columns="columns"
@@ -40,6 +42,9 @@
           <a-button v-if="!record.isSystem" type="primary" status="danger">删除</a-button>
         </a-popconfirm>
       </template>
+      <template #action_2="{record}:{record: roleItem}">
+        <a-button status="warning" @click="showDrawer(record)" type="primary">角色配置</a-button>
+      </template>
     </Gvd_table>
   </div>
 </template>
@@ -50,6 +55,8 @@ import type {roleItem, roleRequest} from "@/api/role_api";
 import {reactive, ref} from "vue";
 import {roleApi, roleRemoveApi} from "@/api/role_api";
 import {Message} from "@arco-design/web-vue";
+import Gvd_role_config from "@/components/admin/gvd_role_config.vue";
+
 
 const columns = [
   {title: 'ID', dataIndex: 'id'},
@@ -62,11 +69,24 @@ const columns = [
   {title: '操作', slotName: 'action'},
 ]
 
+const drawer = reactive({
+  visible: false,
+  title: "",
+  roleID: undefined,
+})
+
+function showDrawer(record: roleItem) {
+  drawer.title = `角色配置 [${record.title}]`
+  drawer.visible = true
+  drawer.roleID = record.id
+}
+
 interface roleItemAddPwdShow extends roleItem {
   isShow: boolean // 是否显示密码
 }
 
 const visible = ref(false)
+
 const form = reactive<roleRequest>({
   id: undefined,
   title: "",
