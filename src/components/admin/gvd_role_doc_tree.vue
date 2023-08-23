@@ -191,10 +191,6 @@ function allIn(value: (boolean | (string | number | boolean)[]), ev: Event) {
         }
       }
 
-      .arco-tree-node {
-
-      }
-
       .arco-tree-node-selected {
         background-color: rgb(var(--arcoblue-5));
 

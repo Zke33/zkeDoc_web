@@ -59,3 +59,21 @@ export function roleDocGetConfigApi(roleID: number, docID: number): Promise<Resp
 export function roleDocUpdateConfigApi(data: roleDocConfigUpdateItem): Promise<Response<string>> {
     return useAxios.put("/api/role_docs/info", data)
 }
+
+export interface docListResponse {
+    list: docTreeItem[]
+}
+
+export interface docTreeItem {
+    children: docTreeItem[]
+    isPwd: boolean
+    isSee: boolean
+    isColl: boolean
+    unlock: boolean
+    key: number
+    title: string
+}
+
+export function docTreeApi():Promise<Response<docListResponse>>{
+    return useAxios.get("/api/role_docs")
+}

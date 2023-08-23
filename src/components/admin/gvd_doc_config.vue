@@ -2,10 +2,10 @@
   <div class="gvd_doc_config">
     <template v-if="props.docId">
       <div class="head">
-        文档配置 [{{ props.docItem.title }}]
+        文档配置 [{{ (props.docItem as roleDocItem).title }}]
       </div>
       <div class="body">
-        <div class="no_role_mask" v-if="!props.docItem.show">
+        <div class="no_role_mask" v-if="!(props.docItem as roleDocItem).show">
           <a-button type="primary" @click="roleAddDoc">加入角色</a-button>
         </div>
         <a-form ref="formRef" :model="form" :label-col-props="{span: 3, offset: 0}"
@@ -82,7 +82,7 @@ async function getConfig() {
   if (!props.docId) {
     return
   }
-  if (!props.docItem.show) {
+  if (!(props.docItem as roleDocItem).show) {
     return
   }
   let res = await roleDocGetConfigApi(props.roleId, props.docId)

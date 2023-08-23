@@ -21,7 +21,7 @@
         <a href="javascript:void (0)" class="banner_login_btn" @click="visible=true">登录</a>
       </div>
       <div class="banner_btn_login" v-else>
-        <icon-double-down/>
+        <icon-double-down @click="down"/>
       </div>
     </div>
   </div>
@@ -64,6 +64,13 @@ watch(() => store.theme, () => {
 const abstract = computed(()=>{
   return store.site.abstract.split("\n")
 })
+
+function down(){
+  document.documentElement.scrollTo({
+    top: 10, // 100vh的值，滚动到视口高度的位置
+    behavior: 'smooth' // 使用平滑滚动效果
+  });
+}
 
 </script>
 
