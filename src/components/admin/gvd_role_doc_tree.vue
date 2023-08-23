@@ -11,8 +11,13 @@
       </div>
       <div class="body">
         <div class="actions">
-          <span><a-checkbox v-model="checkStrictly">父子关联</a-checkbox></span>
-          <span><a-checkbox @change="allIn">全选</a-checkbox></span>
+          <div class="left">
+            <span><a-checkbox v-model="checkStrictly">父子关联</a-checkbox></span>
+            <span><a-checkbox @change="allIn">全选</a-checkbox></span>
+          </div>
+          <div class="right">
+            <span class="flush" @click="flush"><icon-refresh/></span>
+          </div>
         </div>
         <div class="tree">
           <a-tree
@@ -35,7 +40,8 @@
 
       </div>
     </div>
-    <Gvd_doc_config :role-id="props.roleId" :doc-title="docTitle" :doc-id="docID"></Gvd_doc_config>
+    <Gvd_doc_config @update="docConfigUpdateEvent" :role-id="props.roleId" :doc-title="docTitle"
+                    :doc-id="docID"></Gvd_doc_config>
   </div>
 </template>
 <script setup lang="ts">
@@ -47,7 +53,7 @@ import type {roleDocItem} from "@/api/role_doc_api";
 import {Message} from "@arco-design/web-vue";
 import {roleDocTreeUpdateApi} from "@/api/role_doc_api";
 import type {roleDocUpdateItem} from "@/api/role_doc_api";
-import {IconLock, IconEye} from "@arco-design/web-vue/es/icon";
+import {IconLock, IconEye, IconRefresh} from "@arco-design/web-vue/es/icon";
 
 const props = defineProps({
   roleId: {
@@ -68,6 +74,9 @@ function selectNode(key: number[], {node}: { node: roleDocItem }) {
   docTitle.value = node.title
 }
 
+function docConfigUpdateEvent() {
+  getList()
+}
 
 // 把接收的列表，当做返回值返回
 function getDocIDAllList(docList: roleDocItem[]): number[] {
@@ -81,6 +90,10 @@ function getDocIDAllList(docList: roleDocItem[]): number[] {
   return docIDList
 }
 
+async function flush(){
+  await getList()
+  Message.success("刷新成功")
+}
 
 async function getList() {
   let res = await roleDocTreeApi(props.roleId)
@@ -145,7 +158,14 @@ function allIn(val: boolean) {
 
     .actions {
       background-color: var(--color-fill-2);
-      padding: 10px 0;
+      padding: 10px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+
+      .flush {
+        cursor: pointer;
+      }
     }
 
     .tree {
