@@ -42,6 +42,7 @@
     </div>
     <Gvd_doc_config
         @update="docConfigUpdateEvent"
+        @create="docConfigCreateEvent"
         :role-id="props.roleId"
         :doc-item="docItem"
         :doc-id="docID"></Gvd_doc_config>
@@ -67,7 +68,7 @@ const props = defineProps({
 const checkedKeys: Ref<number[]> = ref([]);
 const list: Ref<roleDocItem[]> = ref([])
 const docIDAllList: Ref<number[]> = ref([])
-const checkStrictly = ref(true)
+const checkStrictly = ref(false)
 
 const docID: Ref<undefined | number> = ref()
 const docItem: Ref<roleDocItem|undefined> = ref()
@@ -78,6 +79,11 @@ function selectNode(key: number[], {node}: { node: roleDocItem }) {
 
 function docConfigUpdateEvent() {
   getList()
+}
+
+function docConfigCreateEvent() {
+  checkedKeys.value.push(docID.value)
+  docItem.value.show = true
 }
 
 // 把接收的列表，当做返回值返回

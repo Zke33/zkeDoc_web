@@ -6,7 +6,7 @@
       </div>
       <div class="body">
         <div class="no_role_mask" v-if="!props.docItem.show">
-          <a-button type="primary">加入角色</a-button>
+          <a-button type="primary" @click="roleAddDoc">加入角色</a-button>
         </div>
         <a-form ref="formRef" :model="form" :label-col-props="{span: 3, offset: 0}"
                 :wrapper-col-props="{span:21, offset: 0}">
@@ -40,7 +40,7 @@
 </template>
 <script setup lang="ts">
 import {reactive, watch} from "vue";
-import {roleDocGetConfigApi, roleDocUpdateConfigApi} from "@/api/role_doc_api";
+import {roleDocGetConfigApi, roleDocUpdateConfigApi, roleAddDocApi} from "@/api/role_doc_api";
 import type {roleDocConfigItem, roleDocConfigUpdateItem} from "@/api/role_doc_api";
 import {Message} from "@arco-design/web-vue";
 
@@ -56,7 +56,7 @@ const props = defineProps({
   }
 })
 
-const emits = defineEmits(["update"])
+const emits = defineEmits(["update", "create"])
 
 const form = reactive<roleDocConfigItem>({
   freeContent: "",
@@ -81,6 +81,16 @@ async function getConfig() {
   Object.assign(form, res.data)
 }
 
+async function roleAddDoc(){
+  let res = await roleAddDocApi(props.roleId, props.docId)
+  if (res.code) {
+    Message.error(res.msg)
+    return
+  }
+  Object.assign(form, res.data)
+  Message.success(res.msg)
+  emits("create")
+}
 
 async function updateDocConfig() {
   const data: roleDocConfigUpdateItem = {

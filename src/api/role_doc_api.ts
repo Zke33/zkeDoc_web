@@ -31,6 +31,11 @@ export function roleDocTreeUpdateApi(roleID: number, docList: roleDocUpdateItem[
     })
 }
 
+export function roleAddDocApi(roleID: number, docID: number): Promise<Response<string>> {
+    return useAxios.post("/api/role_docs", {roleID, docID})
+}
+
+
 
 export interface roleDocConfigItem {
     freeContent: string
