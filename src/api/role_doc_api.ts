@@ -2,7 +2,7 @@ import {useAxios} from "@/api/index";
 import type {Response} from "@/api/index";
 
 export interface roleDocListResponse {
-    List: roleDocItem[]
+    list: roleDocItem[]
     docIDList: number[]
 }
 

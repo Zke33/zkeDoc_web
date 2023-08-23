@@ -109,7 +109,7 @@ async function getList() {
     Message.error(res.msg)
     return
   }
-  list.value = res.data.List
+  list.value = res.data.list
   checkedKeys.value = res.data.docIDList
   docIDAllList.value = getDocIDAllList(list.value)
 }

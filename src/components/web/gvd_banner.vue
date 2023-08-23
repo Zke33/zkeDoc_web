@@ -34,17 +34,18 @@ import {useStore} from "@/stores";
 import {ref, watch} from "vue";
 import {Random} from "mockjs";
 import {computed} from "vue";
+import type {themeType} from "@/type/type";
 
 const store = useStore()
 store.getSiteData()
 
 interface BannerColorType {
   dark: string[]
-  "": string[]
+  "light": string[]
 }
 
 const bannerColor: BannerColorType = {
-  "": [
+  "light": [
     "linear-gradient(to left bottom, #CCDAEE 0%, #D0F0CF 100%)",
   ],
   "dark": [
