@@ -1,40 +1,45 @@
 <template>
-  <div class="gvd_role_doc_tree">
-    <div class="head">
-      <div class="left">
-        文档列表
+  <div class="gvd_drawer_body">
+    <div class="gvd_role_doc_tree">
+      <div class="head">
+        <div class="left">
+          文档列表
+        </div>
+        <div class="right">
+          <a-button type="primary" size="small" @click="updateRoleDocTree">更新</a-button>
+        </div>
       </div>
-      <div class="right">
-        <a-button type="primary" size="small" @click="updateRoleDocTree">更新</a-button>
-      </div>
-    </div>
-    <div class="body">
-      <div class="actions">
-        <span><a-checkbox v-model="checkStrictly">父子关联</a-checkbox></span>
-        <span><a-checkbox @change="allIn">全选</a-checkbox></span>
-      </div>
-      <div class="tree">
-        <a-tree
-            blockNode
-            :check-strictly="!checkStrictly"
-            :checkable="true"
-            v-model:checked-keys="checkedKeys"
-            :data="list"
-        >
-          <template #extra="nodeData:roleDocItem">
+      <div class="body">
+        <div class="actions">
+          <span><a-checkbox v-model="checkStrictly">父子关联</a-checkbox></span>
+          <span><a-checkbox @change="allIn">全选</a-checkbox></span>
+        </div>
+        <div class="tree">
+          <a-tree
+              blockNode
+              :check-strictly="!checkStrictly"
+              :checkable="true"
+              v-model:checked-keys="checkedKeys"
+              :data="list"
+              @select="selectNode"
+          >
+            <template #extra="nodeData:roleDocItem">
             <span class="tree_extra">
                   <icon-lock v-if="nodeData.isPwd"></icon-lock>
                    <icon-eye v-if="nodeData.isSee"></icon-eye>
             </span>
 
-          </template>
-        </a-tree>
-      </div>
+            </template>
+          </a-tree>
+        </div>
 
+      </div>
     </div>
+    <Gvd_doc_config :role-id="props.roleId" :doc-title="docTitle" :doc-id="docID"></Gvd_doc_config>
   </div>
 </template>
 <script setup lang="ts">
+import Gvd_doc_config from "@/components/admin/gvd_doc_config.vue";
 import {ref} from "vue";
 import type {Ref} from "vue"
 import {roleDocTreeApi} from "@/api/role_doc_api";
@@ -54,6 +59,14 @@ const checkedKeys: Ref<number[]> = ref([]);
 const list: Ref<roleDocItem[]> = ref([])
 const docIDAllList: Ref<number[]> = ref([])
 const checkStrictly = ref(true)
+
+const docID: Ref<undefined | number> = ref()
+const docTitle: Ref<undefined | string> = ref()
+
+function selectNode(key: number[], {node}: { node: roleDocItem }) {
+  docID.value = node.key
+  docTitle.value = node.title
+}
 
 
 // 把接收的列表，当做返回值返回
@@ -173,7 +186,7 @@ function allIn(val: boolean) {
           }
         }
 
-        .tree_extra{
+        .tree_extra {
           color: white;
         }
       }

@@ -30,3 +30,27 @@ export function roleDocTreeUpdateApi(roleID: number, docList: roleDocUpdateItem[
         docList,
     })
 }
+
+
+export interface roleDocConfigItem {
+    freeContent: string
+    isPwd: boolean
+    isSee: boolean
+    roleDocPwd: string
+    rolePwd: string
+}
+
+
+export interface roleDocConfigUpdateItem extends roleDocConfigItem {
+    docID: number
+    roleID: number
+}
+
+export function roleDocGetConfigApi(roleID: number, docID: number): Promise<Response<roleDocConfigItem>> {
+    return useAxios.get("/api/role_docs/info", {params: {roleID, docID}})
+}
+
+
+export function roleDocUpdateConfigApi(data: roleDocConfigUpdateItem): Promise<Response<string>> {
+    return useAxios.put("/api/role_docs/info", data)
+}
