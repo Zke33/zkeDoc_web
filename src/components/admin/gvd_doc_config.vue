@@ -2,9 +2,12 @@
   <div class="gvd_doc_config">
     <template v-if="props.docId">
       <div class="head">
-        文档配置 [{{ props.docTitle }}]
+        文档配置 [{{ props.docItem.title }}]
       </div>
       <div class="body">
+        <div class="no_role_mask" v-if="!props.docItem.show">
+          <a-button type="primary">加入角色</a-button>
+        </div>
         <a-form ref="formRef" :model="form" :label-col-props="{span: 3, offset: 0}"
                 :wrapper-col-props="{span:21, offset: 0}">
           <a-form-item label="是否启用密码">
@@ -48,8 +51,8 @@ const props = defineProps({
   docId: {
     type: Number
   },
-  docTitle: {
-    type: String
+  docItem: {
+    type: Object
   }
 })
 
@@ -65,6 +68,9 @@ const form = reactive<roleDocConfigItem>({
 
 async function getConfig() {
   if (!props.docId) {
+    return
+  }
+  if (!props.docItem.show) {
     return
   }
   let res = await roleDocGetConfigApi(props.roleId, props.docId)
@@ -102,6 +108,29 @@ watch(() => props.docId, () => {
 </script>
 
 <style>
+.gvd_doc_config {
+  .body {
+    position: relative;
+
+    .no_role_mask {
+      position: absolute;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      top: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 1;
+      background-color: var(--translucent_bg);
+
+      & ~ .arco-form {
+        filter: blur(2px);
+      }
+    }
+  }
+}
+
 .gvd_doc_config_no_data {
   width: 100%;
   height: 100%;

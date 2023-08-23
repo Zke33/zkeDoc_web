@@ -40,8 +40,11 @@
 
       </div>
     </div>
-    <Gvd_doc_config @update="docConfigUpdateEvent" :role-id="props.roleId" :doc-title="docTitle"
-                    :doc-id="docID"></Gvd_doc_config>
+    <Gvd_doc_config
+        @update="docConfigUpdateEvent"
+        :role-id="props.roleId"
+        :doc-item="docItem"
+        :doc-id="docID"></Gvd_doc_config>
   </div>
 </template>
 <script setup lang="ts">
@@ -67,11 +70,10 @@ const docIDAllList: Ref<number[]> = ref([])
 const checkStrictly = ref(true)
 
 const docID: Ref<undefined | number> = ref()
-const docTitle: Ref<undefined | string> = ref()
-
+const docItem: Ref<roleDocItem|undefined> = ref()
 function selectNode(key: number[], {node}: { node: roleDocItem }) {
   docID.value = node.key
-  docTitle.value = node.title
+  docItem.value = node
 }
 
 function docConfigUpdateEvent() {

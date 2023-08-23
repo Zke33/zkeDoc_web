@@ -8,6 +8,7 @@ body {
     --index_fixed_menu_bg: #90909050;
     --index_fixed_menu_bg_hover: rgba(157, 157, 157, 0.31);
 
+    --translucent_bg: rgba(255, 255, 255, 0.5);
 }
 
 body[arco-theme='dark'] {
@@ -18,4 +19,6 @@ body[arco-theme='dark'] {
 
     --index_fixed_menu_bg: rgb(100 100 100 / 31%);
     --index_fixed_menu_bg_hover: rgba(119, 118, 118, 0.31);
+
+    --translucent_bg: rgba(0, 0, 0, 0.5);
 }
