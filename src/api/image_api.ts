@@ -1,6 +1,7 @@
-
 import {useAxios} from "@/api";
 import {useStore} from "@/stores";
+import type {Response} from "@/api";
+import type {AxiosResponse} from "axios";
 
 export interface imageType {
     id: number
@@ -24,6 +25,6 @@ export function uploadImageApi(file: File): Promise<Response<string>> {
                 token: store.userInfo.token,
                 "Content-Type": "multipart/form-data"
             }
-        }).then(res=>resolve(res)).catch(err=>reject(err))
+        }).then((res: any) => resolve(res)).catch(err => reject(err))
     })
 }

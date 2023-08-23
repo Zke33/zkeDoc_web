@@ -41,20 +41,32 @@
 <script setup lang="ts">
 import {reactive, watch} from "vue";
 import {roleDocGetConfigApi, roleDocUpdateConfigApi, roleAddDocApi} from "@/api/role_doc_api";
-import type {roleDocConfigItem, roleDocConfigUpdateItem} from "@/api/role_doc_api";
+import type {roleDocConfigItem, roleDocConfigUpdateItem, roleDocItem} from "@/api/role_doc_api";
 import {Message} from "@arco-design/web-vue";
 
-const props = defineProps({
-  roleId: {
-    type: Number
-  },
-  docId: {
-    type: Number
-  },
-  docItem: {
-    type: Object
-  }
-})
+interface Props {
+  roleId: number
+  docId: number|undefined
+  docItem: roleDocItem|undefined
+}
+
+
+// 没有默认值的情况下
+const props = defineProps<Props>()
+// 如果有默认值
+// const {roleId, docId, docItem} = defineProps<Props>()
+
+// const props = defineProps({
+//   roleId: {
+//     type: Number
+//   },
+//   docId: {
+//     type: Number
+//   },
+//   docItem: {
+//     type: Object
+//   }
+// })
 
 const emits = defineEmits(["update", "create"])
 
@@ -82,7 +94,7 @@ async function getConfig() {
 }
 
 async function roleAddDoc(){
-  let res = await roleAddDocApi(props.roleId, props.docId)
+  let res = await roleAddDocApi(props.roleId, props.docId as number)
   if (res.code) {
     Message.error(res.msg)
     return
@@ -99,7 +111,7 @@ async function updateDocConfig() {
     isSee: form.isSee,
     roleDocPwd: form.roleDocPwd,
     rolePwd: form.rolePwd,
-    docID: props.docId,
+    docID: props.docId as number,
     roleID: props.roleId,
   }
   let res = await roleDocUpdateConfigApi(data)

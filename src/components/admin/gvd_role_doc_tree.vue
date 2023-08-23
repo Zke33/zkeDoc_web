@@ -59,12 +59,11 @@ import {roleDocTreeUpdateApi} from "@/api/role_doc_api";
 import type {roleDocUpdateItem} from "@/api/role_doc_api";
 import {IconLock, IconEye, IconRefresh} from "@arco-design/web-vue/es/icon";
 
-const props = defineProps({
-  roleId: {
-    type: Number
-  }
-})
+interface Props {
+  roleId: number
+}
 
+const props = defineProps<Props>()
 const checkedKeys: Ref<number[]> = ref([]);
 const list: Ref<roleDocItem[]> = ref([])
 const docIDAllList: Ref<number[]> = ref([])
@@ -72,7 +71,8 @@ const checkStrictly = ref(false)
 
 const docID: Ref<undefined | number> = ref()
 const docItem: Ref<roleDocItem|undefined> = ref()
-function selectNode(key: number[], {node}: { node: roleDocItem }) {
+function selectNode(key: (string | number)[], data: any) {
+  let node = data.node as roleDocItem
   docID.value = node.key
   docItem.value = node
 }
@@ -82,8 +82,8 @@ function docConfigUpdateEvent() {
 }
 
 function docConfigCreateEvent() {
-  checkedKeys.value.push(docID.value)
-  docItem.value.show = true
+  checkedKeys.value.push(docID.value as number);
+  (docItem.value as roleDocItem).show = true
 }
 
 // 把接收的列表，当做返回值返回
@@ -104,12 +104,12 @@ async function flush(){
 }
 
 async function getList() {
-  let res = await roleDocTreeApi(props.roleId)
+  let res = await roleDocTreeApi(props.roleId as number)
   if (res.code) {
     Message.error(res.msg)
     return
   }
-  list.value = res.data.list
+  list.value = res.data.List
   checkedKeys.value = res.data.docIDList
   docIDAllList.value = getDocIDAllList(list.value)
 }
@@ -124,7 +124,7 @@ async function updateRoleDocTree() {
       docID: docID,
     })
   }
-  let res = await roleDocTreeUpdateApi(props.roleId, docList)
+  let res = await roleDocTreeUpdateApi(props.roleId as number, docList)
   if (res.code) {
     Message.error(res.msg)
     return
@@ -134,8 +134,8 @@ async function updateRoleDocTree() {
 }
 
 
-function allIn(val: boolean) {
-  if (val) {
+function allIn(value: (boolean | (string | number | boolean)[]), ev: Event) {
+  if (value as boolean) {
     // 全选
     checkedKeys.value = docIDAllList.value
     return

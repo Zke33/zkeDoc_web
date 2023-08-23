@@ -39,6 +39,7 @@ import {Message} from "@arco-design/web-vue";
 const data = reactive<userInfoItem>({
   id: 0,
   createdAt: "",
+  updatedAt: "",
   avatar: "",
   nickName: "",
   email: "",

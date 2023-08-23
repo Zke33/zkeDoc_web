@@ -69,7 +69,14 @@ const columns = [
   {title: '操作', slotName: 'action'},
 ]
 
-const drawer = reactive({
+
+interface drawerType {
+  visible: boolean
+  title: string
+  roleID: undefined | number
+}
+
+const drawer = reactive<drawerType>({
   visible: false,
   title: "",
   roleID: undefined,

@@ -32,10 +32,12 @@ const site: siteType = {
     title: "",
 }
 
+let theme: themeType = "light"
+
 export const useStore = defineStore('useStore', {
     state() {
         return {
-            theme: "", // 主题
+            theme: theme, // 主题
             userInfo: userInfo,
             site: site,
         }

@@ -1,7 +1,7 @@
 <template>
   <div @click="setTheme">
     <icon-moon-fill v-if="store.theme === 'dark'"/>
-    <icon-sun-fill v-if="store.theme === ''"/>
+    <icon-sun-fill v-if="store.theme === 'light'"/>
   </div>
 </template>
 
@@ -15,7 +15,7 @@ const store = useStore()
 function setTheme() {
   if (document.body.hasAttribute('arco-theme')) {
     // 变成白天
-    store.setTheme("")
+    store.setTheme("light")
     document.body.removeAttribute('arco-theme')
   } else {
     // 变成黑夜

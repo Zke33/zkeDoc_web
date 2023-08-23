@@ -45,7 +45,7 @@ const text = ref("")
 const emits = defineEmits(["update:modelValue", "change"])
 
 watch(() => props.modelValue, () => {
-  text.value = props.modelValue
+  text.value = props.modelValue as string
 })
 
 

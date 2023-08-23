@@ -21,7 +21,7 @@ export function roleDocTreeApi(roleID: number): Promise<Response<roleDocListResp
 
 export interface roleDocUpdateItem {
     docID: number
-    sort: number
+    sort?: number
 }
 
 export function roleDocTreeUpdateApi(roleID: number, docList: roleDocUpdateItem[]): Promise<Response<string>> {

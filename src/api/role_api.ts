@@ -31,6 +31,6 @@ export function roleApi(data: roleRequest): Promise<Response<string>> {
     return useAxios.put("/api/roles", data)
 }
 
-export function roleRemoveApi(id: number) {
+export function roleRemoveApi(id: number) : Promise<Response<string>>{
     return useAxios.delete("/api/roles", {data: {id}})
 }
