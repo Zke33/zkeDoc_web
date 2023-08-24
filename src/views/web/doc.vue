@@ -16,7 +16,7 @@
           </div>
         </div>
         <div class="doc_body">
-          <div class="doc_pwd_mask" v-if="data.isPwd">
+          <div :class="{doc_pwd_mask: true, isSee: data.isSee}" v-if="data.isPwd">
             <div class="head">此文档需要输入密码查看</div>
             <div class="ipt_box">
               <a-input placeholder="密码" v-model="pwd"></a-input>
@@ -27,6 +27,7 @@
 
           <MdPreview :editorId="id" :model-value="data.content" :theme="store.theme"></MdPreview>
           <div class="doc_see_mask" v-if="data.isSee">
+            <div class="pwd_mask" v-if="data.isPwd"></div>
             <div class="head">试看结束 以下为更高级别权限可看</div>
             <div class="body">
               <a-skeleton>
@@ -85,7 +86,7 @@ import {userCollApi} from "@/api/user_center_api";
 
 
 const widthList = [
-  "23%", "45%", "67%", "34%", "12%", "34%", "67%", "89%", "23%", "45%", "67%", "89%", "34%", "56%", "78%", "23%", "56%", "77%", "88%", "44%", "56%", "78%", "89%"
+  "23%", "45%", "67%", "34%", "12%", "34%", "67%", "89%", "23%", "45%", "67%", "89%", "34%", "56%"
 ]
 const route = useRoute()
 const id = 'preview-only';
@@ -249,12 +250,14 @@ async function docPwd() {
 
       .doc_body {
         margin-top: 20px;
+        position: relative;
 
         .doc_pwd_mask {
           width: 50%;
           background-color: var(--color-fill-1);
           padding: 20px;
           border-radius: 5px;
+
 
           .ipt_box {
             display: flex;
@@ -300,6 +303,23 @@ async function docPwd() {
           .body {
             margin-top: 20px;
           }
+        }
+
+        .doc_pwd_mask.isSee {
+          position: absolute;
+          bottom: 300px;
+          z-index: 2;
+
+          box-shadow: 4px 6px 5px 0 var(--color-fill-3);
+        }
+
+        .doc_see_mask .pwd_mask {
+          position: absolute;
+          bottom: 0;
+          height: 500px;
+          width: 100%;
+          z-index: 1;
+          background: linear-gradient(to top, var(--doc_bg), rgba(0, 0, 0, 0));
         }
       }
 
