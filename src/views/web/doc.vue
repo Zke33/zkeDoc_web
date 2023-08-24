@@ -1,15 +1,15 @@
 <template>
   <div class="gvd_doc_view">
     <Gvd_slide></Gvd_slide>
-    <gvd_fixed_menu></gvd_fixed_menu>
+    <gvd_fixed_menu :class="{isNoMdCatalog: isNoMdCatalog}"></gvd_fixed_menu>
     <div class="gvd_doc_main">
-      <main>
+      <main :class="{isNoMdCatalog: isNoMdCatalog}">
         <div class="doc_head">
           <h1>{{ data.title }}</h1>
           <div class="doc_data">
-            <span>浏览量： <b>{{  data.lookCount }}</b></span>
-            <span>点赞量： <b>{{  data.diggCount }}</b></span>
-            <span>收藏量： <b>{{  data.collCount }}</b></span>
+            <span>浏览量： <b>{{ data.lookCount }}</b></span>
+            <span>点赞量： <b>{{ data.diggCount }}</b></span>
+            <span>收藏量： <b>{{ data.collCount }}</b></span>
           </div>
           <div class="date">
             <span>发布时间：{{ dateTimeFormat(data.createdAt) }}（{{ relativeToCurrentTime(data.createdAt) }}）</span>
@@ -54,6 +54,15 @@ const scrollElement = document.documentElement;
 const store = useStore()
 // const text = ref(catalogMd)
 
+const isNoMdCatalog = ref(false)
+
+window.addEventListener("keydown", function (e: KeyboardEvent) {
+  if (e.key === "]" && e.ctrlKey) {
+    isNoMdCatalog.value = !isNoMdCatalog.value
+  }
+})
+
+
 const data = reactive<docItem>({
   collCount: 0,
   content: "",
@@ -66,9 +75,9 @@ const data = reactive<docItem>({
   title: "",
 })
 
-async function getDocContent(id: number){
+async function getDocContent(id: number) {
   let res = await getDocDetailApi(id)
-  if (res.code){
+  if (res.code) {
     Message.error(res.msg)
     return
   }
@@ -76,9 +85,9 @@ async function getDocContent(id: number){
 }
 
 
-watch(()=>route.params, ()=>{
+watch(() => route.params, () => {
   const id = Number(route.params.id)
-  if (isNaN(id)){
+  if (isNaN(id)) {
     console.log("错误了", route.params)
     return
   }
@@ -112,10 +121,12 @@ watch(()=>route.params, ()=>{
     justify-content: space-between;
     background-color: var(--doc_bg);
     margin-left: 300px;
+    min-height: 100vh;
 
     > main {
       width: calc(100% - 240px);
       padding: 40px 20px 0 40px;
+      transition: all 0.3s;
 
       .doc_head {
         color: var(--color-text-2);
@@ -136,10 +147,21 @@ watch(()=>route.params, ()=>{
       .md-editor-preview-wrapper {
         padding: 0;
       }
+
+
+    }
+
+    main.isNoMdCatalog{
+      width: 100%;
+
+      &~section{
+        transform: translateX(240px);
+      }
     }
 
     > section {
       width: 240px;
+      transform: translateX(0);
       border-left: 1px solid var(--doc_border);
       transition: all 0.3s;
       background-color: var(--doc_bg);
@@ -149,6 +171,7 @@ watch(()=>route.params, ()=>{
       top: 0;
       z-index: 1;
       color: var(--color-text-2);
+      transition: all 0.3s;
 
       .head {
         height: 40px;
@@ -163,10 +186,11 @@ watch(()=>route.params, ()=>{
         max-height: calc(100vh - 400px);
         overflow-y: auto;
 
-        &:hover{
-          &::-webkit-scrollbar{
+        &:hover {
+          &::-webkit-scrollbar {
             background-color: #eee;
           }
+
           &::-webkit-scrollbar-thumb {
             background-color: #999;
             box-shadow: inset 1px 1px 2px rgba(0, 0, 0, .1);
@@ -204,6 +228,10 @@ watch(()=>route.params, ()=>{
         }
       }
     }
+  }
+
+  .fixed_menu.isNoMdCatalog{
+    transform: translateX(240px);
   }
 }
 </style>

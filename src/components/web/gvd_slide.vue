@@ -1,7 +1,9 @@
 <template>
   <div class="gvd_slide">
     <div class="gvd_logo">
-      <div>logo</div>
+      <a href="/">
+        <div>logo</div>
+      </a>
     </div>
     <div class="gvd_search">
       <a-input placeholder="搜索"></a-input>
@@ -20,9 +22,14 @@ import Gvd_doc_tree from "@/components/web/gvd_doc_tree.vue";
   .gvd_logo {
     height: 60px;
     background-color: rgb(var(--arcoblue-1));
-    display: flex;
-    justify-content: center;
-    align-items: center;
+
+    a {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
   }
 
   .gvd_search {
@@ -31,7 +38,7 @@ import Gvd_doc_tree from "@/components/web/gvd_doc_tree.vue";
     align-items: center;
   }
 
-  .gvd_doc_tree{
+  .gvd_doc_tree {
     border-top: 1px solid var(--bg);
     padding-top: 10px;
   }

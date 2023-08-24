@@ -1,14 +1,17 @@
 <template>
-  <a-trigger position="top" trigger="click" auto-fit-position :unmount-on-close="false">
-    <div class="gvd_fixed_menu">?</div>
-    <template #content>
-      <div class="gvd_fixed_menu_content">
-        <div class="item" :title="item.title" @click="clickMenu(item)" v-for="item in menuList">
-          <component :is="item.icon"></component>
+  <div class="fixed_menu">
+    <a-trigger position="top" trigger="click" auto-fit-position :unmount-on-close="false">
+      <div class="gvd_fixed_menu">?</div>
+      <template #content>
+        <div class="gvd_fixed_menu_content">
+          <div class="item" :title="item.title" @click="clickMenu(item)" v-for="item in menuList">
+            <component :is="item.icon"></component>
+          </div>
         </div>
-      </div>
-    </template>
-  </a-trigger>
+      </template>
+    </a-trigger>
+  </div>
+
 </template>
 
 <script setup lang="ts">
@@ -82,7 +85,9 @@ function clickMenu(item: menuType) {
 </script>
 
 <style lang="scss">
-.gvd_fixed_menu {
+.fixed_menu {
+  transform: translateX(0);
+  transition: all 0.3s;
   position: fixed;
   right: 97px;
   bottom: 40px;
@@ -99,12 +104,13 @@ function clickMenu(item: menuType) {
   z-index: 100;
 }
 
+
 .gvd_fixed_menu_content {
   background-color: var(--index_fixed_menu_bg);
   border-radius: 32px;
   overflow: hidden;
   width: 32px;
-  margin-bottom: 10px;
+  margin-bottom: 20px;
   display: flex;
   flex-direction: column;
   align-items: center;

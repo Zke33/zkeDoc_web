@@ -11,5 +11,7 @@ store.loadToken()
 
 </script>
 <style>
-
+.default-theme img {
+  border: none!important;
+}
 </style>

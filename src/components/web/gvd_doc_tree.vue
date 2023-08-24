@@ -75,11 +75,12 @@ async function getList() {
   }
   data.list = res.data.list
   let parentIDList = getParentIDList(data.list, Number(route.params.id))
-  if (route.name !== "index" &&  parentIDList.length === 0) {
-    Message.warning("文档地址错误")
-    router.push({name: "index"})
-    return
-  }
+  // console.log(route.name, Number(route.params.id), parentIDList)
+  // if (route.name !== "index" &&  parentIDList.length === 0) {
+  //   Message.warning("文档地址错误")
+  //   router.push({name: "index"})
+  //   return
+  // }
   data.expandedKeys = parentIDList
 }
 
