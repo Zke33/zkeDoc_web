@@ -1,6 +1,6 @@
 <template>
   <div class="fixed_menu">
-    <a-trigger position="top" trigger="click" auto-fit-position :unmount-on-close="false">
+    <a-trigger position="top" trigger="hover" auto-fit-position :unmount-on-close="false">
       <div class="gvd_fixed_menu">?</div>
       <template #content>
         <div class="gvd_fixed_menu_content">
@@ -95,13 +95,19 @@ function clickMenu(item: menuType) {
   height: 46px;
   background-color: var(--index_fixed_menu_bg);
   border-radius: 50%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
   color: var(--color-text-1);
   font-size: 20px;
   cursor: pointer;
   z-index: 100;
+
+
+  .gvd_fixed_menu{
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
 }
 
 
@@ -110,7 +116,7 @@ function clickMenu(item: menuType) {
   border-radius: 32px;
   overflow: hidden;
   width: 32px;
-  margin-bottom: 20px;
+  margin-bottom: 10px;
   display: flex;
   flex-direction: column;
   align-items: center;

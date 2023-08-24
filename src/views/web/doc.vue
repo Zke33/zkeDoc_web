@@ -25,8 +25,21 @@
         </div>
         <div class="body">
           <MdCatalog :editorId="id" :scrollElement="scrollElement"/>
+          <div class="doc_action">
+            <div @click="docDigg" :class="{item: true, active: isDigg}">
+              <icon-thumb-up-fill/>
+              <span>点赞</span>
+            </div>
+            <div @click="docColl" :class="{item: true, active: data.isColl}">
+              <icon-star-fill/>
+              <span>收藏</span>
+            </div>
+            <div @click="goTop" class="item">
+              <icon-to-top/>
+              <span>Top</span>
+            </div>
+          </div>
         </div>
-
       </section>
     </div>
   </div>
@@ -37,6 +50,7 @@ import {MdPreview, MdCatalog} from 'md-editor-v3';
 import {reactive, ref, watch} from "vue";
 import Gvd_slide from "@/components/web/gvd_slide.vue";
 import Gvd_fixed_menu from "@/components/web/gvd_fixed_menu.vue";
+import {IconThumbUpFill, IconStarFill, IconToTop} from "@arco-design/web-vue/es/icon";
 import LongMd from "@/assets/md/long.md?raw"
 import SortMd from "@/assets/md/sort.md?raw"
 import catalogMd from "@/assets/md/catalog.md?raw"
@@ -47,6 +61,8 @@ import {getDocDetailApi} from "@/api/doc_api";
 import type {docItem} from "@/api/doc_api";
 import {Message} from "@arco-design/web-vue";
 import {dateTimeFormat, relativeToCurrentTime} from "@/utils/datetime";
+import {docDiggApi} from "@/api/doc_api";
+import {userCollApi} from "@/api/user_center_api";
 
 const route = useRoute()
 const id = 'preview-only';
@@ -75,6 +91,7 @@ const data = reactive<docItem>({
   title: "",
 })
 
+
 async function getDocContent(id: number) {
   let res = await getDocDetailApi(id)
   if (res.code) {
@@ -93,6 +110,53 @@ watch(() => route.params, () => {
   }
   getDocContent(id)
 }, {immediate: true})
+
+
+function goTop() {
+  document.documentElement.scrollTo({
+    top: 0, // 100vh的值，滚动到视口高度的位置
+    behavior: 'smooth' // 使用平滑滚动效果
+  });
+}
+
+const isDigg = ref(false)
+
+async function docDigg() {
+  let res = await docDiggApi(Number(route.params.id))
+  if (res.code) {
+    Message.error(res.msg)
+    return
+  }
+  Message.success(res.msg)
+  data.diggCount++
+
+  isDigg.value = true
+
+  setTimeout(()=>{
+    isDigg.value = false
+  }, 1000)
+}
+
+async function docColl() {
+  if (!store.isLogin) {
+    Message.warning("请登录")
+    return
+  }
+  let res = await userCollApi(Number(route.params.id))
+  if (res.code) {
+    Message.error(res.msg)
+    return
+  }
+  Message.success(res.msg)
+  let count = 1
+  if (data.isColl) {
+    // 现在是收藏，我要取消收藏
+    count = -1
+  }
+  data.collCount += count
+  data.isColl = !data.isColl
+
+}
 
 
 </script>
@@ -144,6 +208,10 @@ watch(() => route.params, () => {
         }
       }
 
+      .doc_body {
+        margin-top: 20px;
+      }
+
       .md-editor-preview-wrapper {
         padding: 0;
       }
@@ -151,10 +219,10 @@ watch(() => route.params, () => {
 
     }
 
-    main.isNoMdCatalog{
+    main.isNoMdCatalog {
       width: 100%;
 
-      &~section{
+      & ~ section {
         transform: translateX(240px);
       }
     }
@@ -211,6 +279,38 @@ watch(() => route.params, () => {
           box-shadow: inset 1px 1px 2px transparent;
           border: 1px solid transparent;
         }
+
+        .doc_action {
+          position: fixed;
+          bottom: 100px;
+          right: 93px;
+          z-index: 101;
+
+          .item {
+            border: 1px solid var(--doc_border);
+            width: 50px;
+            height: 50px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 10px;
+            cursor: pointer;
+            border-radius: 5px;
+
+            svg {
+              font-size: 20px;
+            }
+
+            span {
+              font-size: 12px;
+            }
+
+            &.active {
+              color: rgb(var(--arcoblue-6));
+            }
+          }
+        }
       }
 
       .md-editor-catalog-link > span {
@@ -230,7 +330,7 @@ watch(() => route.params, () => {
     }
   }
 
-  .fixed_menu.isNoMdCatalog{
+  .fixed_menu.isNoMdCatalog {
     transform: translateX(240px);
   }
 }

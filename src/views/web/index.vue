@@ -42,7 +42,7 @@ window.addEventListener("scroll", function () {
   .gvd_docs_view {
     min-height: 100vh;
     width: 100%;
-    background-color: var(--color-bg-1);
+    background-color: var(--doc_bg);
     display: flex;
 
     .gvd_slide {

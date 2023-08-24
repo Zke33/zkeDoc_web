@@ -17,3 +17,7 @@ export interface docItem {
 export function getDocDetailApi(id: number):Promise<Response<docItem>> {
     return useAxios("/api/docs/" + id.toString())
 }
+
+export function docDiggApi(id: number):Promise<Response<string>> {
+    return useAxios("/api/docs/digg/" + id.toString())
+}
