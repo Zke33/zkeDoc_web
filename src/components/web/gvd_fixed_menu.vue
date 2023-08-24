@@ -96,6 +96,7 @@ function clickMenu(item: menuType) {
   color: var(--color-text-1);
   font-size: 20px;
   cursor: pointer;
+  z-index: 100;
 }
 
 .gvd_fixed_menu_content {
