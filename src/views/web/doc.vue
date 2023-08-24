@@ -5,18 +5,18 @@
     <div class="gvd_doc_main">
       <main>
         <div class="doc_head">
-          <h1>文档标题</h1>
+          <h1>{{ data.title }}</h1>
           <div class="doc_data">
-            <span>浏览量： <b>325</b></span>
-            <span>点赞量： <b>56</b></span>
-            <span>收藏量： <b>2</b></span>
+            <span>浏览量： <b>{{  data.lookCount }}</b></span>
+            <span>点赞量： <b>{{  data.diggCount }}</b></span>
+            <span>收藏量： <b>{{  data.collCount }}</b></span>
           </div>
           <div class="date">
-            <span>发布时间：2023-12-12 12:34:12（6天前）</span>
+            <span>发布时间：{{ dateTimeFormat(data.createdAt) }}（{{ relativeToCurrentTime(data.createdAt) }}）</span>
           </div>
         </div>
         <div class="doc_body">
-          <MdPreview :editorId="id" :model-value="text" :theme="store.theme"></MdPreview>
+          <MdPreview :editorId="id" :model-value="data.content" :theme="store.theme"></MdPreview>
         </div>
       </main>
       <section>
@@ -34,7 +34,7 @@
 
 <script setup lang="ts">
 import {MdPreview, MdCatalog} from 'md-editor-v3';
-import {ref} from "vue";
+import {reactive, ref, watch} from "vue";
 import Gvd_slide from "@/components/web/gvd_slide.vue";
 import Gvd_fixed_menu from "@/components/web/gvd_fixed_menu.vue";
 import LongMd from "@/assets/md/long.md?raw"
@@ -42,11 +42,49 @@ import SortMd from "@/assets/md/sort.md?raw"
 import catalogMd from "@/assets/md/catalog.md?raw"
 import 'md-editor-v3/lib/style.css';
 import {useStore} from "@/stores";
+import {useRoute} from "vue-router";
+import {getDocDetailApi} from "@/api/doc_api";
+import type {docItem} from "@/api/doc_api";
+import {Message} from "@arco-design/web-vue";
+import {dateTimeFormat, relativeToCurrentTime} from "@/utils/datetime";
 
+const route = useRoute()
 const id = 'preview-only';
 const scrollElement = document.documentElement;
 const store = useStore()
-const text = ref(catalogMd)
+// const text = ref(catalogMd)
+
+const data = reactive<docItem>({
+  collCount: 0,
+  content: "",
+  createdAt: "",
+  diggCount: 0,
+  isColl: false,
+  isPwd: false,
+  isSee: false,
+  lookCount: 0,
+  title: "",
+})
+
+async function getDocContent(id: number){
+  let res = await getDocDetailApi(id)
+  if (res.code){
+    Message.error(res.msg)
+    return
+  }
+  Object.assign(data, res.data)
+}
+
+
+watch(()=>route.params, ()=>{
+  const id = Number(route.params.id)
+  if (isNaN(id)){
+    console.log("错误了", route.params)
+    return
+  }
+  getDocContent(id)
+}, {immediate: true})
+
 
 </script>
 
