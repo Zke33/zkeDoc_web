@@ -67,7 +67,7 @@ const abstract = computed(()=>{
 
 function down(){
   document.documentElement.scrollTo({
-    top: 10, // 100vh的值，滚动到视口高度的位置
+    top:  window.innerHeight, // 100vh的值，滚动到视口高度的位置
     behavior: 'smooth' // 使用平滑滚动效果
   });
 }

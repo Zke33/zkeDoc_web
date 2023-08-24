@@ -26,6 +26,7 @@ import {Message} from "@arco-design/web-vue";
 import {IconEye, IconLock, IconStarFill, IconUnlock} from "@arco-design/web-vue/es/icon";
 import {useRouter, useRoute} from "vue-router";
 
+
 interface dataType {
   list: docTreeItem[]
   selectedKeys: number[]
@@ -41,7 +42,8 @@ const data = reactive<dataType>({
 const router = useRouter()
 const route = useRoute()
 
-if (isNaN(Number(route.params.id))) {
+
+if (route.name !== "index" && isNaN(Number(route.params.id))) {
   router.push({name: "index"})
 }
 
@@ -73,7 +75,7 @@ async function getList() {
   }
   data.list = res.data.list
   let parentIDList = getParentIDList(data.list, Number(route.params.id))
-  if (parentIDList.length === 0) {
+  if (route.name !== "index" &&  parentIDList.length === 0) {
     Message.warning("文档地址错误")
     router.push({name: "index"})
     return
