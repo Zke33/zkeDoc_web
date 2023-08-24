@@ -16,7 +16,26 @@
           </div>
         </div>
         <div class="doc_body">
+          <div class="doc_pwd_mask" v-if="data.isPwd">
+            <div class="head">此文档需要输入密码查看</div>
+            <div class="ipt_box">
+              <a-input placeholder="密码" v-model="pwd"></a-input>
+              <a-button type="primary" @click="docPwd">提交</a-button>
+            </div>
+            <div class="note">未登陆用户刷新页面需要重新输入密码，登陆用户自动记住密码</div>
+          </div>
+
           <MdPreview :editorId="id" :model-value="data.content" :theme="store.theme"></MdPreview>
+          <div class="doc_see_mask" v-if="data.isSee">
+            <div class="head">试看结束 以下为更高级别权限可看</div>
+            <div class="body">
+              <a-skeleton>
+                <a-space direction="vertical" :style="{width:'100%'}" size="large">
+                  <a-skeleton-line :rows="widthList.length" :widths="widthList"/>
+                </a-space>
+              </a-skeleton>
+            </div>
+          </div>
         </div>
       </main>
       <section>
@@ -61,9 +80,13 @@ import {getDocDetailApi} from "@/api/doc_api";
 import type {docItem} from "@/api/doc_api";
 import {Message} from "@arco-design/web-vue";
 import {dateTimeFormat, relativeToCurrentTime} from "@/utils/datetime";
-import {docDiggApi} from "@/api/doc_api";
+import {docDiggApi, docPwdContent} from "@/api/doc_api";
 import {userCollApi} from "@/api/user_center_api";
 
+
+const widthList = [
+  "23%", "45%", "67%", "34%", "12%", "34%", "67%", "89%", "23%", "45%", "67%", "89%", "34%", "56%", "78%", "23%", "56%", "77%", "88%", "44%", "56%", "78%", "89%"
+]
 const route = useRoute()
 const id = 'preview-only';
 const scrollElement = document.documentElement;
@@ -132,7 +155,7 @@ async function docDigg() {
 
   isDigg.value = true
 
-  setTimeout(()=>{
+  setTimeout(() => {
     isDigg.value = false
   }, 1000)
 }
@@ -158,6 +181,22 @@ async function docColl() {
 
 }
 
+const pwd = ref("")
+
+async function docPwd() {
+  if (pwd.value === "") {
+    Message.warning("请输入密码")
+    return
+  }
+  let res = await docPwdContent(Number(route.params.id), pwd.value)
+  if (res.code) {
+    Message.error(res.msg)
+    return
+  }
+  Message.success(res.msg)
+  data.content = res.data.content
+  data.isPwd = false
+}
 
 </script>
 
@@ -210,6 +249,58 @@ async function docColl() {
 
       .doc_body {
         margin-top: 20px;
+
+        .doc_pwd_mask {
+          width: 50%;
+          background-color: var(--color-fill-1);
+          padding: 20px;
+          border-radius: 5px;
+
+          .ipt_box {
+            display: flex;
+            justify-content: space-between;
+            margin: 10px 0;
+
+            .arco-btn {
+              margin-left: 20px;
+            }
+          }
+
+          .note {
+            font-size: 12px;
+            color: var(--color-text-3);
+          }
+
+        }
+
+        .doc_see_mask {
+          .head {
+            font-size: 12px;
+            color: var(--color-text-3);
+            display: flex;
+            align-items: center;
+
+            &::before, &::after {
+              content: "";
+              display: inline-block;
+              width: 100px;
+              height: 1px;
+              background-color: var(--color-text-3);
+            }
+
+            &::before {
+              margin-right: 5px;
+            }
+
+            &::after {
+              margin-left: 5px;
+            }
+          }
+
+          .body {
+            margin-top: 20px;
+          }
+        }
       }
 
       .md-editor-preview-wrapper {
