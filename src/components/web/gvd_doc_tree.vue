@@ -4,7 +4,7 @@
   </div>
   <div class="gvd_doc_tree">
     <a-tree
-        :data="data.list"
+        :data="store.docTree"
         v-model:selected-keys="data.selectedKeys"
         v-model:expanded-keys="data.expandedKeys"
         @select="selectNode" block-node>
@@ -21,23 +21,22 @@
 </template>
 
 <script setup lang="ts">
-import {reactive, ref} from "vue";
+import {reactive, ref, watch} from "vue";
 import type {docTreeItem} from "@/api/role_doc_api";
-import {docTreeApi} from "@/api/role_doc_api";
 import type {Ref} from "vue";
 import {Message} from "@arco-design/web-vue";
 import {IconEye, IconLock, IconStarFill, IconUnlock} from "@arco-design/web-vue/es/icon";
 import {useRouter, useRoute} from "vue-router";
+import {useStore} from "@/stores";
 
+const store = useStore()
 
 interface dataType {
-  list: docTreeItem[]
   selectedKeys: number[]
   expandedKeys: number[]
 }
 
 const data = reactive<dataType>({
-  list: [],
   selectedKeys: [],
   expandedKeys: [],
 })
@@ -47,7 +46,7 @@ const route = useRoute()
 
 
 function addDoc() {
-  data.list.push({
+  store.docTree.push({
     children: [],
     isPwd: false,
     isSee: false,
@@ -66,7 +65,6 @@ if (route.name !== "index" && isNaN(Number(route.params.id))) {
   router.push({name: "index"})
 }
 
-data.selectedKeys = [Number(route.params.id)]
 
 function getParentIDList(list: docTreeItem[], key: number, parents: number[] = []): number[] {
   for (const doc of list) {
@@ -87,19 +85,8 @@ function getParentIDList(list: docTreeItem[], key: number, parents: number[] = [
 }
 
 async function getList() {
-  let res = await docTreeApi()
-  if (res.code) {
-    Message.error(res.msg)
-    return
-  }
-  data.list = res.data.list
-  let parentIDList = getParentIDList(data.list, Number(route.params.id))
-  // console.log(route.name, Number(route.params.id), parentIDList)
-  // if (route.name !== "index" &&  parentIDList.length === 0) {
-  //   Message.warning("文档地址错误")
-  //   router.push({name: "index"})
-  //   return
-  // }
+  await store.getDocTree()
+  let parentIDList = getParentIDList(store.docTree, Number(route.params.id))
   data.expandedKeys = parentIDList
 }
 
@@ -114,6 +101,16 @@ function selectNode(key: (string | number)[], data: any) {
     }
   })
 }
+
+
+watch(() => route.params, () => {
+  if (route.name === "add_doc") {
+    return
+  }
+  data.selectedKeys = [Number(route.params.id)]
+}, {immediate: true})
+
+
 </script>
 <style lang="scss">
 .gvd_doc_tree {

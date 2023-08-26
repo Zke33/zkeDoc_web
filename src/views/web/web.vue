@@ -32,14 +32,12 @@ function scrollEvent() {
 
 
 watch(() => route.name, () => {
-  console.log(route.name)
   if (route.name === 'index') {
     scrollEvent()
     window.addEventListener("scroll", scrollEvent)
   } else {
     window.removeEventListener("scroll", scrollEvent)
     sideFixed.value = true
-    console.log(sideFixed.value)
   }
 }, {immediate: true})
 

@@ -36,28 +36,22 @@
         </div>
       </div>
     </main>
-    <section>
-      <div class="head">
-        文档目录
-      </div>
-      <div class="body">
-        <MdCatalog :editorId="id" :scrollElement="scrollElement"/>
-        <div class="doc_action">
-          <div @click="docDigg" :class="{item: true, active: isDigg}">
-            <icon-thumb-up-fill/>
-            <span>点赞</span>
-          </div>
-          <div @click="docColl" :class="{item: true, active: data.isColl}">
-            <icon-star-fill/>
-            <span>收藏</span>
-          </div>
-          <div @click="goTop" class="item">
-            <icon-to-top/>
-            <span>Top</span>
-          </div>
+    <Gvd_md_catalog @catalog-show="catalogShow" :editor-id="id" :scrollElement="scrollElement">
+      <div class="doc_action">
+        <div @click="docDigg" :class="{item: true, active: isDigg}">
+          <icon-thumb-up-fill/>
+          <span>点赞</span>
+        </div>
+        <div @click="docColl" :class="{item: true, active: data.isColl}">
+          <icon-star-fill/>
+          <span>收藏</span>
+        </div>
+        <div @click="goTop" class="item">
+          <icon-to-top/>
+          <span>Top</span>
         </div>
       </div>
-    </section>
+    </Gvd_md_catalog>
   </div>
 </template>
 
@@ -74,7 +68,7 @@ import {Message} from "@arco-design/web-vue";
 import {dateTimeFormat, relativeToCurrentTime} from "@/utils/datetime";
 import {docDiggApi, docPwdContent} from "@/api/doc_api";
 import {userCollApi} from "@/api/user_center_api";
-
+import Gvd_md_catalog from "@/components/web/gvd_md_catalog.vue";
 
 const widthList = [
   "23%", "45%", "67%", "34%", "12%", "34%", "67%", "89%", "23%", "45%", "67%", "89%", "34%", "56%"
@@ -87,19 +81,10 @@ const store = useStore()
 
 const isNoMdCatalog = ref(false)
 
-function keydownEvent(e: KeyboardEvent) {
-  if (e.key === "]" && e.ctrlKey) {
-    isNoMdCatalog.value = !isNoMdCatalog.value
-  }
+
+function catalogShow(isShow: boolean) {
+  isNoMdCatalog.value = isShow
 }
-
-
-window.addEventListener("keydown", keydownEvent)
-
-onUnmounted(() => {
-  window.removeEventListener("keydown", keydownEvent)
-})
-
 
 const data = reactive<docItem>({
   collCount: 0,
@@ -125,6 +110,9 @@ async function getDocContent(id: number) {
 
 
 watch(() => route.params, () => {
+  if (route.name === "add_doc") {
+    return;
+  }
   const id = Number(route.params.id)
   if (isNaN(id)) {
     console.log("错误了", route.params)
@@ -306,8 +294,38 @@ async function docPwd() {
     .md-editor-preview-wrapper {
       padding: 0;
     }
+  }
 
+  .doc_action {
+    position: fixed;
+    bottom: 100px;
+    right: 93px;
+    z-index: 101;
 
+    .item {
+      border: 1px solid var(--doc_border);
+      width: 50px;
+      height: 50px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 10px;
+      cursor: pointer;
+      border-radius: 5px;
+
+      svg {
+        font-size: 20px;
+      }
+
+      span {
+        font-size: 12px;
+      }
+
+      &.active {
+        color: rgb(var(--arcoblue-6));
+      }
+    }
   }
 
   main.isNoMdCatalog {
@@ -315,108 +333,6 @@ async function docPwd() {
 
     & ~ section {
       transform: translateX(240px);
-    }
-  }
-
-  > section {
-    width: 240px;
-    transform: translateX(0);
-    border-left: 1px solid var(--doc_border);
-    transition: all 0.3s;
-    background-color: var(--doc_bg);
-    position: fixed;
-    height: 100vh;
-    right: 0;
-    top: 0;
-    z-index: 1;
-    color: var(--color-text-2);
-    transition: all 0.3s;
-
-    .head {
-      height: 40px;
-      display: flex;
-      align-items: center;
-      border-bottom: 1px solid var(--doc_border);
-      padding: 0 20px;
-    }
-
-    .body {
-      padding: 10px 20px;
-      max-height: calc(100vh - 400px);
-      overflow-y: auto;
-
-      &:hover {
-        &::-webkit-scrollbar {
-          background-color: #eee;
-        }
-
-        &::-webkit-scrollbar-thumb {
-          background-color: #999;
-          box-shadow: inset 1px 1px 2px rgba(0, 0, 0, .1);
-          border: 1px solid #d8d8d8;
-        }
-      }
-
-      &::-webkit-scrollbar {
-        background-color: transparent;
-        transition: all 0.3s;
-        width: 8px;
-      }
-
-
-      &::-webkit-scrollbar-thumb {
-        background-color: transparent;
-        border-radius: 4px;
-        box-shadow: inset 1px 1px 2px transparent;
-        border: 1px solid transparent;
-      }
-
-      .doc_action {
-        position: fixed;
-        bottom: 100px;
-        right: 93px;
-        z-index: 101;
-
-        .item {
-          border: 1px solid var(--doc_border);
-          width: 50px;
-          height: 50px;
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-          justify-content: center;
-          margin-bottom: 10px;
-          cursor: pointer;
-          border-radius: 5px;
-
-          svg {
-            font-size: 20px;
-          }
-
-          span {
-            font-size: 12px;
-          }
-
-          &.active {
-            color: rgb(var(--arcoblue-6));
-          }
-        }
-      }
-    }
-
-    .md-editor-catalog-link > span {
-
-      &:hover {
-        color: rgb(var(--arcoblue-6));
-      }
-    }
-
-    .md-editor-catalog-active > span {
-      color: rgb(var(--arcoblue-5));
-
-      &:hover {
-        color: rgb(var(--arcoblue-6));
-      }
     }
   }
 }

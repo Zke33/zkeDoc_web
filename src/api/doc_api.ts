@@ -23,6 +23,17 @@ export function docDiggApi(id: number): Promise<Response<string>> {
 }
 
 
-export function docPwdContent(docID: number, pwd: string):Promise<Response<docItem>> {
+export function docPwdContent(docID: number, pwd: string): Promise<Response<docItem>> {
     return useAxios.post("/api/docs/pwd", {docID, pwd})
+}
+
+
+export interface docCreateItem {
+    content: string
+    parentID?: 0
+    title: string
+}
+
+export function docCreateApi(data: docCreateItem):Promise<Response<number>> {
+    return useAxios.post("/api/docs", data)
 }

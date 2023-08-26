@@ -1,6 +1,6 @@
 <template>
   <div>
-    <MdEditor :editorId="props.editorId"  v-model="text" :theme="store.theme" :on-upload-img="onUploadImg"/>
+    <MdEditor @onSave="onSave" :editorId="props.editorId"  v-model="text" :theme="store.theme" :on-upload-img="onUploadImg"/>
   </div>
 
 </template>
@@ -25,7 +25,11 @@ const props = defineProps({
   }
 })
 const text: Ref<string> = ref("")
-const emits = defineEmits(["update:modelValue"])
+const emits = defineEmits(["update:modelValue", "onSave"])
+
+function onSave(text: string, html:Promise<string>){
+  emits("onSave", text, html)
+}
 
 function initValue() {
   text.value = props.modelValue as string

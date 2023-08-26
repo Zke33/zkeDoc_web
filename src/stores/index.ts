@@ -3,6 +3,8 @@ import type {themeType} from "@/type/type";
 import {parseToken} from "@/utils/jwt";
 import type {siteType} from "@/api/site_api";
 import {siteApi} from "@/api/site_api";
+import {docTreeApi} from "@/api/role_doc_api";
+import type {docTreeItem} from "@/api/role_doc_api";
 
 export interface userInfoType {
     exp: number // 过期时间
@@ -33,6 +35,7 @@ const site: siteType = {
 }
 
 let theme: themeType = "light"
+const docTree: docTreeItem[] = []
 
 export const useStore = defineStore('useStore', {
     state() {
@@ -40,6 +43,7 @@ export const useStore = defineStore('useStore', {
             theme: theme, // 主题
             userInfo: userInfo,
             site: site,
+            docTree: docTree,
         }
     },
     actions: {
@@ -67,13 +71,18 @@ export const useStore = defineStore('useStore', {
             }
             this.userInfo = payload
         },
-        clearToken(){
+        clearToken() {
             localStorage.removeItem("userInfo")
             this.userInfo = userInfo
         },
-        async getSiteData(){
+        async getSiteData() {
             let res = await siteApi()
             Object.assign(this.site, res.data)
+        },
+        // 请求文档
+        async getDocTree() {
+            let res = await docTreeApi()
+            this.docTree = res.data.list
         }
     },
     getters: {
@@ -81,7 +90,7 @@ export const useStore = defineStore('useStore', {
         isLogin(): boolean {
             return this.userInfo.userID !== 0
         },
-        isAdmin(): boolean{
+        isAdmin(): boolean {
             return this.userInfo.roleID === 1
         }
     }
