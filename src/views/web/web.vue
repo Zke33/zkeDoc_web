@@ -99,15 +99,6 @@ onUnmounted(() => {
     align-items: center;
   }
 
-  .gvd_doc_action {
-    border-top: 1px solid var(--bg);
-    padding: 10px;
-
-  }
-
-  .gvd_doc_tree {
-    padding-top: 10px;
-  }
 }
 
 

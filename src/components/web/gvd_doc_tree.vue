@@ -1,17 +1,18 @@
 <template>
-  <div class="gvd_doc_action"  v-if="store.isAdmin">
-    <a-button type="outline" style="width: 100%;" @click="addDoc">添加</a-button>
-  </div>
-  <a-modal title="删除文档" v-model:visible="visible" :on-before-ok="removeDoc">
-    确定要删除 文档：{{ formRemoveDoc.title }} 吗
-  </a-modal>
-  <div class="gvd_doc_tree">
-    <a-tree
-        :data="store.docTree"
-        v-model:selected-keys="data.selectedKeys"
-        v-model:expanded-keys="data.expandedKeys"
-        @select="selectNode" block-node>
-      <template #extra="nodeData:docTreeItem">
+  <div class="gvd_doc_tree_view">
+    <div class="gvd_doc_action" v-if="store.isAdmin">
+      <a-button type="outline" style="width: 100%;" @click="addDoc">添加</a-button>
+    </div>
+    <a-modal title="删除文档" v-model:visible="visible" :on-before-ok="removeDoc">
+      确定要删除 文档：{{ formRemoveDoc.title }} 吗
+    </a-modal>
+    <div class="gvd_doc_tree">
+      <a-tree
+          :data="store.docTree"
+          v-model:selected-keys="data.selectedKeys"
+          v-model:expanded-keys="data.expandedKeys"
+          @select="selectNode" block-node>
+        <template #extra="nodeData:docTreeItem">
             <span class="tree_extra">
                   <icon-lock v-if="nodeData.isPwd"></icon-lock>
                    <icon-eye v-if="nodeData.isSee"></icon-eye>
@@ -26,9 +27,11 @@
                   </template>
                 </a-dropdown>
             </span>
-      </template>
-    </a-tree>
+        </template>
+      </a-tree>
+    </div>
   </div>
+
 </template>
 
 <script setup lang="ts">
@@ -58,7 +61,7 @@ const router = useRouter()
 const route = useRoute()
 
 const visible = ref(false)
-const formRemoveDoc = reactive<{id: undefined|number, title: string}>({
+const formRemoveDoc = reactive<{ id: undefined | number, title: string }>({
   id: undefined,
   title: ""
 })
@@ -170,6 +173,20 @@ watch(() => route.params, () => {
 
 </script>
 <style lang="scss">
+.gvd_doc_tree_view {
+  padding-top: 10px;
+  border-top: 1px solid var(--bg);
+
+  .gvd_doc_action {
+    margin-bottom: 10px;
+    padding: 0 10px;
+  }
+
+  .gvd_doc_tree {
+
+  }
+}
+
 .gvd_doc_tree {
   .tree_extra {
     margin-left: auto;
