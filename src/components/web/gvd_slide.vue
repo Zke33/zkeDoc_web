@@ -49,9 +49,12 @@ import Gvd_doc_tree from "@/components/web/gvd_doc_tree.vue";
     padding: 10px;
     align-items: center;
   }
+.gvd_doc_action{
+  border-top: 1px solid var(--bg);
+padding: 10px;
 
+}
   .gvd_doc_tree {
-    border-top: 1px solid var(--bg);
     padding-top: 10px;
   }
 }

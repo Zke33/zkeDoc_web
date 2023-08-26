@@ -1,4 +1,7 @@
 <template>
+  <div class="gvd_doc_action">
+    <a-button type="outline" style="width: 100%;" @click="addDoc">添加</a-button>
+  </div>
   <div class="gvd_doc_tree">
     <a-tree
         :data="data.list"
@@ -42,6 +45,19 @@ const data = reactive<dataType>({
 const router = useRouter()
 const route = useRoute()
 
+
+function addDoc(){
+  data.list.push({
+    children: [],
+    isPwd: false,
+    isSee: false,
+    isColl: false,
+    unlock: false,
+    key: 0,
+    title: "新建文档"
+  })
+  data.selectedKeys = [0]
+}
 
 if (route.name !== "index" && isNaN(Number(route.params.id))) {
   router.push({name: "index"})
