@@ -1,6 +1,7 @@
 <template>
   <div class="home_view">
     <div class="left">
+      <Login_charts></Login_charts>
 
     </div>
     <div class="right">
@@ -52,6 +53,7 @@ import {IconBook, IconThumbUpFill, IconUserGroup, IconFire} from "@arco-design/w
 import {dataSumApi} from "@/api/data_api";
 import type {dataSumItem} from "@/api/data_api";
 import {Message} from "@arco-design/web-vue";
+import Login_charts from "@/components/charts/login_charts.vue";
 
 const doc_sum_data = reactive<dataSumItem>({
   userCount: 0,
@@ -59,6 +61,27 @@ const doc_sum_data = reactive<dataSumItem>({
   diggCount: 0,
   lookCount: 0
 })
+
+const data = {
+  "dateList": [
+    "2023-08-20",
+    "2023-08-21",
+    "2023-08-22",
+    "2023-08-23",
+    "2023-08-24",
+    "2023-08-25",
+    "2023-08-26"
+  ],
+  "countList": [
+    3,
+    3,
+    5,
+    1,
+    1,
+    0,
+    3
+  ]
+}
 
 async function getData() {
   let res = await dataSumApi()
@@ -83,6 +106,7 @@ getData()
 
   > .right {
     width: 30%;
+    margin-left: 20px;
 
     .doc_sum_data {
       width: 100%;
