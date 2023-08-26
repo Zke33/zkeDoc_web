@@ -31,6 +31,7 @@ import {useStore} from "@/stores";
 
 const store = useStore()
 
+
 interface dataType {
   selectedKeys: number[]
   expandedKeys: number[]
@@ -46,16 +47,31 @@ const route = useRoute()
 
 
 function addDoc() {
+  // 添加之前查一下
+  const item = store.docTree.find((item) => item.isAdd === true)
+  if (item !== undefined) {
+    // 说明之前已经有新建文档还没保存
+    data.selectedKeys = [item.key]
+    router.push({
+      name: "add_doc"
+    })
+    return
+  }
+
+
+  const key = new Date().getTime()
   store.docTree.push({
     children: [],
     isPwd: false,
     isSee: false,
     isColl: false,
     unlock: false,
-    key: 0,
-    title: "新建文档"
+    key: key,
+    title: "新建文档",
+    isAdd: true,
   })
-  data.selectedKeys = [0]
+  // key不能为0
+  data.selectedKeys = [key]
   router.push({
     name: "add_doc"
   })
@@ -94,6 +110,12 @@ getList()
 
 function selectNode(key: (string | number)[], data: any) {
   let node = data.node as docTreeItem
+  if (node.isAdd as boolean) {
+    router.push({
+      name: "add_doc",
+    })
+    return
+  }
   router.push({
     name: "doc",
     params: {

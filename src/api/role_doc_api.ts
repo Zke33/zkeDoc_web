@@ -72,6 +72,8 @@ export interface docTreeItem {
     unlock: boolean
     key: number
     title: string
+
+    isAdd?: boolean
 }
 
 export function docTreeApi():Promise<Response<docListResponse>>{
