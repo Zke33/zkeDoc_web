@@ -20,6 +20,11 @@ const router = createRouter({
                     name: 'doc',
                     component: () => import("@/views/web/doc.vue")
                 },
+                {
+                    path: 'add_doc',
+                    name: 'add_doc',
+                    component: () => import("@/views/web/add_doc.vue")
+                },
             ]
         },
 

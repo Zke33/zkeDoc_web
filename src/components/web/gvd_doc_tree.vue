@@ -46,7 +46,7 @@ const router = useRouter()
 const route = useRoute()
 
 
-function addDoc(){
+function addDoc() {
   data.list.push({
     children: [],
     isPwd: false,
@@ -57,6 +57,9 @@ function addDoc(){
     title: "新建文档"
   })
   data.selectedKeys = [0]
+  router.push({
+    name: "add_doc"
+  })
 }
 
 if (route.name !== "index" && isNaN(Number(route.params.id))) {

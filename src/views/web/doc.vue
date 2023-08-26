@@ -64,8 +64,6 @@
 <script setup lang="ts">
 import {MdPreview, MdCatalog} from 'md-editor-v3';
 import {reactive, ref, watch, onUnmounted} from "vue";
-import Gvd_slide from "@/components/web/gvd_slide.vue";
-import Gvd_fixed_menu from "@/components/web/gvd_fixed_menu.vue";
 import {IconThumbUpFill, IconStarFill, IconToTop} from "@arco-design/web-vue/es/icon";
 import 'md-editor-v3/lib/style.css';
 import {useStore} from "@/stores";

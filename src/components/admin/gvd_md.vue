@@ -1,6 +1,6 @@
 <template>
   <div>
-    <MdEditor v-model="text" :theme="store.theme" :on-upload-img="onUploadImg"/>
+    <MdEditor :editorId="props.editorId"  v-model="text" :theme="store.theme" :on-upload-img="onUploadImg"/>
   </div>
 
 </template>
@@ -18,6 +18,9 @@ import type {Ref} from "vue";
 const store = useStore()
 const props = defineProps({
   modelValue: {
+    type: String
+  },
+  editorId: {
     type: String
   }
 })
