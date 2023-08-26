@@ -1,5 +1,5 @@
 <template>
-  <div id="login_charts" style="height: 220px"></div>
+  <div :id="props.chartId" style="height: 220px"></div>
 </template>
 
 <script setup lang="ts">
@@ -13,6 +13,9 @@ const store = useStore()
 
 interface Props {
   data: loginData,
+  title: string,
+  chartId: string,
+  seriesName: string
 }
 
 const props = defineProps<Props>()
@@ -23,7 +26,7 @@ function getData() {
   // 文字的颜色
   let textColor = "#555555"
   // 主题的颜色
-  let themeColor = ['#73c0de', '#2184fc']
+  let themeColor = ['#2184fc', '#212cfc']
 
   if (store.theme === "dark") {
     // 线段的颜色
@@ -35,13 +38,13 @@ function getData() {
   }
 
 
-  let chartDom = document.getElementById('login_charts');
+  let chartDom = document.getElementById(props.chartId);
   let myChart = echarts.init(chartDom);
   let option;
   option = {
     // 左上角文字
     title: {
-      text: "用户登录数据",
+      text: props.title,
       textStyle: {
         color: textColor
       },
@@ -92,7 +95,7 @@ function getData() {
     ,
     series: [
       {
-        name: "登录数",
+        name: props.seriesName,
         type: 'line',
         areaStyle: {},
         smooth: true,//设置折线图平滑

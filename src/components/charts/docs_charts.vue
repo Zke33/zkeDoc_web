@@ -1,16 +1,16 @@
 <template>
-  <div class="login_chart">
+  <div class="docs_chart">
     <div class="select">
       <a-select placeholder="时间过滤" allow-clear v-model="params.type" @change="getData"
                 :options="options"></a-select>
     </div>
-    <Login_charts_inner  chart-id="login_chart" series-name="登录数"  title="用户登录数据" v-if="isShow" :data="data"></Login_charts_inner>
+    <Login_charts_inner chart-id="docs_chart" series-name="浏览量" title="文档浏览数据" v-if="isShow" :data="data"></Login_charts_inner>
   </div>
 
 </template>
 
 <script setup lang="ts">
-import {dataLoginList} from "@/api/data_api";
+import {dataDocsList} from "@/api/data_api";
 import type {loginData, dataLoginParams} from "@/api/data_api";
 import Login_charts_inner from "@/components/charts/login_charts_inner.vue";
 import {reactive, ref, watch} from "vue";
@@ -39,7 +39,7 @@ const isShow = ref(false)
 
 async function getData() {
   isShow.value = false
-  let res = await dataLoginList(params)
+  let res = await dataDocsList(params)
   isShow.value = true
   if (res.code) {
     Message.error(res.msg)
@@ -60,7 +60,7 @@ watch(() => store.theme, () => {
 
 </script>
 <style lang="scss">
-.login_chart {
+.docs_chart {
   background-color: var(--color-bg-1);
   border-radius: 5px;
   position: relative;

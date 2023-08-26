@@ -26,3 +26,7 @@ export interface dataLoginParams {
 export function dataLoginList(params: dataLoginParams) :Promise<Response<loginData>>{
     return useAxios.get("/api/data/login_date", {params})
 }
+
+export function dataDocsList(params: dataLoginParams) :Promise<Response<loginData>>{
+    return useAxios.get("/api/data/look_date", {params})
+}
