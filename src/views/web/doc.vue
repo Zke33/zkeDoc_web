@@ -356,7 +356,7 @@ async function docPwd() {
   }
 
   main.isNoMdCatalog {
-    width: 100%;
+    width: calc(100% - 100px);
 
     & ~ section {
       transform: translateX(240px);

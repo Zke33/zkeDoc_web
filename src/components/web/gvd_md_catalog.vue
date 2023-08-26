@@ -1,11 +1,15 @@
 <template>
   <section class="gvd_md_catalog">
+    <div class="gvd_md_catalog_icon" @click="mdCataLogShow">
+      <icon-right-circle v-if="!isNoMdCatalog"/>
+      <icon-left-circle v-else/>
+    </div>
     <div class="head">
       文档目录
     </div>
     <div class="body">
       <MdCatalog :editorId="props.editorId" :scrollElement="props.scrollElement"/>
-      <slot> </slot>
+      <slot></slot>
     </div>
   </section>
 </template>
@@ -14,6 +18,7 @@
 <script setup lang="ts">
 import {MdCatalog} from 'md-editor-v3';
 import {onUnmounted, ref} from "vue";
+import {IconRightCircle, IconLeftCircle} from "@arco-design/web-vue/es/icon";
 
 const props = defineProps({
   editorId: {
@@ -29,10 +34,15 @@ const emits = defineEmits(["catalogShow"])
 
 const isNoMdCatalog = ref(false)
 
+
+function mdCataLogShow() {
+  isNoMdCatalog.value = !isNoMdCatalog.value
+  emits("catalogShow", isNoMdCatalog.value)
+}
+
 function keydownEvent(e: KeyboardEvent) {
   if (e.key === "]" && e.ctrlKey) {
-    isNoMdCatalog.value = !isNoMdCatalog.value
-    emits("catalogShow", isNoMdCatalog.value)
+    mdCataLogShow()
   }
 }
 
@@ -59,6 +69,26 @@ onUnmounted(() => {
   z-index: 1;
   color: var(--color-text-2);
   transition: all 0.3s;
+
+  .gvd_md_catalog_icon {
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    cursor: pointer;
+    opacity: 0;
+    transition: all 0.3s;
+
+    > svg {
+      font-size: 20px;
+    }
+  }
+
+  &:hover {
+    .gvd_md_catalog_icon {
+      opacity: 1;
+    }
+  }
 
   .head {
     height: 40px;
