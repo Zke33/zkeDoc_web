@@ -24,6 +24,9 @@
     <div class="gvd_search">
       <a-input @click="visible = true" placeholder="搜索"></a-input>
     </div>
+    <div class="slide_icon" @click="noShow=!noShow">
+      <icon-menu/>
+    </div>
     <Gvd_doc_tree></Gvd_doc_tree>
   </div>
 </template>
@@ -36,7 +39,7 @@ import type {searchItem} from "@/api/doc_api";
 import type {Params} from "@/api";
 import {Message} from "@arco-design/web-vue";
 import {onUnmounted} from "vue";
-
+import {IconMenu} from "@arco-design/web-vue/es/icon";
 
 const visible = ref(false)
 
@@ -83,6 +86,27 @@ async function search() {
 
 <style lang="scss">
 
+.gvd_slide {
+  .slide_icon {
+    position: absolute;
+    bottom: 10px;
+    left: 10px;
+    cursor: pointer;
+    transition: all 0.3s;
+
+    svg {
+      font-size: 20px;
+      color: rgb(var(--arcoblue-6));
+    }
+  }
+
+  &.noShow {
+    .slide_icon {
+      left: 310px;
+    }
+  }
+}
+
 .search_modal {
   padding: 0;
 
@@ -127,8 +151,6 @@ async function search() {
     color: var(--color-text-3);
   }
 }
-
-
 
 
 </style>
