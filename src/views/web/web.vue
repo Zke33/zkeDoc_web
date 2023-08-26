@@ -63,12 +63,9 @@ onUnmounted(() => {
   position: absolute;
   border-right: 1px solid var(--bg);
   background-color: var(--doc_bg);
+  transform: translateX(0);
+  transition: all 0.3s;
 
-  &.fixed {
-    position: fixed;
-    top: 0;
-    left: 0;
-  }
 
   .gvd_logo {
     height: 60px;
@@ -100,11 +97,26 @@ onUnmounted(() => {
     align-items: center;
   }
 
+  &.fixed {
+    position: fixed;
+    top: 0;
+    left: 0;
+  }
+
+  &.noShow {
+    transform: translateX(-300px);
+
+    &~.gvd_web_main{
+      width: calc(100% - 100px);
+      margin-left: 100px;
+    }
+  }
 }
 
 
 .gvd_web_main {
   width: calc(100% - 300px);
   margin-left: 300px;
+  transition: all .3s;
 }
 </style>

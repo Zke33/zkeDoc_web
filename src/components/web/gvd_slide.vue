@@ -1,5 +1,5 @@
 <template>
-  <div class="gvd_slide">
+  <div :class="{gvd_slide: true,noShow: noShow }">
     <div class="gvd_logo">
       <router-link to="/">
         <img src="/logo.png" alt="">
@@ -35,9 +35,25 @@ import {docSearchApi} from "@/api/doc_api";
 import type {searchItem} from "@/api/doc_api";
 import type {Params} from "@/api";
 import {Message} from "@arco-design/web-vue";
+import {onUnmounted} from "vue";
 
 
 const visible = ref(false)
+
+const noShow = ref(false)
+
+function keydownEvent(e: KeyboardEvent) {
+  if (e.key === "[" && e.ctrlKey) {
+    noShow.value = !noShow.value
+  }
+}
+
+window.addEventListener("keydown", keydownEvent)
+
+onUnmounted(() => {
+  window.removeEventListener("keydown", keydownEvent)
+})
+
 
 const data = reactive<{ list: searchItem[], count: number }>({
   list: [],
@@ -111,5 +127,8 @@ async function search() {
     color: var(--color-text-3);
   }
 }
+
+
+
 
 </style>
