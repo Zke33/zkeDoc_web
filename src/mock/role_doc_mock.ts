@@ -31,4 +31,20 @@ mock(/api\/role_docs\/\d+/, {
     }
 })
 
-
+mock(/api\/role_docs/, {
+    "code": 0,
+    "data": {
+        "list|10": [
+            {
+                children: [],
+                isPwd: "@boolean",
+                isSee: "@boolean",
+                isColl: "@boolean",
+                unlock: "@boolean",
+                "key|+1": 1,
+                title: "@ctitle"
+            }
+        ]
+    },
+    "msg": "成功"
+})

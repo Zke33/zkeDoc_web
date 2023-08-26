@@ -1,3 +1,4 @@
+import "@/mock/doc_mock"
 import "@/mock/user_center_mock"
 import "@/mock/user_mock";
 import "@/mock/role_mock"

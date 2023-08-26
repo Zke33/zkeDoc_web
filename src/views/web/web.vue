@@ -54,6 +54,7 @@ onUnmounted(() => {
 
 .gvd_web_view {
   position: relative;
+  min-height: 100vh;
 }
 
 .gvd_slide {

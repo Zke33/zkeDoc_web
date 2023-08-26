@@ -22,6 +22,7 @@
           <div class="note">未登陆用户刷新页面需要重新输入密码，登陆用户自动记住密码</div>
         </div>
 
+
         <MdPreview :editorId="id" :model-value="data.content" :theme="store.theme"></MdPreview>
         <div class="doc_see_mask" v-if="data.isSee">
           <div class="pwd_mask" v-if="data.isPwd"></div>
@@ -57,6 +58,7 @@
 
 <script setup lang="ts">
 import {MdPreview, MdCatalog} from 'md-editor-v3';
+import {MdEditor} from "md-editor-v3";
 import {reactive, ref, watch, onUnmounted} from "vue";
 import {IconThumbUpFill, IconStarFill, IconToTop} from "@arco-design/web-vue/es/icon";
 import 'md-editor-v3/lib/style.css';
@@ -104,7 +106,7 @@ async function getDocContent(id: number) {
   let res = await getDocDetailApi(id)
   if (res.code) {
     Message.error(res.msg)
-    if (res.msg === "文档鉴权失败"){
+    if (res.msg === "文档鉴权失败") {
       router.push({
         name: "index"
       })
