@@ -12,7 +12,7 @@
                         button-text="搜索" search-button/>
       </div>
       <div class="search_body">
-        <div class="item" v-for="item in data.list">
+        <div class="item" v-for="item in data.list" @click="gotoDoc(item)">
           <div class="title" v-html="item.title"></div>
           <div class="body" v-html="item.body"></div>
         </div>
@@ -47,6 +47,10 @@ const data = reactive<{ list: searchItem[], count: number }>({
 const params = reactive<Params>({
   key: "",
 })
+
+function gotoDoc(item: searchItem) {
+  window.open("/doc/" + item.slug, "_href")
+}
 
 
 async function search() {

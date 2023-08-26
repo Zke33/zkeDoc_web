@@ -2,7 +2,7 @@
   <div class="gvd_doc_main">
     <main :class="{isNoMdCatalog: isNoMdCatalog}">
       <div class="doc_head">
-        <h1>{{ data.title }}</h1>
+        <h1 :id="data.title">{{ data.title }}</h1>
         <div class="doc_data">
           <span>浏览量： <b>{{ data.lookCount }}</b></span>
           <span>点赞量： <b>{{ data.diggCount }}</b></span>
@@ -57,9 +57,8 @@
 </template>
 
 <script setup lang="ts">
-import {MdPreview, MdCatalog} from 'md-editor-v3';
-import {MdEditor} from "md-editor-v3";
-import {reactive, ref, watch, onUnmounted} from "vue";
+import {MdPreview} from 'md-editor-v3';
+import {reactive, ref, watch, onMounted} from "vue";
 import {IconThumbUpFill, IconStarFill, IconToTop} from "@arco-design/web-vue/es/icon";
 import 'md-editor-v3/lib/style.css';
 import {useStore} from "@/stores";
@@ -117,6 +116,25 @@ async function getDocContent(id: number) {
   Object.assign(data, res.data)
 }
 
+onMounted(() => {
+  const hash = route.hash
+  if (hash === "") {
+    return
+  }
+
+  setTimeout(() => {
+    const dom = document.querySelector(hash)
+    console.log(dom, hash)
+    if (dom === null) return;
+    let top = dom.getBoundingClientRect().top + window.scrollY
+    document.documentElement.scrollTo({
+      top: top, // 100vh的值，滚动到视口高度的位置
+      behavior: 'smooth' // 使用平滑滚动效果
+    });
+  }, 200)
+
+
+})
 
 watch(() => route.params, () => {
   if (route.name === "add_doc") {
