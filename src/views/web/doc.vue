@@ -69,6 +69,7 @@ import {dateTimeFormat, relativeToCurrentTime} from "@/utils/datetime";
 import {docDiggApi, docPwdContent} from "@/api/doc_api";
 import {userCollApi} from "@/api/user_center_api";
 import Gvd_md_catalog from "@/components/web/gvd_md_catalog.vue";
+import router from "@/router";
 
 const widthList = [
   "23%", "45%", "67%", "34%", "12%", "34%", "67%", "89%", "23%", "45%", "67%", "89%", "34%", "56%"
@@ -103,6 +104,12 @@ async function getDocContent(id: number) {
   let res = await getDocDetailApi(id)
   if (res.code) {
     Message.error(res.msg)
+    if (res.msg === "文档鉴权失败"){
+      router.push({
+        name: "index"
+      })
+    }
+
     return
   }
   Object.assign(data, res.data)

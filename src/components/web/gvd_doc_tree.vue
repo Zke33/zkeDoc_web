@@ -21,8 +21,8 @@
                  <a-dropdown v-if="store.isAdmin && !nodeData.isAdd">
                     <icon-more/>
                   <template #content>
-                    <a-doption>添加文档</a-doption>
-                    <a-doption>编辑文档</a-doption>
+                    <a-doption @click="addChildDoc(nodeData)">添加文档</a-doption>
+                    <a-doption @click="editDoc(nodeData)">编辑文档</a-doption>
                     <a-doption @click="removeDocModal(nodeData)">删除文档</a-doption>
                   </template>
                 </a-dropdown>
@@ -84,6 +84,43 @@ async function removeDoc() {
 }
 
 
+function editDoc(item: docTreeItem) {
+  data.selectedKeys = [item.key]
+  router.push({
+    name: "edit_doc",
+    params: {
+      id: item.key,
+    }
+  })
+}
+
+// 添加子文档
+function addChildDoc(item: docTreeItem) {
+  const key = new Date().getTime()
+
+  item.children.push({
+    children: [],
+    isPwd: false,
+    isSee: false,
+    isColl: false,
+    unlock: false,
+    key: key,
+    title: "新建文档",
+    isAdd: true,
+    parentID: item.key,
+  })
+  data.expandedKeys.push(item.key)
+  data.selectedKeys = [key]
+  router.push({
+    name: "add_doc",
+    query: {
+      parentID: item.key,
+    }
+  })
+
+}
+
+// 添加根文档
 function addDoc() {
   // 添加之前查一下
   const item = store.docTree.find((item) => item.isAdd === true)
@@ -151,6 +188,9 @@ function selectNode(key: (string | number)[], data: any) {
   if (node.isAdd as boolean) {
     router.push({
       name: "add_doc",
+      query: {
+        parentID: node.parentID
+      }
     })
     return
   }

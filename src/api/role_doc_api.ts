@@ -36,7 +36,6 @@ export function roleAddDocApi(roleID: number, docID: number): Promise<Response<s
 }
 
 
-
 export interface roleDocConfigItem {
     freeContent: string
     isPwd: boolean
@@ -73,9 +72,10 @@ export interface docTreeItem {
     key: number
     title: string
 
-    isAdd?: boolean
+    isAdd?: boolean // 是不是添加文档
+    parentID?: number // 父级id，用于添加子文档
 }
 
-export function docTreeApi():Promise<Response<docListResponse>>{
+export function docTreeApi(): Promise<Response<docListResponse>> {
     return useAxios.get("/api/role_docs")
 }
