@@ -1,5 +1,5 @@
 import {useAxios} from "@/api/index";
-import type {Response} from "@/api/index";
+import type {Response, Params, ListResponse} from "@/api/index";
 
 export interface docItem {
     collCount: number
@@ -41,6 +41,7 @@ export function docCreateApi(data: docCreateItem): Promise<Response<number>> {
 export function removeDocApi(id: number): Promise<Response<string>> {
     return useAxios.delete("/api/docs/" + id.toString())
 }
+
 export interface docUpdateItem {
     content: string
     title: string
@@ -51,7 +52,19 @@ export function getEditFullContentApi(id: number): Promise<Response<docUpdateIte
 }
 
 
-
 export function docUpdateApi(id: number, data: docUpdateItem): Promise<Response<string>> {
     return useAxios.put("/api/docs/" + id.toString(), data)
+}
+
+
+export interface searchItem {
+    body: string
+    docID: number
+    id: string
+    slug: string
+    title: string
+}
+
+export function docSearchApi(params: Params) :Promise<ListResponse<searchItem>>{
+    return useAxios.get("/api/docs/search", {params: params})
 }
