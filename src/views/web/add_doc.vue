@@ -67,11 +67,13 @@ async function onSave() {
 
 <style lang="scss">
 .add_doc_view {
+
   .doc_main {
     width: calc(100% - 240px);
     padding: 40px 20px 0 40px;
     transition: all 0.3s;
-
+    background: var(--doc_bg);
+    height: 100vh;
     .head {
       color: var(--color-text-1);
       margin-bottom: 10px;

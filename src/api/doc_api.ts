@@ -37,3 +37,7 @@ export interface docCreateItem {
 export function docCreateApi(data: docCreateItem):Promise<Response<number>> {
     return useAxios.post("/api/docs", data)
 }
+
+export function removeDocApi(id: number): Promise<Response<string>>{
+    return useAxios.delete("/api/docs/"+id.toString())
+}

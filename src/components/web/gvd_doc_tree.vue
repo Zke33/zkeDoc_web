@@ -1,7 +1,10 @@
 <template>
-  <div class="gvd_doc_action">
+  <div class="gvd_doc_action"  v-if="store.isAdmin">
     <a-button type="outline" style="width: 100%;" @click="addDoc">添加</a-button>
   </div>
+  <a-modal title="删除文档" v-model:visible="visible" :on-before-ok="removeDoc">
+    确定要删除 文档：{{ formRemoveDoc.title }} 吗
+  </a-modal>
   <div class="gvd_doc_tree">
     <a-tree
         :data="store.docTree"
@@ -14,6 +17,14 @@
                    <icon-eye v-if="nodeData.isSee"></icon-eye>
                   <icon-star-fill v-if="nodeData.isColl"></icon-star-fill>
                   <icon-unlock v-if="nodeData.unlock"></icon-unlock>
+                 <a-dropdown v-if="store.isAdmin && !nodeData.isAdd">
+                    <icon-more/>
+                  <template #content>
+                    <a-doption>添加文档</a-doption>
+                    <a-doption>编辑文档</a-doption>
+                    <a-doption @click="removeDocModal(nodeData)">删除文档</a-doption>
+                  </template>
+                </a-dropdown>
             </span>
       </template>
     </a-tree>
@@ -25,9 +36,10 @@ import {reactive, ref, watch} from "vue";
 import type {docTreeItem} from "@/api/role_doc_api";
 import type {Ref} from "vue";
 import {Message} from "@arco-design/web-vue";
-import {IconEye, IconLock, IconStarFill, IconUnlock} from "@arco-design/web-vue/es/icon";
+import {IconEye, IconLock, IconStarFill, IconUnlock, IconMore} from "@arco-design/web-vue/es/icon";
 import {useRouter, useRoute} from "vue-router";
 import {useStore} from "@/stores";
+import {removeDocApi} from "@/api/doc_api";
 
 const store = useStore()
 
@@ -44,6 +56,29 @@ const data = reactive<dataType>({
 
 const router = useRouter()
 const route = useRoute()
+
+const visible = ref(false)
+const formRemoveDoc = reactive<{id: undefined|number, title: string}>({
+  id: undefined,
+  title: ""
+})
+
+function removeDocModal(item: docTreeItem) {
+  visible.value = true
+  formRemoveDoc.id = item.key
+  formRemoveDoc.title = item.title
+}
+
+async function removeDoc() {
+  let res = await removeDocApi(formRemoveDoc.id as number)
+  if (res.code) {
+    Message.error(res.msg)
+    return false
+  }
+  Message.success(res.msg)
+  visible.value = false
+  store.getDocTree()
+}
 
 
 function addDoc() {
