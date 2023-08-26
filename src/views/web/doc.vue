@@ -1,67 +1,63 @@
 <template>
-  <div class="gvd_doc_view">
-    <Gvd_slide></Gvd_slide>
-    <gvd_fixed_menu :class="{isNoMdCatalog: isNoMdCatalog}"></gvd_fixed_menu>
-    <div class="gvd_doc_main">
-      <main :class="{isNoMdCatalog: isNoMdCatalog}">
-        <div class="doc_head">
-          <h1>{{ data.title }}</h1>
-          <div class="doc_data">
-            <span>浏览量： <b>{{ data.lookCount }}</b></span>
-            <span>点赞量： <b>{{ data.diggCount }}</b></span>
-            <span>收藏量： <b>{{ data.collCount }}</b></span>
-          </div>
-          <div class="date">
-            <span>发布时间：{{ dateTimeFormat(data.createdAt) }}（{{ relativeToCurrentTime(data.createdAt) }}）</span>
-          </div>
+  <div class="gvd_doc_main">
+    <main :class="{isNoMdCatalog: isNoMdCatalog}">
+      <div class="doc_head">
+        <h1>{{ data.title }}</h1>
+        <div class="doc_data">
+          <span>浏览量： <b>{{ data.lookCount }}</b></span>
+          <span>点赞量： <b>{{ data.diggCount }}</b></span>
+          <span>收藏量： <b>{{ data.collCount }}</b></span>
         </div>
-        <div class="doc_body">
-          <div :class="{doc_pwd_mask: true, isSee: data.isSee}" v-if="data.isPwd">
-            <div class="head">此文档需要输入密码查看</div>
-            <div class="ipt_box">
-              <a-input placeholder="密码" v-model="pwd"></a-input>
-              <a-button type="primary" @click="docPwd">提交</a-button>
-            </div>
-            <div class="note">未登陆用户刷新页面需要重新输入密码，登陆用户自动记住密码</div>
+        <div class="date">
+          <span>发布时间：{{ dateTimeFormat(data.createdAt) }}（{{ relativeToCurrentTime(data.createdAt) }}）</span>
+        </div>
+      </div>
+      <div class="doc_body">
+        <div :class="{doc_pwd_mask: true, isSee: data.isSee}" v-if="data.isPwd">
+          <div class="head">此文档需要输入密码查看</div>
+          <div class="ipt_box">
+            <a-input placeholder="密码" v-model="pwd"></a-input>
+            <a-button type="primary" @click="docPwd">提交</a-button>
           </div>
+          <div class="note">未登陆用户刷新页面需要重新输入密码，登陆用户自动记住密码</div>
+        </div>
 
-          <MdPreview :editorId="id" :model-value="data.content" :theme="store.theme"></MdPreview>
-          <div class="doc_see_mask" v-if="data.isSee">
-            <div class="pwd_mask" v-if="data.isPwd"></div>
-            <div class="head">试看结束 以下为更高级别权限可看</div>
-            <div class="body">
-              <a-skeleton>
-                <a-space direction="vertical" :style="{width:'100%'}" size="large">
-                  <a-skeleton-line :rows="widthList.length" :widths="widthList"/>
-                </a-space>
-              </a-skeleton>
-            </div>
+        <MdPreview :editorId="id" :model-value="data.content" :theme="store.theme"></MdPreview>
+        <div class="doc_see_mask" v-if="data.isSee">
+          <div class="pwd_mask" v-if="data.isPwd"></div>
+          <div class="head">试看结束 以下为更高级别权限可看</div>
+          <div class="body">
+            <a-skeleton>
+              <a-space direction="vertical" :style="{width:'100%'}" size="large">
+                <a-skeleton-line :rows="widthList.length" :widths="widthList"/>
+              </a-space>
+            </a-skeleton>
           </div>
         </div>
-      </main>
-      <section>
-        <div class="head">
-          文档目录
-        </div>
-        <div class="body">
-          <MdCatalog :editorId="id" :scrollElement="scrollElement"/>
-          <div class="doc_action">
-            <div @click="docDigg" :class="{item: true, active: isDigg}">
-              <icon-thumb-up-fill/>
-              <span>点赞</span>
-            </div>
-            <div @click="docColl" :class="{item: true, active: data.isColl}">
-              <icon-star-fill/>
-              <span>收藏</span>
-            </div>
-            <div @click="goTop" class="item">
-              <icon-to-top/>
-              <span>Top</span>
-            </div>
+      </div>
+    </main>
+    <section>
+      <div class="head">
+        文档目录
+      </div>
+      <div class="body">
+        <MdCatalog :editorId="id" :scrollElement="scrollElement"/>
+        <div class="doc_action">
+          <div @click="docDigg" :class="{item: true, active: isDigg}">
+            <icon-thumb-up-fill/>
+            <span>点赞</span>
+          </div>
+          <div @click="docColl" :class="{item: true, active: data.isColl}">
+            <icon-star-fill/>
+            <span>收藏</span>
+          </div>
+          <div @click="goTop" class="item">
+            <icon-to-top/>
+            <span>Top</span>
           </div>
         </div>
-      </section>
-    </div>
+      </div>
+    </section>
   </div>
 </template>
 
@@ -93,7 +89,7 @@ const store = useStore()
 
 const isNoMdCatalog = ref(false)
 
-function keydownEvent(e: KeyboardEvent){
+function keydownEvent(e: KeyboardEvent) {
   if (e.key === "]" && e.ctrlKey) {
     isNoMdCatalog.value = !isNoMdCatalog.value
   }
@@ -102,7 +98,7 @@ function keydownEvent(e: KeyboardEvent){
 
 window.addEventListener("keydown", keydownEvent)
 
-onUnmounted(()=>{
+onUnmounted(() => {
   window.removeEventListener("keydown", keydownEvent)
 })
 
@@ -206,247 +202,224 @@ async function docPwd() {
 </script>
 
 <style lang="scss">
-.gvd_doc_view {
+.gvd_doc_main {
+  width: 100%;
   display: flex;
   justify-content: space-between;
+  background-color: var(--doc_bg);
+  min-height: 100vh;
 
-  .gvd_slide {
-    width: 300px;
-    height: 100vh;
-    position: fixed;
-    left: 0;
-    top: 0;
-    overflow-x: hidden;
-    overflow-y: auto;
-    border-right: 1px solid var(--doc_border);
+  > main {
+    width: calc(100% - 240px);
+    padding: 40px 20px 0 40px;
+    transition: all 0.3s;
+
+    .doc_head {
+      color: var(--color-text-2);
+
+      h1 {
+        color: var(--md-theme-color);
+      }
+
+      .doc_data {
+        margin-bottom: 10px;
+
+        > span {
+          margin-right: 10px;
+        }
+      }
+    }
+
+    .doc_body {
+      margin-top: 20px;
+      position: relative;
+
+      .doc_pwd_mask {
+        width: 50%;
+        background-color: var(--color-fill-1);
+        padding: 20px;
+        border-radius: 5px;
+
+
+        .ipt_box {
+          display: flex;
+          justify-content: space-between;
+          margin: 10px 0;
+
+          .arco-btn {
+            margin-left: 20px;
+          }
+        }
+
+        .note {
+          font-size: 12px;
+          color: var(--color-text-3);
+        }
+
+      }
+
+      .doc_see_mask {
+        .head {
+          font-size: 12px;
+          color: var(--color-text-3);
+          display: flex;
+          align-items: center;
+
+          &::before, &::after {
+            content: "";
+            display: inline-block;
+            width: 100px;
+            height: 1px;
+            background-color: var(--color-text-3);
+          }
+
+          &::before {
+            margin-right: 5px;
+          }
+
+          &::after {
+            margin-left: 5px;
+          }
+        }
+
+        .body {
+          margin-top: 20px;
+        }
+      }
+
+      .doc_pwd_mask.isSee {
+        position: absolute;
+        bottom: 300px;
+        z-index: 2;
+
+        box-shadow: 4px 6px 5px 0 var(--color-fill-3);
+      }
+
+      .doc_see_mask .pwd_mask {
+        position: absolute;
+        bottom: 0;
+        height: 500px;
+        width: 100%;
+        z-index: 1;
+        background: linear-gradient(to top, var(--doc_bg), rgba(0, 0, 0, 0));
+      }
+    }
+
+    .md-editor-preview-wrapper {
+      padding: 0;
+    }
+
+
+  }
+
+  main.isNoMdCatalog {
+    width: 100%;
+
+    & ~ section {
+      transform: translateX(240px);
+    }
+  }
+
+  > section {
+    width: 240px;
+    transform: translateX(0);
+    border-left: 1px solid var(--doc_border);
     transition: all 0.3s;
     background-color: var(--doc_bg);
-  }
+    position: fixed;
+    height: 100vh;
+    right: 0;
+    top: 0;
+    z-index: 1;
+    color: var(--color-text-2);
+    transition: all 0.3s;
 
-  .gvd_doc_main {
-    width: calc(100vw - 300px);
-    display: flex;
-    justify-content: space-between;
-    background-color: var(--doc_bg);
-    margin-left: 300px;
-    min-height: 100vh;
-
-    > main {
-      width: calc(100% - 240px);
-      padding: 40px 20px 0 40px;
-      transition: all 0.3s;
-
-      .doc_head {
-        color: var(--color-text-2);
-
-        h1 {
-          color: var(--md-theme-color);
-        }
-
-        .doc_data {
-          margin-bottom: 10px;
-
-          > span {
-            margin-right: 10px;
-          }
-        }
-      }
-
-      .doc_body {
-        margin-top: 20px;
-        position: relative;
-
-        .doc_pwd_mask {
-          width: 50%;
-          background-color: var(--color-fill-1);
-          padding: 20px;
-          border-radius: 5px;
-
-
-          .ipt_box {
-            display: flex;
-            justify-content: space-between;
-            margin: 10px 0;
-
-            .arco-btn {
-              margin-left: 20px;
-            }
-          }
-
-          .note {
-            font-size: 12px;
-            color: var(--color-text-3);
-          }
-
-        }
-
-        .doc_see_mask {
-          .head {
-            font-size: 12px;
-            color: var(--color-text-3);
-            display: flex;
-            align-items: center;
-
-            &::before, &::after {
-              content: "";
-              display: inline-block;
-              width: 100px;
-              height: 1px;
-              background-color: var(--color-text-3);
-            }
-
-            &::before {
-              margin-right: 5px;
-            }
-
-            &::after {
-              margin-left: 5px;
-            }
-          }
-
-          .body {
-            margin-top: 20px;
-          }
-        }
-
-        .doc_pwd_mask.isSee {
-          position: absolute;
-          bottom: 300px;
-          z-index: 2;
-
-          box-shadow: 4px 6px 5px 0 var(--color-fill-3);
-        }
-
-        .doc_see_mask .pwd_mask {
-          position: absolute;
-          bottom: 0;
-          height: 500px;
-          width: 100%;
-          z-index: 1;
-          background: linear-gradient(to top, var(--doc_bg), rgba(0, 0, 0, 0));
-        }
-      }
-
-      .md-editor-preview-wrapper {
-        padding: 0;
-      }
-
-
+    .head {
+      height: 40px;
+      display: flex;
+      align-items: center;
+      border-bottom: 1px solid var(--doc_border);
+      padding: 0 20px;
     }
 
-    main.isNoMdCatalog {
-      width: 100%;
+    .body {
+      padding: 10px 20px;
+      max-height: calc(100vh - 400px);
+      overflow-y: auto;
 
-      & ~ section {
-        transform: translateX(240px);
-      }
-    }
-
-    > section {
-      width: 240px;
-      transform: translateX(0);
-      border-left: 1px solid var(--doc_border);
-      transition: all 0.3s;
-      background-color: var(--doc_bg);
-      position: fixed;
-      height: 100vh;
-      right: 0;
-      top: 0;
-      z-index: 1;
-      color: var(--color-text-2);
-      transition: all 0.3s;
-
-      .head {
-        height: 40px;
-        display: flex;
-        align-items: center;
-        border-bottom: 1px solid var(--doc_border);
-        padding: 0 20px;
-      }
-
-      .body {
-        padding: 10px 20px;
-        max-height: calc(100vh - 400px);
-        overflow-y: auto;
-
-        &:hover {
-          &::-webkit-scrollbar {
-            background-color: #eee;
-          }
-
-          &::-webkit-scrollbar-thumb {
-            background-color: #999;
-            box-shadow: inset 1px 1px 2px rgba(0, 0, 0, .1);
-            border: 1px solid #d8d8d8;
-          }
-        }
-
+      &:hover {
         &::-webkit-scrollbar {
-          background-color: transparent;
-          transition: all 0.3s;
-          width: 8px;
+          background-color: #eee;
         }
-
 
         &::-webkit-scrollbar-thumb {
-          background-color: transparent;
-          border-radius: 4px;
-          box-shadow: inset 1px 1px 2px transparent;
-          border: 1px solid transparent;
+          background-color: #999;
+          box-shadow: inset 1px 1px 2px rgba(0, 0, 0, .1);
+          border: 1px solid #d8d8d8;
         }
+      }
 
-        .doc_action {
-          position: fixed;
-          bottom: 100px;
-          right: 93px;
-          z-index: 101;
+      &::-webkit-scrollbar {
+        background-color: transparent;
+        transition: all 0.3s;
+        width: 8px;
+      }
 
-          .item {
-            border: 1px solid var(--doc_border);
-            width: 50px;
-            height: 50px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            margin-bottom: 10px;
-            cursor: pointer;
-            border-radius: 5px;
 
-            svg {
-              font-size: 20px;
-            }
+      &::-webkit-scrollbar-thumb {
+        background-color: transparent;
+        border-radius: 4px;
+        box-shadow: inset 1px 1px 2px transparent;
+        border: 1px solid transparent;
+      }
 
-            span {
-              font-size: 12px;
-            }
+      .doc_action {
+        position: fixed;
+        bottom: 100px;
+        right: 93px;
+        z-index: 101;
 
-            &.active {
-              color: rgb(var(--arcoblue-6));
-            }
+        .item {
+          border: 1px solid var(--doc_border);
+          width: 50px;
+          height: 50px;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
+          margin-bottom: 10px;
+          cursor: pointer;
+          border-radius: 5px;
+
+          svg {
+            font-size: 20px;
+          }
+
+          span {
+            font-size: 12px;
+          }
+
+          &.active {
+            color: rgb(var(--arcoblue-6));
           }
         }
       }
+    }
 
-      .md-editor-catalog-link > span {
+    .md-editor-catalog-link > span {
 
-        &:hover {
-          color: rgb(var(--arcoblue-6));
-        }
-      }
-
-      .md-editor-catalog-active > span {
-        color: rgb(var(--arcoblue-5));
-
-        &:hover {
-          color: rgb(var(--arcoblue-6));
-        }
+      &:hover {
+        color: rgb(var(--arcoblue-6));
       }
     }
-  }
 
-  .fixed_menu.isNoMdCatalog {
-    transform: translateX(240px);
+    .md-editor-catalog-active > span {
+      color: rgb(var(--arcoblue-5));
+
+      &:hover {
+        color: rgb(var(--arcoblue-6));
+      }
+    }
   }
 }
 </style>

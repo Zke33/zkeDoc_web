@@ -7,14 +7,22 @@ const router = createRouter({
     routes: [
         {
             path: '/',
-            name: 'index',
-            component: () => import("@/views/web/index.vue")
+            name: 'web_index',
+            component: () => import("@/views/web/web.vue"),
+            children: [
+                {
+                    path: '',
+                    name: 'index',
+                    component: () => import("@/views/web/index.vue")
+                },
+                {
+                    path: 'doc/:id',
+                    name: 'doc',
+                    component: () => import("@/views/web/doc.vue")
+                },
+            ]
         },
-        {
-            path: '/doc/:id',
-            name: 'doc',
-            component: () => import("@/views/web/doc.vue")
-        },
+
         {
             path: '/admin',
             name: 'admin',
