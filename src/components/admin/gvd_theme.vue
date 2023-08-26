@@ -16,11 +16,10 @@ function setTheme() {
   if (document.body.hasAttribute('arco-theme')) {
     // 变成白天
     store.setTheme("light")
-    document.body.removeAttribute('arco-theme')
   } else {
     // 变成黑夜
     store.setTheme("dark")
-    document.body.setAttribute('arco-theme', 'dark')
   }
 }
+
 </script>

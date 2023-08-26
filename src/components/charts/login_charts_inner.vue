@@ -108,8 +108,9 @@ function getData() {
     color: themeColor
   };
 
-  window.onresize = myChart.resize
-
+  window.addEventListener("resize", function () {
+    myChart.resize();
+  });
   option && myChart.setOption(option);
 }
 

@@ -4,7 +4,8 @@
       <a-select placeholder="时间过滤" allow-clear v-model="params.type" @change="getData"
                 :options="options"></a-select>
     </div>
-    <Login_charts_inner chart-id="docs_chart" series-name="浏览量" title="文档浏览数据" v-if="isShow" :data="data"></Login_charts_inner>
+    <Login_charts_inner chart-id="docs_chart" series-name="浏览量" title="文档浏览数据" v-if="isShow"
+                        :data="data"></Login_charts_inner>
   </div>
 
 </template>

@@ -49,6 +49,20 @@ export const useStore = defineStore('useStore', {
     actions: {
         setTheme(val: themeType) {
             this.theme = val
+            if (val === "dark") {
+                document.body.setAttribute('arco-theme', 'dark')
+            } else {
+                document.body.removeAttribute('arco-theme')
+            }
+            localStorage.setItem("theme", val.toString())
+        },
+        loadTheme() {
+            let themeVal = localStorage.getItem("theme")
+            if (themeVal === null) {
+                return
+            }
+            this.theme = themeVal as themeType
+            this.setTheme(this.theme)
         },
 
         setToken(token: string) {
