@@ -80,7 +80,6 @@ export const useStore = defineStore('useStore', {
             try {
                 payload = JSON.parse(val)
             } catch (e) {
-                console.log(e)
                 return;
             }
             this.userInfo = payload
