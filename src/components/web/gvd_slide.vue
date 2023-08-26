@@ -1,9 +1,10 @@
 <template>
   <div class="gvd_slide">
     <div class="gvd_logo">
-      <a href="/">
-        <div>logo</div>
-      </a>
+      <router-link to="/">
+        <img src="/logo.png" alt="">
+        <span>fengfeng docs</span>
+      </router-link>
     </div>
     <div class="gvd_search">
       <a-input placeholder="搜索"></a-input>
@@ -21,7 +22,7 @@ import Gvd_doc_tree from "@/components/web/gvd_doc_tree.vue";
 .gvd_slide {
   .gvd_logo {
     height: 60px;
-    background-color: rgb(var(--arcoblue-1));
+    border-bottom: 1px solid var(--bg);
 
     a {
       width: 100%;
@@ -29,6 +30,17 @@ import Gvd_doc_tree from "@/components/web/gvd_doc_tree.vue";
       display: flex;
       justify-content: center;
       align-items: center;
+
+      img {
+        width: 40px;
+        height: 40px;
+      }
+
+      span {
+        margin-left: 10px;
+        font-weight: 600;
+        font-size: 18px;
+      }
     }
   }
 

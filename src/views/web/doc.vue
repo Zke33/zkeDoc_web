@@ -67,13 +67,10 @@
 
 <script setup lang="ts">
 import {MdPreview, MdCatalog} from 'md-editor-v3';
-import {reactive, ref, watch} from "vue";
+import {reactive, ref, watch, onUnmounted} from "vue";
 import Gvd_slide from "@/components/web/gvd_slide.vue";
 import Gvd_fixed_menu from "@/components/web/gvd_fixed_menu.vue";
 import {IconThumbUpFill, IconStarFill, IconToTop} from "@arco-design/web-vue/es/icon";
-import LongMd from "@/assets/md/long.md?raw"
-import SortMd from "@/assets/md/sort.md?raw"
-import catalogMd from "@/assets/md/catalog.md?raw"
 import 'md-editor-v3/lib/style.css';
 import {useStore} from "@/stores";
 import {useRoute} from "vue-router";
@@ -96,10 +93,17 @@ const store = useStore()
 
 const isNoMdCatalog = ref(false)
 
-window.addEventListener("keydown", function (e: KeyboardEvent) {
+function keydownEvent(e: KeyboardEvent){
   if (e.key === "]" && e.ctrlKey) {
     isNoMdCatalog.value = !isNoMdCatalog.value
   }
+}
+
+
+window.addEventListener("keydown", keydownEvent)
+
+onUnmounted(()=>{
+  window.removeEventListener("keydown", keydownEvent)
 })
 
 

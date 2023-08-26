@@ -2,7 +2,10 @@
   <div class="gvd_admin">
     <aside :class="{isCollapse: isCollapse}">
       <div class="gvd_logo">
-        LOGO
+        <router-link to="/">
+            <img :class="{isCollapse: isCollapse}" src="/logo.png" alt="">
+            <span v-if="!isCollapse">fengfeng docs</span>
+        </router-link>
       </div>
       <Gvd_menu @collapse="onCollapse"></Gvd_menu>
     </aside>
@@ -69,13 +72,36 @@ function onCollapse(val: boolean) {
     height: 100vh;
 
     .gvd_logo {
-      color: rgb(var(--arcoblue-6));
       width: 100%;
       height: 90px;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      background-color: rgb(var(--arcoblue-2));
+
+      a {
+        width: 100%;
+        height: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        border-bottom: 1px solid var(--bg);
+        color: var(--color-text-1);
+        overflow: hidden;
+
+        img {
+          width: 40px;
+          height: 40px;
+
+          &.isCollapse{
+            width: 30px;
+            height: 30px;
+          }
+        }
+
+        span {
+          margin-left: 10px;
+          font-weight: 600;
+          font-size: 18px;
+        }
+      }
+
     }
 
     .gvd_menu {

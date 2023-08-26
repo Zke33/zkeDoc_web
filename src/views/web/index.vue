@@ -18,20 +18,25 @@ import Gvd_slide from "@/components/web/gvd_slide.vue";
 import {MdPreview, MdCatalog} from 'md-editor-v3';
 import 'md-editor-v3/lib/style.css';
 import {useStore} from "@/stores";
-import {ref} from "vue";
+import {ref, onUnmounted} from "vue";
 
 const store = useStore()
 
 const sideFixed = ref(false)
 
-window.addEventListener("scroll", function () {
+function scrollEvent() {
   if (document.documentElement.scrollTop >= window.innerHeight) {
     sideFixed.value = true
   } else {
     sideFixed.value = false
   }
-})
+}
 
+window.addEventListener("scroll", scrollEvent)
+
+onUnmounted(() => {
+  window.removeEventListener("scroll", scrollEvent)
+})
 
 </script>
 
@@ -52,12 +57,12 @@ window.addEventListener("scroll", function () {
       background-color: var(--doc_bg);
     }
 
-    .gvd_slide.fixed{
+    .gvd_slide.fixed {
       position: fixed;
       left: 0;
       top: 0;
 
-      &~.doc_main{
+      & ~ .doc_main {
         margin-left: 300px;
       }
     }
