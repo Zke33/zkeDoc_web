@@ -50,8 +50,10 @@ export const useStore = defineStore('useStore', {
         setTheme(val: themeType) {
             this.theme = val
             if (val === "dark") {
+                document.documentElement.style.colorScheme = "dark"
                 document.body.setAttribute('arco-theme', 'dark')
             } else {
+                document.documentElement.style.colorScheme = "light"
                 document.body.removeAttribute('arco-theme')
             }
             localStorage.setItem("theme", val.toString())

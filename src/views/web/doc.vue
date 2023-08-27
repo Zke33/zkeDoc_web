@@ -124,7 +124,6 @@ onMounted(() => {
 
   setTimeout(() => {
     const dom = document.querySelector(hash)
-    console.log(dom, hash)
     if (dom === null) return;
     let top = dom.getBoundingClientRect().top + window.scrollY
     document.documentElement.scrollTo({
