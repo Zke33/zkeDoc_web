@@ -1,7 +1,24 @@
 <template>
   <a-modal width="600px" :visible="props.visible" :footer="false" @cancel="close" modal-class="login_modal">
     <div class="left">
-
+      <div class="head">
+        欢迎来到文档系统
+      </div>
+      <div class="body">
+        <ul>
+          <li>新增角色管理</li>
+          <li>便捷的角色-文档管理</li>
+          <li>更细化的文档访问控制</li>
+          <li>编写文档-所见即所得</li>
+          <li>第三代日志管理</li>
+          <li>全面黑夜模式</li>
+          <li>前端mock数据，不需后端即可访问</li>
+          <li>......</li>
+        </ul>
+        <div class="svg">
+          <img src="/images/undraw_new_year_2023_pfnc.svg" alt="">
+        </div>
+      </div>
     </div>
     <div class="right">
       <div class="head">
@@ -27,7 +44,7 @@
           </a-form-item>
           <a-form-item>
             <div class="other_login_icons">
-              <img src="../../assets/icon/qq.png" alt="">
+              <img @click="qqLogin" src="../../assets/icon/qq.png" alt="">
             </div>
           </a-form-item>
         </a-form>
@@ -76,8 +93,13 @@ async function login() {
   store.setToken(res.data)
   Message.success("登录成功")
   close()
+
+  store.getDocTree()
 }
 
+function qqLogin() {
+  Message.warning("开发中")
+}
 
 </script>
 
@@ -96,6 +118,34 @@ async function login() {
       width: 50%;
       border-right: 1px solid var(--bg);
       height: 100%;
+      position: relative;
+
+
+      .head {
+        font-size: 16px;
+        font-weight: 600;
+        padding: 25px 20px;
+        border-bottom: 1px solid #9f9eaa;
+      }
+
+      ul {
+        list-style: none;
+        padding: 25px 20px;
+        color: var(--color-text-2);
+        line-height: 1.5rem;
+      }
+
+      .svg {
+        right: 0;
+        top: 10px;
+        position: absolute;
+
+        img {
+          width: 100%;
+          height: 90px;
+        }
+      }
+
     }
 
     .right {
@@ -159,6 +209,7 @@ async function login() {
           img {
             width: 40px;
             height: 40px;
+            cursor: pointer;
           }
         }
       }

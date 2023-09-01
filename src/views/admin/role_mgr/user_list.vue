@@ -56,8 +56,8 @@
       <template #avatar="{ record }">
         <a-image :src="record.avatar" width="40" height="40" style="border-radius: 50%"></a-image>
       </template>
-      <template #action_1>
-        <a-button @click="resetPasswordVisible = true">重置密码</a-button>
+      <template #action_1="{ record }">
+        <a-button @click="resetPasswordModal(record)">重置密码</a-button>
       </template>
     </Gvd_table>
   </div>
@@ -201,6 +201,12 @@ async function updateUser() {
   Message.success(res.msg)
   await gvdTable.value.getList({})
 }
+
+function resetPasswordModal(record: RecordType<userItem>) {
+  resetPasswordVisible.value = true
+  editForm.id = record.id
+}
+
 
 function editCancel() {
   editFormRef.value.resetFields(Object.keys(editForm))

@@ -84,6 +84,12 @@ export const useStore = defineStore('useStore', {
             } catch (e) {
                 return;
             }
+            // 判断是否过期
+            let exp = Number(payload.exp) * 1000
+            let now = new Date().getTime()
+            if (exp - now < 0) {
+                return;
+            }
             this.userInfo = payload
         },
         clearToken() {

@@ -8,7 +8,7 @@
       </div>
       <h1 class="banner_h1">
         <a href="javascript:void (0)">
-          <strong>{{store.site.title}}</strong>
+          <strong>{{ store.site.title }}</strong>
         </a>
       </h1>
       <ul class="banner_desc">
@@ -17,7 +17,7 @@
       <div class="banner_images" v-html="store.site.iconHref"></div>
       <gvd_login v-model:visible="visible"></gvd_login>
       <div class="banner_btns" v-if="!store.isLogin">
-        <a href="javascript:void (0)" class="banner_go_btn">Go</a>
+        <a href="javascript:void (0)" class="banner_go_btn" @click="down">Go</a>
         <a href="javascript:void (0)" class="banner_login_btn" @click="visible=true">登录</a>
       </div>
       <div class="banner_btn_login" v-else>
@@ -47,9 +47,14 @@ interface BannerColorType {
 const bannerColor: BannerColorType = {
   "light": [
     "linear-gradient(to left bottom, #CCDAEE 0%, #D0F0CF 100%)",
+    "linear-gradient(to left bottom, rgb(173,240,255) 0%, rgb(246,255,189)  100%)",
+    "linear-gradient(to left bottom, rgb(194,244,255) 0%, rgb(173,177,255)  100%)",
   ],
   "dark": [
-    "linear-gradient(to left bottom, #19162C 0%, #280B38 100%)",
+    "linear-gradient(25deg, #2a2455, #403a72, #585190, #7069b0)",
+    "linear-gradient(21deg, #1f0e6a, #38198f, #5224b6, #6c30df)",
+    "linear-gradient(25deg, #482d5c, #4b547d, #447c9f, #23a5c2)",
+    "linear-gradient(25deg, #07203f, #1c464c, #257057, #259c61)",
   ]
 }
 
@@ -61,13 +66,13 @@ watch(() => store.theme, () => {
 }, {immediate: true})
 
 
-const abstract = computed(()=>{
+const abstract = computed(() => {
   return store.site.abstract.split("\n")
 })
 
-function down(){
+function down() {
   document.documentElement.scrollTo({
-    top:  window.innerHeight, // 100vh的值，滚动到视口高度的位置
+    top: window.innerHeight, // 100vh的值，滚动到视口高度的位置
     behavior: 'smooth' // 使用平滑滚动效果
   });
 }
