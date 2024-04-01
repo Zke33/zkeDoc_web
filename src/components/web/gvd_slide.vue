@@ -1,15 +1,15 @@
 <template>
-  <div :class="{gvd_slide: true,noShow: noShow }">
+  <div :class="{ gvd_slide: true, noShow: noShow }">
     <div class="gvd_logo">
       <router-link to="/">
         <img src="/logo.png" alt="">
-        <span>fengfeng docs</span>
+        <span>zke docs</span>
       </router-link>
     </div>
     <a-modal title="全文搜索" v-model:visible="visible" :footer="false" body-class="search_modal">
       <div class="search_head">
-        <a-input-search @press-enter="search" v-model="params.key" @search="search" placeholder="搜索"
-                        button-text="搜索" search-button/>
+        <a-input-search @press-enter="search" v-model="params.key" @search="search" placeholder="搜索" button-text="搜索"
+          search-button />
       </div>
       <div class="search_body">
         <div class="item" v-for="item in data.list" @click="gotoDoc(item)">
@@ -24,8 +24,8 @@
     <div class="gvd_search">
       <a-input @click="visible = true" placeholder="搜索"></a-input>
     </div>
-    <div class="slide_icon" @click="noShow=!noShow">
-      <icon-menu/>
+    <div class="slide_icon" @click="noShow = !noShow">
+      <icon-menu />
     </div>
     <Gvd_doc_tree></Gvd_doc_tree>
   </div>
@@ -33,13 +33,13 @@
 
 <script setup lang="ts">
 import Gvd_doc_tree from "@/components/web/gvd_doc_tree.vue";
-import {reactive, ref} from "vue";
-import {docSearchApi} from "@/api/doc_api";
-import type {searchItem} from "@/api/doc_api";
-import type {Params} from "@/api";
-import {Message} from "@arco-design/web-vue";
-import {onUnmounted} from "vue";
-import {IconMenu} from "@arco-design/web-vue/es/icon";
+import { reactive, ref } from "vue";
+import { docSearchApi } from "@/api/doc_api";
+import type { searchItem } from "@/api/doc_api";
+import type { Params } from "@/api";
+import { Message } from "@arco-design/web-vue";
+import { onUnmounted } from "vue";
+import { IconMenu } from "@arco-design/web-vue/es/icon";
 
 const visible = ref(false)
 
@@ -85,7 +85,6 @@ async function search() {
 </script>
 
 <style lang="scss">
-
 .gvd_slide {
   .slide_icon {
     position: absolute;
@@ -151,6 +150,4 @@ async function search() {
     color: var(--color-text-3);
   }
 }
-
-
 </style>

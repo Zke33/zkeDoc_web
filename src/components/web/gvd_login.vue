@@ -10,9 +10,6 @@
           <li>便捷的角色-文档管理</li>
           <li>更细化的文档访问控制</li>
           <li>编写文档-所见即所得</li>
-          <li>第三代日志管理</li>
-          <li>全面黑夜模式</li>
-          <li>前端mock数据，不需后端即可访问</li>
           <li>......</li>
         </ul>
         <div class="svg">
@@ -28,13 +25,13 @@
         </div>
       </div>
       <div class="body">
-        <a-form ref="formRef" :model="form" :label-col-props="{span: 0, offset: 0}"
-                :wrapper-col-props="{span:24, offset: 0}">
-          <a-form-item field="userName" :rules="[{required:true,message:'请输入用户名'}]" :validate-trigger="['blur']">
-            <a-input v-model="form.userName" placeholder="用户名"/>
+        <a-form ref="formRef" :model="form" :label-col-props="{ span: 0, offset: 0 }"
+          :wrapper-col-props="{ span: 24, offset: 0 }">
+          <a-form-item field="userName" :rules="[{ required: true, message: '请输入用户名' }]" :validate-trigger="['blur']">
+            <a-input v-model="form.userName" placeholder="用户名" />
           </a-form-item>
-          <a-form-item field="password" :rules="[{required:true,message:'请输入密码'}]" :validate-trigger="['blur']">
-            <a-input v-model="form.password" type="password" placeholder="密码"/>
+          <a-form-item field="password" :rules="[{ required: true, message: '请输入密码' }]" :validate-trigger="['blur']">
+            <a-input v-model="form.password" type="password" placeholder="密码" />
           </a-form-item>
           <a-form-item>
             <a-button type="primary" @click="login" style="width: 100%;">登录</a-button>
@@ -53,12 +50,12 @@
   </a-modal>
 </template>
 <script setup lang="ts">
-import {reactive, ref} from "vue";
-import {IconClose} from "@arco-design/web-vue/es/icon";
-import {loginApi} from "@/api/user_api";
-import type {LoginRequest} from "@/api/user_api";
-import {Message} from "@arco-design/web-vue";
-import {useStore} from "@/stores";
+import { reactive, ref } from "vue";
+import { IconClose } from "@arco-design/web-vue/es/icon";
+import { loginApi } from "@/api/user_api";
+import type { LoginRequest } from "@/api/user_api";
+import { Message } from "@arco-design/web-vue";
+import { useStore } from "@/stores";
 
 
 const store = useStore()
