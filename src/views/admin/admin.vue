@@ -3,8 +3,8 @@
     <aside :class="{isCollapse: isCollapse}">
       <div class="gvd_logo">
         <router-link to="/">
-            <img :class="{isCollapse: isCollapse}" src="/logo.png" alt="">
-            <span v-if="!isCollapse">fengfeng docs</span>
+          <img :class="{isCollapse: isCollapse}" src="/logo.png" alt="">
+          <span v-if="!isCollapse">mingyue docs</span>
         </router-link>
       </div>
       <Gvd_menu @collapse="onCollapse"></Gvd_menu>
@@ -15,7 +15,7 @@
           <Gvd_bread></Gvd_bread>
         </div>
         <div class="right">
-          <icon-home @click="goHome"/>
+          <icon-home @click="goHome" />
           <Gvd_theme></Gvd_theme>
           <Gvd_user_info></Gvd_user_info>
         </div>

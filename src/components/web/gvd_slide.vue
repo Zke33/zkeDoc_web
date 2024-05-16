@@ -3,7 +3,7 @@
     <div class="gvd_logo">
       <router-link to="/">
         <img src="/logo.png" alt="">
-        <span>zke docs</span>
+        <span>hmy docs</span>
       </router-link>
     </div>
     <a-modal title="全文搜索" v-model:visible="visible" :footer="false" body-class="search_modal">
